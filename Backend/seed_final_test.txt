@@ -1,0 +1,14 @@
+﻿≡ƒöî Initializing Database Connection...
+Seeding initial admin...
+prisma:query INSERT INTO "public"."users" ("id","email","name","passwordHash","role","createdAt","updatedAt") VALUES ($1,$2,$3,$4,CAST($5::text AS "public"."Role"),$6,$7) ON CONFLICT ("email") DO UPDATE SET "passwordHash" = $8, "updatedAt" = $9 WHERE ("public"."users"."email" = $10 AND 1=1) RETURNING "public"."users"."id", "public"."users"."email", "public"."users"."name", "public"."users"."passwordHash", "public"."users"."role"::text, "public"."users"."avatarUrl", "public"."users"."createdAt", "public"."users"."updatedAt"
+prisma:query SELECT "public"."admins"."id" FROM "public"."admins" WHERE ("public"."admins"."userId" = $1 AND 1=1) OFFSET $2
+prisma:query INSERT INTO "public"."admins" ("id","userId","createdAt") VALUES ($1,$2,$3) RETURNING "public"."admins"."id"
+prisma:query SELECT "public"."admins"."id", "public"."admins"."userId", "public"."admins"."createdAt" FROM "public"."admins" WHERE "public"."admins"."id" = $1 LIMIT $2 OFFSET $3
+prisma:query COMMIT
+Γ£à Admin user created: tiddingramsey@gmail.com
+Seeding event config...
+prisma:query SELECT "public"."event_config"."id" FROM "public"."event_config" WHERE ("public"."event_config"."id" = $1 AND 1=1) OFFSET $2
+prisma:query INSERT INTO "public"."event_config" ("id","eventName","eventDate","venue","registrationOpen","speakerAppsOpen","maxAttendees","contactEmail","updatedAt") VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING "public"."event_config"."id"
+prisma:query SELECT "public"."event_config"."id", "public"."event_config"."eventName", "public"."event_config"."eventDate", "public"."event_config"."eventEndDate", "public"."event_config"."venue", "public"."event_config"."venueAddress", "public"."event_config"."tagline", "public"."event_config"."registrationOpen", "public"."event_config"."speakerAppsOpen", "public"."event_config"."maxAttendees", "public"."event_config"."contactEmail", "public"."event_config"."updatedAt" FROM "public"."event_config" WHERE "public"."event_config"."id" = $1 LIMIT $2 OFFSET $3
+prisma:query COMMIT
+Γ£à Initial event config created

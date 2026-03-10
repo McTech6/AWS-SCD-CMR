@@ -1,0 +1,33 @@
+﻿node.exe : Loaded Prisma 
+config from prisma.config.js.
+At C:\Program 
+Files\nodejs\npx.ps1:29 char:3
++   & $NODE_EXE $NPX_CLI_JS 
+$args
++   
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: (Loaded Pr  
+  isma c...isma.config.js.:   
+ String) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+
+ΓÜá∩╕Å No seed command configured
+
+To seed your database, add a seed property to the migrations section in your Prisma config file.
+
+Example
+
+  // prisma.config.ts
+  export default defineConfig({
+    migrations: {
+      seed: 'bun┬╖./prisma/seed.ts',
+    },
+    datasource: {
+      url: '[your database URL]',
+    },
+  })
+

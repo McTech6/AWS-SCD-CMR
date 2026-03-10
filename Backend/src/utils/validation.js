@@ -1,0 +1,108 @@
+import { z } from 'zod';
+
+export const registerSchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters'),
+    email: z.string().email('Invalid email address'),
+    university: z.string().min(2, 'University must be at least 2 characters'),
+    phone: z.string().optional(),
+    tshirtSize: z.enum(['XS', 'S', 'M', 'L', 'XL', 'XXL']).default('M'),
+});
+
+export const loginSchema = z.object({
+    email: z.string().email('Invalid email address'),
+    password: z.string().min(1, 'Password is required'),
+});
+
+export const refreshSchema = z.object({
+    refreshToken: z.string().min(1, 'Refresh token is required'),
+});
+
+export const swagUpdateSchema = z.object({
+    tshirt: z.boolean().optional(),
+    stickers: z.boolean().optional(),
+    notebook: z.boolean().optional(),
+    badge: z.boolean().optional(),
+    pen: z.boolean().optional(),
+    wristband: z.boolean().optional(),
+});
+
+export const attendeeUpdateSchema = z.object({
+    university: z.string().optional(),
+    phone: z.string().optional(),
+    tshirtSize: z.enum(['XS', 'S', 'M', 'L', 'XL', 'XXL']).optional(),
+    checkedIn: z.boolean().optional(),
+});
+
+export const speakerApplySchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters'),
+    email: z.string().email('Invalid email address'),
+    topic: z.string().min(5, 'Topic must be at least 5 characters'),
+    talkTitle: z.string().min(10, 'Talk title must be at least 10 characters'),
+    bio: z.string().min(20, 'Bio must be at least 20 characters'),
+    linkedinUrl: z.string().url('Invalid LinkedIn URL'),
+    twitterHandle: z.string().optional(),
+    githubUrl: z.string().optional().or(z.literal('')),
+    track: z.enum(['CLOUD_FUNDAMENTALS', 'DEVOPS', 'AI_ML', 'SECURITY', 'OPEN_SOURCE']).optional(),
+    experienceLevel: z.enum(['ZERO_TO_ONE', 'ONE_TO_THREE', 'THREE_TO_FIVE', 'FIVE_PLUS']).optional(),
+    photoBase64: z.string().optional(),
+});
+
+export const speakerUpdateSchema = z.object({
+    topic: z.string().optional(),
+    talkTitle: z.string().optional(),
+    bio: z.string().optional(),
+    track: z.enum(['CLOUD_FUNDAMENTALS', 'DEVOPS', 'AI_ML', 'SECURITY', 'OPEN_SOURCE']).optional(),
+    experienceLevel: z.enum(['ZERO_TO_ONE', 'ONE_TO_THREE', 'THREE_TO_FIVE', 'FIVE_PLUS']).optional(),
+    sortOrder: z.number().optional(),
+    featured: z.boolean().optional(),
+});
+
+export const agendaSchema = z.object({
+    title: z.string().min(3, 'Title is required'),
+    description: z.string().optional(),
+    startTime: z.string().datetime().optional().or(z.literal('')),
+    endTime: z.string().datetime().optional().or(z.literal('')),
+    track: z.enum(['MAIN_STAGE', 'WORKSHOP', 'PANEL', 'NETWORKING', 'OPENING', 'CLOSING']).optional(),
+    speakerId: z.string().optional(),
+    sortOrder: z.number().default(0),
+});
+
+export const agendaUpdateSchema = agendaSchema.partial();
+
+export const eventConfigUpdateSchema = z.object({
+    eventName: z.string().optional(),
+    eventDate: z.string().datetime().optional(),
+    eventEndDate: z.string().datetime().optional(),
+    venue: z.string().optional(),
+    venueAddress: z.string().optional(),
+    tagline: z.string().optional(),
+    registrationOpen: z.boolean().optional(),
+    speakerAppsOpen: z.boolean().optional(),
+    maxAttendees: z.number().optional(),
+    contactEmail: z.string().email().optional(),
+}).partial();
+
+export const sponsorSchema = z.object({
+    name: z.string().min(2, 'Name is required'),
+    logoUrl: z.string().url('Invalid Logo URL'),
+    website: z.string().url('Invalid Website URL').optional().or(z.literal('')),
+    tier: z.enum(['GOLD', 'SILVER', 'COMMUNITY']).optional(),
+    sortOrder: z.number().default(0),
+    visible: z.boolean().default(true),
+});
+
+export const sponsorUpdateSchema = sponsorSchema.partial();
+
+// --- file upload schemas (Phase 4)
+export const presignedUrlSchema = z.object({
+    fileName: z.string().min(1, 'File name is required'),
+    fileType: z.string().min(1, 'File type is required'),
+    folder: z.enum(['speaker-photos', 'certificates', 'sponsors']),
+    fileSize: z.number().max(5 * 1024 * 1024, 'File must be 5MB or smaller').optional(),
+});
+
+export const uploadConfirmSchema = z.object({
+    fileKey: z.string().min(1, 'File key is required'),
+    folder: z.enum(['speaker-photos', 'certificates', 'sponsors']),
+    relatedId: z.string().optional(),
+});

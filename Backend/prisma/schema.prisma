@@ -1,0 +1,300 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//////////////////////////////////////////////////
+// ENUMS
+//////////////////////////////////////////////////
+
+enum Role {
+  ATTENDEE
+  SPEAKER
+  ADMIN
+}
+
+enum TShirtSize {
+  XS
+  S
+  M
+  L
+  XL
+  XXL
+}
+
+enum SpeakerStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum CertificateStatus {
+  NOT_GENERATED
+  GENERATED
+  SENT
+  FAILED
+}
+
+enum EmailStatus {
+  DRAFT
+  SENT
+  FAILED
+  PARTIAL
+}
+
+enum EmailTarget {
+  ATTENDEES
+  SPEAKERS
+  BOTH
+  CUSTOM
+}
+
+enum SponsorTier {
+  GOLD
+  SILVER
+  COMMUNITY
+}
+
+enum AgendaTrack {
+  MAIN_STAGE
+  WORKSHOP
+  PANEL
+  NETWORKING
+  OPENING
+  CLOSING
+}
+
+enum SpeakerTrack {
+  CLOUD_FUNDAMENTALS
+  DEVOPS
+  AI_ML
+  SECURITY
+  OPEN_SOURCE
+}
+
+enum ExperienceLevel {
+  ZERO_TO_ONE
+  ONE_TO_THREE
+  THREE_TO_FIVE
+  FIVE_PLUS
+}
+
+//////////////////////////////////////////////////
+// MODELS
+//////////////////////////////////////////////////
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  passwordHash  String?
+  role          Role      @default(ATTENDEE)
+  avatarUrl     String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  attendee      Attendee?
+  speaker       Speaker?
+  admin         Admin?
+  sessions      Session[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique @default(cuid())
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  ipAddress String?
+  userAgent String?
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admins")
+}
+
+model Attendee {
+  id           String     @id @default(cuid())
+  userId       String     @unique
+  university   String
+  phone        String?
+  tshirtSize   TShirtSize
+  checkedIn    Boolean    @default(false)
+  checkedInAt  DateTime?
+  registeredAt DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  swag         SwagRecord?
+  certificate  Certificate?
+
+  @@index([checkedIn])
+  @@map("attendees")
+}
+
+model SwagRecord {
+  id          String   @id @default(cuid())
+  attendeeId  String   @unique
+  tshirt      Boolean  @default(false)
+  stickers    Boolean  @default(false)
+  notebook    Boolean  @default(false)
+  badge       Boolean  @default(false)
+  pen         Boolean  @default(false)
+  wristband   Boolean  @default(false)
+  updatedAt   DateTime @updatedAt
+  updatedBy   String?
+
+  attendee    Attendee @relation(fields: [attendeeId], references: [id], onDelete: Cascade)
+
+  @@map("swag_records")
+}
+
+model Speaker {
+  id              String          @id @default(cuid())
+  userId          String          @unique
+  topic           String
+  talkTitle       String
+  talkAbstract    String?
+  bio             String
+  track           SpeakerTrack?
+  experienceLevel ExperienceLevel?
+  status          SpeakerStatus   @default(PENDING)
+  linkedinUrl     String
+  twitterHandle   String?
+  githubUrl       String?
+  photoUrl        String?
+  photoKey        String?
+  reviewNote      String?
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  submittedAt     DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  featured        Boolean         @default(false)
+  sortOrder       Int             @default(0)
+
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("speakers")
+}
+
+model Certificate {
+  id           String              @id @default(cuid())
+  attendeeId   String              @unique
+  status       CertificateStatus   @default(NOT_GENERATED)
+  fileUrl      String?
+  fileKey      String?
+  generatedAt  DateTime?
+  sentAt       DateTime?
+  failedAt     DateTime?
+  failReason   String?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  attendee     Attendee            @relation(fields: [attendeeId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("certificates")
+}
+
+model EmailLog {
+  id             String        @id @default(cuid())
+  subject        String
+  body           String
+  target         EmailTarget
+  status         EmailStatus   @default(DRAFT)
+  recipientCount Int           @default(0)
+  successCount   Int           @default(0)
+  failCount      Int           @default(0)
+  sentAt         DateTime?
+  createdAt      DateTime      @default(now())
+  sentBy         String
+
+  recipients     EmailRecipient[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("email_logs")
+}
+
+model EmailRecipient {
+  id             String   @id @default(cuid())
+  emailLogId     String
+  recipientEmail String
+  recipientName  String
+  delivered      Boolean  @default(false)
+  failReason     String?
+  deliveredAt    DateTime?
+
+  emailLog       EmailLog @relation(fields: [emailLogId], references: [id], onDelete: Cascade)
+
+  @@index([emailLogId])
+  @@map("email_recipients")
+}
+
+model Sponsor {
+  id        String       @id @default(cuid())
+  name      String
+  logoUrl   String
+  logoKey   String?
+  website   String?
+  tier      SponsorTier?
+  sortOrder Int          @default(0)
+  visible   Boolean      @default(true)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([tier])
+  @@map("sponsors")
+}
+
+model AgendaItem {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  startTime   DateTime?
+  endTime     DateTime?
+  track       AgendaTrack?
+  speakerId   String?
+  sortOrder   Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([startTime])
+  @@map("agenda_items")
+}
+
+model EventConfig {
+  id               String   @id @default(cuid())
+  eventName        String   @default("AWS Cloud Club Student Community Day")
+  eventDate        DateTime
+  eventEndDate     DateTime?
+  venue            String
+  venueAddress     String?
+  tagline          String?
+  registrationOpen Boolean  @default(true)
+  speakerAppsOpen  Boolean  @default(true)
+  maxAttendees     Int      @default(500)
+  contactEmail     String
+  updatedAt        DateTime @updatedAt
+
+  @@map("event_config")
+}

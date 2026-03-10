@@ -1,0 +1,292 @@
+﻿[dotenv@17.3.1] injecting env (4) from .env -- tip: ΓÜÖ∩╕Å  suppress all logs with { quiet: true }
+node : C:\Users\TIDDING\Deskto
+p\Projects\AWS Student 
+Community Day\Backend\node_mod
+ules\@prisma\client\runtime\cl
+ient.js:66
+At line:1 char:1
++ node src/index.js 2>&1 | 
+Out-File -FilePath 
+run_error.txt -Encoding u ...
++ ~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : 
+    NotSpecified: (C:\Users\  
+  TIDDIN...me\client.js:66:   
+ String) [], RemoteExcepti    
+on
+    + FullyQualifiedErrorId : 
+    NativeCommandError
+ 
+Read more at https://pris.ly/d
+/client-constructor`),this.nam
+e="PrismaClientConstructorVali
+dationError"}get[Symbol.toStri
+ngTag](){return"PrismaClientCo
+nstructorValidationError"}};ft
+(R,"PrismaClientConstructorVal
+idationError");var _l=["errorF
+ormat","adapter","accelerateUr
+l","log","transactionOptions",
+"omit","comments","__internal"
+],Ll=["pretty","colorless","mi
+nimal"],$l=["info","query","wa
+rn","error"],Am={adapter:()=>{
+},accelerateUrl:e=>{if(e!==voi
+d 0){if(typeof 
+e!="string")throw new 
+R(`Invalid value 
+${JSON.stringify(e)} for 
+"accelerateUrl" provided to 
+PrismaClient constructor.`);if
+(e.trim().length===0)throw 
+new R('"accelerateUrl" 
+provided to PrismaClient 
+constructor must be a 
+non-empty string.')}},errorFor
+mat:e=>{if(e){if(typeof 
+e!="string")throw new 
+R(`Invalid value 
+${JSON.stringify(e)} for 
+"errorFormat" provided to 
+PrismaClient constructor.`);if
+(!Ll.includes(e)){let 
+t=Ut(e,Ll);throw new 
+R(`Invalid errorFormat ${e} 
+provided to PrismaClient const
+ructor.${t}`)}}},log:e=>{if(!e
+)return;if(!Array.isArray(e))t
+hrow new R(`Invalid value 
+${JSON.stringify(e)} for 
+"log" provided to 
+PrismaClient 
+constructor.`);function 
+t(r){if(typeof r=="string"&&!$
+l.includes(r)){let 
+n=Ut(r,$l);throw new 
+R(`Invalid log level "${r}" 
+provided to PrismaClient 
+constructor.${n}`)}}for(let r 
+of e){t(r);let 
+n={level:t,emit:i=>{let o=["st
+dout","event"];if(!o.includes(
+i)){let s=Ut(i,o);throw new 
+R(`Invalid value 
+${JSON.stringify(i)} for 
+"emit" in logLevel provided 
+to PrismaClient constructor.${
+s}`)}}};if(r&&typeof 
+r=="object")for(let[i,o]of Obj
+ect.entries(r))if(n[i])n[i](o)
+;else throw new R(`Invalid 
+property ${i} for "log" 
+provided to PrismaClient const
+ructor`)}},transactionOptions:
+e=>{if(!e)return;let t=e.maxWa
+it;if(t!=null&&t<=0)throw new 
+R(`Invalid value ${t} for 
+maxWait in 
+"transactionOptions" provided 
+to PrismaClient constructor. 
+maxWait needs to be greater 
+than 0`);let r=e.timeout;if(r!
+=null&&r<=0)throw new 
+R(`Invalid value ${r} for 
+timeout in 
+"transactionOptions" provided 
+to PrismaClient constructor. 
+timeout needs to be greater 
+than 
+0`)},omit:(e,t)=>{if(typeof 
+e!="object")throw new 
+R('"omit" option is expected 
+to be an 
+object.');if(e===null)throw 
+new R('"omit" option can not 
+be `null`');let 
+r=[];for(let[n,i]of 
+Object.entries(e)){let o=Rm(n,
+t.runtimeDataModel);if(!o){r.p
+ush({kind:"UnknownModel",model
+Key:n});continue}for(let[s,a]o
+f Object.entries(i)){let l=o.f
+ields.find(u=>u.name===s);if(!
+l){r.push({kind:"UnknownField"
+,modelKey:n,fieldName:s});cont
+inue}if(l.relationName){r.push
+({kind:"RelationInOmit",modelK
+ey:n,fieldName:s});continue}ty
+peof a!="boolean"&&r.push({kin
+d:"InvalidFieldValue",modelKey
+:n,fieldName:s})}}if(r.length>
+0)throw new R(km(e,r))},commen
+ts:e=>{if(e!==void 
+0){if(!Array.isArray(e))throw 
+new R(`Invalid value 
+${JSON.stringify(e)} for 
+"comments" provided to 
+PrismaClient constructor. 
+Expected an array of SQL 
+commenter plugins.`);for(let 
+t=0;t<e.length;t++)if(typeof 
+e[t]!="function")throw new 
+R(`Invalid value at index 
+${t} for "comments" provided 
+to PrismaClient constructor. 
+Each plugin must be a function
+.`)}},__internal:e=>{if(!e)ret
+urn;let t=["debug","engine","c
+onfigOverride"];if(typeof 
+e!="object")throw new 
+R(`Invalid value 
+${JSON.stringify(e)} for 
+"__internal" to PrismaClient 
+constructor`);for(let[r]of Obj
+ect.entries(e))if(!t.includes(
+r)){let n=Ut(r,t);throw new 
+R(`Invalid property 
+${JSON.stringify(r)} for 
+"__internal" provided to 
+PrismaClient constructor.${n}`
+)}}};function vm(e){let 
+t=e.adapter!==void 
+0,r=e.accelerateUrl!==void 
+0;if(t&&r)throw new R('The 
+"adapter" and "accelerateUrl" 
+options are mutually 
+exclusive. Please provide 
+only one of 
+them.');if(!t&&!r)throw new 
+R('Using engine type "client" 
+requires either "adapter" or 
+"accelerateUrl" to be 
+provided to PrismaClient 
+constructor.')}function 
+jl(e,t){for(let[r,n]of Object.
+entries(e)){if(!_l.includes(r)
+){let i=Ut(r,_l);throw new 
+R(`Unknown property ${r} 
+provided to PrismaClient const
+ructor.${i}`)}Am[r](n,t)}vm(e)
+}function Ut(e,t){if(t.length=
+==0||typeof 
+e!="string")return"";let 
+r=Cm(e,t);return r?` Did you 
+mean "${r}"?`:""}function Cm(e
+,t){if(t.length===0)return 
+null;let r=t.map(i=>({value:i,
+distance:(0,ql.default)(e,i)})
+);r.sort((i,o)=>i.distance<o.d
+istance?-1:1);let 
+n=r[0];return n.distance<3?n.v
+alue:null}function 
+Rm(e,t){return Vl(t.models,e)?
+?Vl(t.types,e)}function 
+Vl(e,t){let r=Object.keys(e).f
+ind(n=>ce(n)===t);if(r)return 
+e[r]}function km(e,t){let 
+r=Ue(e);for(let o of t)switch(
+o.kind){case"UnknownModel":r.a
+rguments.getField(o.modelKey)?
+.markAsError(),r.addErrorMessa
+ge(()=>`Unknown model name: ${
+o.modelKey}.`);break;case"Unkn
+ownField":r.arguments.getDeepF
+ield([o.modelKey,o.fieldName])
+?.markAsError(),r.addErrorMess
+age(()=>`Model 
+"${o.modelKey}" does not have 
+a field named "${o.fieldName}"
+.`);break;case"RelationInOmit"
+:r.arguments.getDeepField([o.m
+odelKey,o.fieldName])?.markAsE
+rror(),r.addErrorMessage(()=>'
+Relations are already 
+excluded by default and can 
+not be specified in "omit".');
+break;case"InvalidFieldValue":
+r.arguments.getDeepFieldValue(
+[o.modelKey,o.fieldName])?.mar
+kAsError(),r.addErrorMessage((
+)=>"Omit field option value 
+must be a boolean.");break}let
+{message:n,args:i}=ar(r,"color
+less");return`Error 
+validating "omit" option:
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+                              
+
+PrismaClientConstructorValidat
+ionError: Using engine type 
+"client" requires either 
+"adapter" or "accelerateUrl" 
+to be provided to 
+PrismaClient constructor.
+Read more at https://pris.ly/d
+/client-constructor
+    at vm (C:\Users\TIDDING\De
+sktop\Projects\AWS Student 
+Community Day\Backend\node_mod
+ules\@prisma\client\runtime\cl
+ient.js:66:3615)
+    at jl (C:\Users\TIDDING\De
+sktop\Projects\AWS Student 
+Community Day\Backend\node_mod
+ules\@prisma\client\runtime\cl
+ient.js:66:3916)
+    at new t (C:\Users\TIDDING
+\Desktop\Projects\AWS Student 
+Community Day\Backend\node_mod
+ules\@prisma\client\runtime\cl
+ient.js:70:1241)
+    at prismaClientSingleton (
+file:///C:/Users/TIDDING/Deskt
+op/Projects/AWS%20Student%20Co
+mmunity%20Day/Backend/src/db/p
+risma.js:4:12)
+    at file:///C:/Users/TIDDIN
+G/Desktop/Projects/AWS%20Stude
+nt%20Community%20Day/Backend/s
+rc/db/prisma.js:12:42
+    at ModuleJob.run (node:int
+ernal/modules/esm/module_job:2
+71:25)
+    at async onImport.tracePro
+mise.__proto__ (node:internal/
+modules/esm/loader:578:26)
+    at async asyncRunEntryPoin
+tWithESMLoader (node:internal/
+modules/run_main:116:5)
+
+Node.js v22.14.0
