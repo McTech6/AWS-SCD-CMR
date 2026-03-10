@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import {
     register,
+    registerAdmin,
     login,
     logout,
     getMe,
@@ -37,6 +38,7 @@ const router = Router();
  *         description: Validation failed or User exists
  */
 router.post('/register', register);
+router.post('/register-admin', registerAdmin);
 
 /**
  * @openapi

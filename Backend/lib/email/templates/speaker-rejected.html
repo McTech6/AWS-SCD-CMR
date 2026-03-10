@@ -1,12 +1,94 @@
+<!DOCTYPE html>
 <html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speaker Application Update</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%); min-height: 100vh;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%); padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+          
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 50px 40px; text-align: center;">
+              <div style="background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); border-radius: 12px; padding: 20px; display: inline-block;">
+                <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);">
+                  Application Update
+                </h1>
+              </div>
+            </td>
+          </tr>
 
-<body>
-  <h1>Speaker Application Update</h1>
-  <p>Hi {{name}},</p>
-  <p>Thank you for your interest in speaking at AWS Student Community Day 2026.</p>
-  <p>After careful review, we regret to inform you that we are unable to accept your proposal at this time.</p>
-  <p>Reviewer Note: {{reviewNote}}</p>
-  <p>We encourage you to apply again in the future and hope to see you at the event as an attendee.</p>
+          <!-- Content -->
+          <tr>
+            <td style="padding: 50px 40px;">
+              <p style="margin: 0 0 20px; color: #1a1f3a; font-size: 18px; font-weight: 600;">
+                Hi {{name}},
+              </p>
+              
+              <p style="margin: 0 0 30px; color: #4a5568; font-size: 16px; line-height: 1.6;">
+                Thank you for your interest in speaking at <strong style="color: #667eea;">AWS Student Community Day 2026</strong>. We truly appreciate the time and effort you put into your proposal.
+              </p>
+
+              <p style="margin: 0 0 30px; color: #4a5568; font-size: 16px; line-height: 1.6;">
+                After careful review by our program committee, we regret to inform you that we are unable to accept your proposal for this year's event.
+              </p>
+
+              <!-- Feedback Card -->
+              <div style="background: linear-gradient(135deg, #fef5e7 0%, #fdebd0 100%); border-left: 4px solid #f39c12; border-radius: 12px; padding: 24px; margin: 30px 0;">
+                <p style="margin: 0 0 12px; color: #856404; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                  📝 Reviewer Feedback
+                </p>
+                <p style="margin: 0; color: #1a1f3a; font-size: 15px; line-height: 1.6; font-style: italic;">
+                  "{{reviewNote}}"
+                </p>
+              </div>
+
+              <p style="margin: 30px 0 0; color: #4a5568; font-size: 16px; line-height: 1.6;">
+                This decision doesn't reflect on your expertise or potential as a speaker. We received an overwhelming number of high-quality submissions, and our selection process was extremely competitive.
+              </p>
+
+              <!-- Encouragement Section -->
+              <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-radius: 12px; padding: 24px; margin: 30px 0; text-align: center;">
+                <p style="margin: 0 0 12px; color: #2e7d32; font-size: 18px; font-weight: 700;">
+                  💚 We'd Love to See You Again
+                </p>
+                <p style="margin: 0; color: #1b5e20; font-size: 14px; line-height: 1.6;">
+                  We encourage you to apply again in the future and hope to see you at the event as an attendee or community member!
+                </p>
+              </div>
+
+              <!-- CTA Button -->
+              <div style="text-align: center; margin: 40px 0;">
+                <a href="#" style="display: inline-block; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; padding: 16px 40px; border-radius: 8px; font-weight: 700; font-size: 16px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+                  Register as Attendee →
+                </a>
+              </div>
+
+              <p style="margin: 30px 0 0; color: #718096; font-size: 14px; line-height: 1.6; text-align: center;">
+                Thank you for being part of our community. Keep building! 🚀
+              </p>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background: #f7fafc; padding: 30px 40px; border-top: 1px solid #e2e8f0;">
+              <p style="margin: 0 0 10px; color: #718096; font-size: 14px; text-align: center;">
+                <strong style="color: #1a1f3a;">AWS Student Community Day 2026</strong>
+              </p>
+              <p style="margin: 0; color: #a0aec0; font-size: 12px; text-align: center;">
+                Powered by AWS Cloud Club | Building the Future Together
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
 </body>
-
 </html>

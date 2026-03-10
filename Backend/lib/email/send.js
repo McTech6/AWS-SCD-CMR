@@ -2,25 +2,26 @@ import nodemailer from 'nodemailer';
 import fs from 'fs';
 import path from 'path';
 
-const EMAIL_USER = process.env.EMAIL_USER;
-const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
-const EMAIL_HOST = process.env.EMAIL_HOST || 'smtp.gmail.com';
-const EMAIL_PORT = process.env.EMAIL_PORT ? parseInt(process.env.EMAIL_PORT) : 587;
-const EMAIL_FROM = process.env.EMAIL_FROM || EMAIL_USER;
+const getTransporter = () => {
+  const EMAIL_USER = process.env.EMAIL_USER;
+  const EMAIL_PASSWORD = process.env.EMAIL_PASSWORD;
+  const EMAIL_HOST = process.env.EMAIL_HOST || 'smtp.gmail.com';
+  const EMAIL_PORT = process.env.EMAIL_PORT ? parseInt(process.env.EMAIL_PORT) : 587;
 
-if (!EMAIL_USER || !EMAIL_PASSWORD) {
-  console.warn('Email credentials not set (EMAIL_USER / EMAIL_PASSWORD)');
-}
+  if (!EMAIL_USER || !EMAIL_PASSWORD) {
+    throw new Error('Email credentials not configured');
+  }
 
-const transporter = nodemailer.createTransport({
-  host: EMAIL_HOST,
-  port: EMAIL_PORT,
-  secure: EMAIL_PORT === 465, // true for 465, false for other ports
-  auth: {
-    user: EMAIL_USER,
-    pass: EMAIL_PASSWORD,
-  },
-});
+  return nodemailer.createTransport({
+    host: EMAIL_HOST,
+    port: EMAIL_PORT,
+    secure: EMAIL_PORT === 465,
+    auth: {
+      user: EMAIL_USER,
+      pass: EMAIL_PASSWORD,
+    },
+  });
+};
 
 const templatesDir = path.resolve(process.cwd(), 'lib', 'email', 'templates');
 
@@ -37,6 +38,7 @@ const renderTemplate = (templateName, variables = {}) => {
 
 export const sendEmail = async ({ to, subject, template, variables = {}, htmlOverride, attachments }) => {
   const html = htmlOverride || renderTemplate(template, variables) || variables.body || '';
+  const EMAIL_FROM = process.env.EMAIL_FROM || process.env.EMAIL_USER;
 
   const mailOptions = {
     from: EMAIL_FROM,
@@ -46,6 +48,7 @@ export const sendEmail = async ({ to, subject, template, variables = {}, htmlOve
     attachments,
   };
 
+  const transporter = getTransporter();
   const info = await transporter.sendMail(mailOptions);
   return info;
 };

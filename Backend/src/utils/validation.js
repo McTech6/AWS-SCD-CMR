@@ -39,6 +39,9 @@ export const speakerApplySchema = z.object({
     topic: z.string().min(5, 'Topic must be at least 5 characters'),
     talkTitle: z.string().min(10, 'Talk title must be at least 10 characters'),
     bio: z.string().min(20, 'Bio must be at least 20 characters'),
+    talkAbstract: z.string().optional(),
+    role: z.string().optional(),
+    company: z.string().optional(),
     linkedinUrl: z.string().url('Invalid LinkedIn URL'),
     twitterHandle: z.string().optional(),
     githubUrl: z.string().optional().or(z.literal('')),
@@ -51,10 +54,12 @@ export const speakerUpdateSchema = z.object({
     topic: z.string().optional(),
     talkTitle: z.string().optional(),
     bio: z.string().optional(),
+    talkAbstract: z.string().optional(),
     track: z.enum(['CLOUD_FUNDAMENTALS', 'DEVOPS', 'AI_ML', 'SECURITY', 'OPEN_SOURCE']).optional(),
     experienceLevel: z.enum(['ZERO_TO_ONE', 'ONE_TO_THREE', 'THREE_TO_FIVE', 'FIVE_PLUS']).optional(),
     sortOrder: z.number().optional(),
     featured: z.boolean().optional(),
+    photoBase64: z.string().optional(),
 });
 
 export const agendaSchema = z.object({

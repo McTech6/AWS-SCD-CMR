@@ -2,6 +2,7 @@ import prisma from '../db/prisma.js';
 import { registerSchema, swagUpdateSchema, attendeeUpdateSchema } from '../utils/validation.js';
 import { hashPassword, generateToken } from '../utils/auth.js';
 import { sendEmail } from '../../lib/email/send.js';
+// import { generateTicket } from '../../lib/ticket/generator.js';
 
 // Public/Regisration
 export const registerAttendee = async (req, res, next) => {
@@ -36,9 +37,9 @@ export const registerAttendee = async (req, res, next) => {
         });
 
         if (existingUser) {
-            return res.status(400).json({
+            return res.status(409).json({
                 success: false,
-                message: 'This email is already registered'
+                message: 'This email is already registered for the event'
             });
         }
 
@@ -111,6 +112,23 @@ export const registerAttendee = async (req, res, next) => {
                 attendee: attendeeObj
             }
         });
+
+        // Send welcome email
+        try {
+            await sendEmail({
+                to: result.user.email,
+                subject: 'Welcome to AWS Student Community Day Cameroon 2026',
+                template: 'welcome',
+                variables: {
+                    name: result.user.name,
+                    email: result.user.email,
+                    university: result.attendee.university
+                }
+            });
+            console.log('Welcome email sent');
+        } catch (err) {
+            console.error('Email send failed:', err);
+        }
 
     } catch (error) {
         if (error.name === 'ZodError') {
@@ -370,17 +388,20 @@ export const checkInAttendee = async (req, res, next) => {
 
         console.log(`[CHECKIN SUCCESS] Status toggled to: ${updatedRaw.checkedIn ? 'CHECKED-IN' : 'UNCHECKED'}`);
 
-        // if checking in (new state is true), send checkin email
+        // if checking in (new state is true), send thank you email
         if (updatedRaw.checkedIn && !attendee.checkedIn) {
-            console.log(`[CHECKIN EMAIL] Attempting to send welcome email to: ${attendee.user.email}`);
+            console.log(`[CHECKIN EMAIL] Attempting to send thank you email to: ${attendee.user.email}`);
             try {
                 await sendEmail({
                     to: attendee.user.email,
-                    subject: 'Welcome to AWS Student Community Day!',
-                    template: 'checkin',
-                    variables: { name: attendee.user.name }
+                    subject: 'Thank You for Joining AWS Student Community Day! 🎉',
+                    template: 'thankyou',
+                    variables: {
+                        name: attendee.user.name,
+                        university: attendee.university
+                    }
                 });
-                console.log(`[CHECKIN EMAIL] Successfully sent email to: ${attendee.user.email}`);
+                console.log(`[CHECKIN EMAIL] Successfully sent thank you email to: ${attendee.user.email}`);
             } catch (err) {
                 console.error(`[CHECKIN EMAIL ERROR] Failed to send email to ${attendee.user.email}`, err);
             }

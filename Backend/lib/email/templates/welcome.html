@@ -1,8 +1,172 @@
+<!DOCTYPE html>
 <html>
-  <body>
-    <h1>Welcome to AWS Student Community Day</h1>
-    <p>Hi {{name}},</p>
-    <p>Thanks for registering — we look forward to seeing you at the event.</p>
-    <p>Event: {{eventName}}</p>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; background: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background: white; }
+        .header {
+            background: linear-gradient(135deg, #FF9900 0%, #FF6B00 100%);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+        .header-logo { font-size: 28px; font-weight: 800; margin-bottom: 10px; }
+        .header-subtitle { font-size: 14px; opacity: 0.95; }
+        .content { padding: 40px 30px; }
+        .greeting { font-size: 24px; font-weight: 700; color: #1a1a1a; margin-bottom: 20px; }
+        .section { margin-bottom: 30px; }
+        .section-title { font-size: 16px; font-weight: 700; color: #FF9900; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .event-card {
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFE6CC 100%);
+            border-left: 4px solid #FF9900;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .event-detail { margin-bottom: 12px; font-size: 15px; color: #333; }
+        .event-detail strong { color: #FF6B00; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .info-box {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+        .info-label { font-size: 12px; color: #999; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 5px; }
+        .info-value { font-size: 16px; font-weight: 600; color: #1a1a1a; }
+        .highlight-box {
+            background: linear-gradient(135deg, #FFF9E6 0%, #FFECB3 100%);
+            border: 2px solid #FF9900;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .highlight-box strong { color: #FF6B00; font-size: 18px; }
+        .ticket-notice {
+            background: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+            font-size: 14px;
+            color: #2E7D32;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #FF9900 0%, #FF6B00 100%);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .footer {
+            background: #f5f5f5;
+            padding: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            border-top: 1px solid #eee;
+        }
+        .footer-link { color: #FF9900; text-decoration: none; }
+        .divider { height: 1px; background: #eee; margin: 20px 0; }
+        .checklist { list-style: none; padding: 0; }
+        .checklist li { padding: 10px 0; padding-left: 30px; position: relative; font-size: 14px; color: #333; }
+        .checklist li:before { content: "✓"; position: absolute; left: 0; color: #4CAF50; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-logo">🎓 AWS</div>
+            <div class="header-subtitle">Student Community Day Cameroon 2026</div>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <div class="greeting">Welcome, {{name}}! 🎉</div>
+            
+            <p style="font-size: 15px; color: #555; line-height: 1.6; margin-bottom: 20px;">
+                Thank you for registering for AWS Student Community Day Cameroon 2026. We're thrilled to have you join us for an incredible day of learning, networking, and innovation!
+            </p>
+
+            <!-- Event Details -->
+            <div class="section">
+                <div class="section-title">📍 Event Details</div>
+                <div class="event-card">
+                    <div class="event-detail"><strong>Event:</strong> AWS Student Community Day Cameroon</div>
+                    <div class="event-detail"><strong>Date:</strong> March 15, 2026</div>
+                    <div class="event-detail"><strong>Time:</strong> 9:00 AM - 5:00 PM</div>
+                    <div class="event-detail"><strong>Venue:</strong> Main Conference Center, Yaoundé</div>
+                    <div class="event-detail"><strong>University:</strong> {{university}}</div>
+                </div>
+            </div>
+
+            <!-- Registration Info -->
+            <div class="section">
+                <div class="section-title">✓ Your Registration</div>
+                <div class="info-grid">
+                    <div class="info-box">
+                        <div class="info-label">Attendee Name</div>
+                        <div class="info-value">{{name}}</div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-label">Email</div>
+                        <div class="info-value" style="font-size: 13px; word-break: break-all;">{{email}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- What to Expect -->
+            <div class="section">
+                <div class="section-title">🚀 What to Expect</div>
+                <ul class="checklist">
+                    <li>Keynote presentations from AWS experts and industry leaders</li>
+                    <li>Hands-on workshops and technical sessions</li>
+                    <li>Networking opportunities with peers and professionals</li>
+                    <li>Exclusive AWS swag and giveaways</li>
+                    <li>Career opportunities and mentorship sessions</li>
+                </ul>
+            </div>
+
+            <!-- Ticket Attachment Notice -->
+            <div class="ticket-notice">
+                <strong>📎 Your Event Ticket</strong><br>
+                Your digital event ticket is attached to this email. Please bring it with you or have it ready on your phone at check-in.
+            </div>
+
+            <!-- Important Info -->
+            <div class="highlight-box">
+                <strong>⏰ Important Reminder</strong><br>
+                Please arrive 15 minutes early for check-in and registration.
+            </div>
+
+            <!-- CTA -->
+            <div style="text-align: center;">
+                <a href="#" class="cta-button">View Event Details</a>
+            </div>
+
+            <!-- Questions -->
+            <div class="section" style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin-top: 30px;">
+                <div style="font-size: 14px; color: #555;">
+                    <strong>Questions?</strong><br>
+                    If you have any questions about the event, feel free to reach out to us at <a href="mailto:awsstudentcommunitydaycmr@gmail.com" style="color: #FF9900; text-decoration: none;">awsstudentcommunitydaycmr@gmail.com</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p style="margin-bottom: 10px;">AWS Student Community Day Cameroon 2026</p>
+            <p>© 2026 Amazon Web Services. All rights reserved.</p>
+        </div>
+    </div>
+</body>
 </html>

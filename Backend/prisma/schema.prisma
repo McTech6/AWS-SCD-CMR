@@ -1,12 +1,13 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../generated/prisma"  // Required in Prisma 7
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // url removed - now in prisma.config.js
 }
-
+ 
 //////////////////////////////////////////////////
 // ENUMS
 //////////////////////////////////////////////////
@@ -167,6 +168,36 @@ model SwagRecord {
   @@map("swag_records")
 }
 
+// model Speaker {
+//   id              String          @id @default(cuid())
+//   userId          String          @unique
+//   topic           String
+//   talkTitle       String
+//   talkAbstract    String?
+//   bio             String
+//   track           SpeakerTrack?
+//   experienceLevel ExperienceLevel?
+//   status          SpeakerStatus   @default(PENDING)
+//   linkedinUrl     String
+//   twitterHandle   String?
+//   githubUrl       String?
+//   photoUrl        String?
+//   photoKey        String?
+//   reviewNote      String?
+//   reviewedAt      DateTime?
+//   reviewedBy      String?
+//   submittedAt     DateTime        @default(now())
+//   updatedAt       DateTime        @updatedAt
+//   featured        Boolean         @default(false)
+//   sortOrder       Int             @default(0)
+
+//   user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   @@index([status])
+//   @@map("speakers")
+// }
+
+
 model Speaker {
   id              String          @id @default(cuid())
   userId          String          @unique
@@ -182,6 +213,8 @@ model Speaker {
   githubUrl       String?
   photoUrl        String?
   photoKey        String?
+  role            String          @default("SPEAKER")
+  company         String          @default("AWS Community")
   reviewNote      String?
   reviewedAt      DateTime?
   reviewedBy      String?
@@ -195,7 +228,6 @@ model Speaker {
   @@index([status])
   @@map("speakers")
 }
-
 model Certificate {
   id           String              @id @default(cuid())
   attendeeId   String              @unique

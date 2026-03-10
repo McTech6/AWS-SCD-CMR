@@ -2,6 +2,67 @@ import prisma from '../db/prisma.js';
 import { hashPassword, comparePassword, generateToken, verifyToken } from '../utils/auth.js';
 import { registerSchema, loginSchema } from '../utils/validation.js';
 
+export const registerAdmin = async (req, res, next) => {
+    console.log(`👨‍💼 Registering new admin: ${req.body?.email}`);
+    try {
+        const { name, email, password } = req.body;
+
+        if (!name || !email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: 'Name, email, and password are required',
+            });
+        }
+
+        const existingUser = await prisma.user.findUnique({
+            where: { email },
+        });
+
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: 'User already exists with this email',
+            });
+        }
+
+        const hashedPassword = await hashPassword(password);
+
+        const result = await prisma.$transaction(async (tx) => {
+            const user = await tx.user.create({
+                data: {
+                    name,
+                    email,
+                    passwordHash: hashedPassword,
+                    role: 'ADMIN',
+                },
+            });
+
+            await tx.admin.create({
+                data: {
+                    userId: user.id,
+                },
+            });
+
+            return user;
+        });
+
+        const token = generateToken({ id: result.id, email: result.email, role: result.role });
+        const { passwordHash, ...userResponse } = result;
+
+        res.status(201).json({
+            success: true,
+            message: 'Admin registered successfully',
+            data: {
+                user: userResponse,
+                token,
+            },
+        });
+    } catch (error) {
+        console.error('Admin registration error:', error);
+        next(error);
+    }
+};
+
 export const register = async (req, res, next) => {
     console.log(`📝 Registering new user: ${req.body?.email}`);
     try {
