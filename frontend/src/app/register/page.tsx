@@ -21,7 +21,7 @@ import {
   Spinner,
   CalendarButton
 } from "@/components/ui";
-import { PageWrapper } from "@/components/layout";
+import { PageWrapper, Navbar, Footer } from "@/components/layout";
 import { ChevronRight, CheckCircle2, Cloud, Sparkles, MapPin, Calendar, Clock } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -132,7 +132,9 @@ export default function RegisterPage() {
   };
 
   return (
-    <PageWrapper className="flex min-h-screen items-stretch bg-[var(--void)]">
+    <PageWrapper>
+      <Navbar />
+      <main className="flex min-h-screen items-stretch bg-[var(--void)]">
       {/* Split layout (50/50) */}
       <div className="grid w-full grid-cols-1 lg:grid-cols-2">
 
@@ -361,6 +363,8 @@ export default function RegisterPage() {
         </div>
 
       </div>
+      </main>
+      <Footer />
     </PageWrapper>
   );
 }

@@ -30,6 +30,7 @@ import { z } from "zod";
 import { applySponsor } from "@/lib/api";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import { PageWrapper, Navbar, Footer } from "@/components/layout";
 
 const applySchema = z.object({
   name: z.string().min(2, "Company name is required"),
@@ -63,7 +64,9 @@ export default function SponsorshipApplyPage() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-[var(--void)] flex items-center justify-center p-6 pb-20 overflow-hidden relative">
+      <PageWrapper>
+        <Navbar />
+        <div className="min-h-screen bg-[var(--void)] flex items-center justify-center p-6 pb-20 overflow-hidden relative">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[var(--electric)]/5 blur-[100px] -z-10" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[var(--ember)]/5 blur-[100px] -z-10" />
         
@@ -88,12 +91,16 @@ export default function SponsorshipApplyPage() {
             </Button>
           </div>
         </motion.div>
-      </div>
+        </div>
+        <Footer />
+      </PageWrapper>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[var(--void)] p-6 pb-20 overflow-hidden relative">
+    <PageWrapper>
+      <Navbar />
+      <div className="min-h-screen bg-[var(--void)] p-6 pb-20 overflow-hidden relative">
       {/* Ambient background */}
       <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[var(--electric)]/5 blur-[120px] -z-10 animate-pulse" />
       <div className="fixed inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-[0.03] pointer-events-none" />
@@ -245,5 +252,7 @@ export default function SponsorshipApplyPage() {
 
       </div>
     </div>
+    <Footer />
+  </PageWrapper>
   );
 }
