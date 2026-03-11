@@ -17,6 +17,13 @@ export async function apiCall<T = any>(
     ...options.headers,
   };
 
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('token');
+    if (token) {
+      defaultHeaders['Authorization'] = `Bearer ${token}`;
+    }
+  }
+
   const response = await fetch(url, {
     ...options,
     headers: defaultHeaders,

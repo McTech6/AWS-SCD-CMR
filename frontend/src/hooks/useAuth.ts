@@ -24,7 +24,14 @@ export function useAuth() {
         const response = await login(email, password);
         
         if (response.success && response.data) {
-          setUser(response.data);
+          // Extract user from data.user, since response.data from login is { user, token, sessionToken }
+          const loggedInUser = response.data.user || response.data;
+          setUser(loggedInUser);
+          
+          if (response.data.token && typeof window !== 'undefined') {
+            localStorage.setItem('token', response.data.token);
+          }
+          
           toast.success('Logged in successfully!');
           return true;
         }
@@ -47,7 +54,13 @@ export function useAuth() {
         const response = await register(email, name, password);
         
         if (response.success && response.data) {
-          setUser(response.data);
+          const registeredUser = response.data.user || response.data;
+          setUser(registeredUser);
+          
+          if (response.data.token && typeof window !== 'undefined') {
+            localStorage.setItem('token', response.data.token);
+          }
+          
           toast.success('Registered successfully!');
           return true;
         }
@@ -67,6 +80,9 @@ export function useAuth() {
     try {
       await logout();
       setUser(null);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('token');
+      }
       toast.success('Logged out successfully');
       router.push('/login');
     } catch (error) {
