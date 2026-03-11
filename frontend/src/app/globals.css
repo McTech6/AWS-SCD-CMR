@@ -1,0 +1,211 @@
+@import "tailwindcss";
+
+/* ─────────────────────────────────────────────────────────────
+   AWS Cloud Club — Design Tokens (Editorial Dark Luxury)
+   ───────────────────────────────────────────────────────────── */
+
+@theme {
+  /* Colors */
+  --color-void: #050508;
+  --color-surface: #0d0d14;
+  --color-panel: #12121c;
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-electric: #5b6ef5;
+  --color-electric-light: #8b9aff;
+  --color-ember: #ff6b35;
+  --color-text-1: #eeeef5;
+  --color-text-2: #7b7b9a;
+  --color-text-3: #3a3a5c;
+  --color-success: #22c55e;
+  --color-warning: #eab308;
+  --color-error: #ef4444;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-glow: 0 0 24px rgba(91, 110, 245, 0.25);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.3);
+  --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
+
+  /* Font families */
+  --font-display: var(--font-epilogue), system-ui, sans-serif;
+  --font-body: var(--font-plus-jakarta), system-ui, sans-serif;
+  --font-mono: var(--font-fira-code), ui-monospace, monospace;
+}
+
+/* Base layer */
+@layer base {
+  :root {
+    --void: #050508;
+    --surface: #0d0d14;
+    --panel: #12121c;
+    --border: rgba(255, 255, 255, 0.06);
+    --electric: #5b6ef5;
+    --electric-light: #8b9aff;
+    --ember: #ff6b35;
+    --text-1: #eeeef5;
+    --text-2: #7b7b9a;
+    --text-3: #3a3a5c;
+    --success: #22c55e;
+    --warning: #eab308;
+    --error: #ef4444;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--void);
+    color: var(--text-1);
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-body {
+    font-family: var(--font-body);
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  /* 3D Transform Utilities */
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+
+  /* Marquee Animation */
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    animation: marquee 20s linear infinite;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     Phase 7 — Motion & Micro-Interactions
+     ───────────────────────────────────────────────────────────── */
+
+  /* Global Card Hover */
+  .motion-card {
+    transition: transform 200ms ease, box-shadow 200ms ease;
+  }
+
+  .motion-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), var(--shadow-glow);
+  }
+
+  /* Global Button Active Scale */
+  .motion-btn {
+    transition: transform 150ms ease, filter 150ms ease;
+  }
+
+  .motion-btn:active {
+    transform: scale(0.97);
+  }
+
+  /* Skeleton Shimmer */
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .animate-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+        transparent,
+        rgba(255, 255, 255, 0.05),
+        transparent);
+    animation: shimmer 1.5s infinite;
+  }
+
+  /* Success Path Draw */
+  @keyframes pathDraw {
+    from {
+      stroke-dashoffset: 100;
+    }
+
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  .animate-path-draw {
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    animation: pathDraw 600ms ease-out forwards;
+  }
+
+  /* Input Ring */
+  .motion-input {
+    transition: box-shadow 150ms ease, border-color 150ms ease;
+  }
+
+  .motion-input:focus {
+    box-shadow: 0 0 0 2px var(--electric);
+    outline: none;
+  }
+}
