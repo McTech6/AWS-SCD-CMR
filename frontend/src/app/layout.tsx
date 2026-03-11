@@ -35,6 +35,8 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${epilogue.variable} ${plusJakarta.variable} ${firaCode.variable}`}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
     >
       <body className="font-body antialiased">
         {children}
