@@ -93,13 +93,13 @@ const SpeakerCard = ({
 
                     <div className="flex w-full flex-col gap-3">
                         {linkedin && (
-                            <Button variant="outline" size="md" className="w-full" asChild>
+                            <Button variant="outline" size="default" className="w-full" asChild>
                                 <a href={linkedin} target="_blank" rel="noopener noreferrer">
                                     <Linkedin size={16} className="mr-2" /> LinkedIn Profile
                                 </a>
                             </Button>
                         )}
-                        <Button variant="ghost" size="md" className="w-full" asChild>
+                        <Button variant="ghost" size="default" className="w-full" asChild>
                             <Link href="/speakers">
                                 View All Details <ExternalLink size={14} className="ml-2" />
                             </Link>
