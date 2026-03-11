@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f4f7f9; color: #334155; line-height: 1.6; }
+        .wrapper { width: 100%; padding: 40px 0; background: #f4f7f9; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.05); }
+        .header {
+            background: linear-gradient(135deg, #FF9900 0%, #FF6B00 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+        .header-logo {
+            background: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #FF9900;
+        }
+        .header-title { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; opacity: 0.9; }
+        .content { padding: 40px 30px; }
+        .greeting { font-size: 20px; font-weight: 700; color: #1e293b; margin-bottom: 16px; }
+        .message-body { font-size: 16px; color: #475569; margin-bottom: 30px; white-space: pre-wrap; }
+        .cta-container { text-align: center; margin: 30px 0; }
+        .cta-button {
+            display: inline-block;
+            background: #FF9900;
+            color: white !important;
+            padding: 14px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .footer {
+            background: #f8fafc;
+            padding: 30px;
+            text-align: center;
+            font-size: 12px;
+            color: #94a3b8;
+            border-top: 1px solid #edf2f7;
+        }
+        .footer p { margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-logo">☁️</div>
+                <div class="header-title">AWS Student Community Day</div>
+            </div>
+
+            <!-- Content -->
+            <div class="content">
+                <div class="greeting">Hello {{name}},</div>
+                
+                <div class="message-body">
+{{content}}
+                </div>
+
+                <div class="cta-container">
+                    <a href="https://aws-community-day.cm" class="cta-button">Visit Community Portal</a>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p><strong>AWS Student Community Day Cameroon 2026</strong></p>
+                <p>Yaoundé, Cameroon • March 15, 2026</p>
+                <p style="margin-top: 15px;">You received this email because you are a registered participant or speaker for the upcoming community day.</p>
+                <p>&copy; 2026 AWS Cloud Club. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

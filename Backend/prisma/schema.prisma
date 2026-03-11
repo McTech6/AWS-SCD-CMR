@@ -1,6 +1,5 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"  // Required in Prisma 7
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -28,6 +27,12 @@ enum TShirtSize {
 }
 
 enum SpeakerStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum SponsorStatus {
   PENDING
   APPROVED
   REJECTED
@@ -283,18 +288,22 @@ model EmailRecipient {
 }
 
 model Sponsor {
-  id        String       @id @default(cuid())
-  name      String
-  logoUrl   String
-  logoKey   String?
-  website   String?
-  tier      SponsorTier?
-  sortOrder Int          @default(0)
-  visible   Boolean      @default(true)
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  id           String        @id @default(cuid())
+  name         String
+  logoUrl      String
+  logoKey      String?
+  website      String?
+  contactName  String?
+  contactEmail String?
+  tier         SponsorTier?
+  status       SponsorStatus @default(PENDING)
+  sortOrder    Int           @default(0)
+  visible      Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   @@index([tier])
+  @@index([status])
   @@map("sponsors")
 }
 
@@ -329,4 +338,22 @@ model EventConfig {
   updatedAt        DateTime @updatedAt
 
   @@map("event_config")
+}
+
+model Organizer {
+  id           String   @id @default(cuid())
+  name         String
+  role         String   @default("Cloud Club Captain")
+  club         String?
+  bio          String?
+  imageUrl     String?
+  linkedinUrl  String?
+  twitterUrl   String?
+  githubUrl    String?
+  sortOrder    Int      @default(0)
+  visible      Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("organizers")
 }

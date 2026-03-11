@@ -23,15 +23,28 @@ export const sendEmails = async (req, res, next) => {
     // resolve recipients
     let recipients = [];
     if (target === 'ATTENDEES' || target === 'BOTH') {
-      const attendees = await prisma.attendee.findMany({ include: { user: true } });
-      recipients.push(...attendees.map(a => ({ email: a.user.email, name: a.user.name, relatedId: a.id })));
+      const attendees = await prisma.attendee.findMany({ 
+        include: { user: true } 
+      });
+      recipients.push(...attendees.map(a => ({ 
+        email: a.user.email, 
+        name: a.user.name, 
+        relatedId: a.id 
+      })));
     }
     if (target === 'SPEAKERS' || target === 'BOTH') {
-      const speakers = await prisma.speaker.findMany({ include: { user: true } });
-      recipients.push(...speakers.map(s => ({ email: s.user.email, name: s.user.name, relatedId: s.id })));
+      const speakers = await prisma.speaker.findMany({ 
+        where: { status: 'APPROVED' },
+        include: { user: true } 
+      });
+      recipients.push(...speakers.map(s => ({ 
+        email: s.user.email, 
+        name: s.user.name, 
+        relatedId: s.id 
+      })));
     }
     if (target === 'CUSTOM') {
-      recipients = customEmails.map(e => ({ email: e, name: '' }));
+      recipients = customEmails.map(e => ({ email: e, name: 'Partner' }));
     }
 
     // send sequentially (simple implementation)

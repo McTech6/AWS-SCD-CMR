@@ -25,7 +25,7 @@ const getTransporter = () => {
 
 const templatesDir = path.resolve(process.cwd(), 'lib', 'email', 'templates');
 
-const renderTemplate = (templateName, variables = {}) => {
+export const renderTemplate = (templateName, variables = {}) => {
   const filePath = path.join(templatesDir, `${templateName}.html`);
   if (!fs.existsSync(filePath)) return '';
   let content = fs.readFileSync(filePath, 'utf8');

@@ -88,15 +88,28 @@ export const eventConfigUpdateSchema = z.object({
 }).partial();
 
 export const sponsorSchema = z.object({
-    name: z.string().min(2, 'Name is required'),
+    name: z.string().min(2, 'Company/Organization name is required'),
     logoUrl: z.string().url('Invalid Logo URL'),
     website: z.string().url('Invalid Website URL').optional().or(z.literal('')),
+    contactName: z.string().optional(),
+    contactEmail: z.string().email().optional(),
     tier: z.enum(['GOLD', 'SILVER', 'COMMUNITY']).optional(),
+    status: z.enum(['PENDING', 'APPROVED', 'REJECTED']).default('APPROVED'),
     sortOrder: z.number().default(0),
     visible: z.boolean().default(true),
 });
 
-export const sponsorUpdateSchema = sponsorSchema.partial();
+export const sponsorApplySchema = z.object({
+    name: z.string().min(2, 'Company/Organization name is required'),
+    contactName: z.string().min(2, 'Contact person name is required'),
+    contactEmail: z.string().email('Invalid contact email'),
+    website: z.string().url('Invalid Website URL').min(1, 'Website is required'),
+    logoUrl: z.string().url('Invalid Logo URL').min(1, 'Logo URL is required'),
+});
+
+export const sponsorUpdateSchema = sponsorSchema.partial().extend({
+    status: z.enum(['PENDING', 'APPROVED', 'REJECTED']).optional(),
+});
 
 // --- file upload schemas (Phase 4)
 export const presignedUrlSchema = z.object({
@@ -111,3 +124,18 @@ export const uploadConfirmSchema = z.object({
     folder: z.enum(['speaker-photos', 'certificates', 'sponsors']),
     relatedId: z.string().optional(),
 });
+
+export const organizerSchema = z.object({
+    name: z.string().min(2, 'Name is required'),
+    role: z.string().default('Cloud Club Captain'),
+    club: z.string().optional(),
+    bio: z.string().optional(),
+    imageUrl: z.string().url('Invalid Image URL').optional().or(z.literal('')),
+    linkedinUrl: z.string().url('Invalid LinkedIn URL').optional().or(z.literal('')),
+    twitterUrl: z.string().url('Invalid Twitter URL').optional().or(z.literal('')),
+    githubUrl: z.string().url('Invalid GitHub URL').optional().or(z.literal('')),
+    sortOrder: z.number().default(0),
+    visible: z.boolean().default(true),
+});
+
+export const organizerUpdateSchema = organizerSchema.partial();

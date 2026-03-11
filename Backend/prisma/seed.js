@@ -47,6 +47,65 @@ async function main() {
         },
     });
     console.log('✅ Initial event config created');
+    
+    // Initial Sponsors
+    console.log('Seeding sponsors...');
+    const sponsors = [
+        {
+            name: "AWS",
+            logoUrl: "https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg",
+            tier: "GOLD",
+            website: "https://aws.amazon.com",
+            sortOrder: 1
+        },
+        {
+            name: "Intel",
+            logoUrl: "https://upload.wikimedia.org/wikipedia/commons/c/c9/Intel-logo.svg",
+            tier: "GOLD",
+            website: "https://intel.com",
+            sortOrder: 2
+        },
+        {
+            name: "NVIDIA",
+            logoUrl: "https://upload.wikimedia.org/wikipedia/commons/2/21/Nvidia_logo.svg",
+            tier: "GOLD",
+            website: "https://nvidia.com",
+            sortOrder: 3
+        },
+        {
+            name: "MongoDB",
+            logoUrl: "https://upload.wikimedia.org/wikipedia/commons/9/93/MongoDB_Logo.svg",
+            tier: "SILVER",
+            website: "https://mongodb.com",
+            sortOrder: 1
+        },
+        {
+            name: "Datadog",
+            logoUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e9/Datadog_logo.svg",
+            tier: "SILVER",
+            website: "https://datadog.com",
+            sortOrder: 2
+        },
+        {
+            name: "GitHub",
+            logoUrl: "https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg",
+            tier: "COMMUNITY",
+            website: "https://github.com",
+            sortOrder: 1
+        }
+    ];
+
+    for (const sponsor of sponsors) {
+        await prisma.sponsor.upsert({
+            where: { id: `seed-${sponsor.name.toLowerCase()}` },
+            update: sponsor,
+            create: {
+                id: `seed-${sponsor.name.toLowerCase()}`,
+                ...sponsor
+            }
+        });
+    }
+    console.log('✅ Sponsors seeded');
 }
 
 main()
