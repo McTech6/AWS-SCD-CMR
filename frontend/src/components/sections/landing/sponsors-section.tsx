@@ -60,7 +60,7 @@ export const SponsorsSection = () => {
 
     if (isLoading) {
         return (
-            <Section id="sponsors" className="py-24 lg:py-32 flex flex-col items-center justify-center">
+            <Section id="sponsors" className="py-16 lg:py-20 flex flex-col items-center justify-center">
                 <div className="animate-pulse space-y-12 w-full">
                     <div className="h-4 bg-white/5 rounded w-24 mx-auto" />
                     <div className="h-12 bg-white/5 rounded w-1/2 mx-auto" />
@@ -79,7 +79,7 @@ export const SponsorsSection = () => {
     }
 
     return (
-        <Section id="sponsors" className="py-24 lg:py-32 relative overflow-hidden">
+        <Section id="sponsors" className="py-16 lg:py-20 relative overflow-hidden">
             {/* Ambient Background Elements */}
             <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[var(--electric)]/5 blur-[120px] rounded-full pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[var(--ember)]/5 blur-[100px] rounded-full pointer-events-none" />

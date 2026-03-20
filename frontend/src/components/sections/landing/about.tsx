@@ -28,7 +28,7 @@ const FeatureCard = ({
 
 export const About = () => {
     return (
-        <Section className="relative overflow-visible py-24 lg:py-32">
+        <Section className="relative overflow-visible py-16 lg:py-20">
             {/* Decorative gradient blur */}
             <div className="absolute -left-20 top-0 h-[500px] w-[500px] rounded-full bg-[var(--electric)]/5 blur-[120px] pointer-events-none" />
 
@@ -45,7 +45,7 @@ export const About = () => {
                         01. The Mission
                     </div>
 
-                    <h2 className="mt-8 font-display text-4xl font-extrabold leading-tight tracking-tight text-[var(--text-1)] sm:text-5xl lg:text-6xl">
+                    <h2 className="mt-8 font-display text-3xl font-extrabold leading-tight tracking-tight text-[var(--text-1)] sm:text-5xl lg:text-6xl">
                         Democratizing <span className="text-gradient bg-gradient-to-r from-[var(--electric)] to-[var(--electric-light)] bg-clip-text text-transparent italic underline decoration-[var(--ember)]/30 decoration-wavy underline-offset-8">Cloud Mastery.</span>
                     </h2>
 
@@ -62,7 +62,7 @@ export const About = () => {
                         </p>
                     </div>
 
-                    <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <FeatureCard
                             icon={Zap}
                             title="Hands-on Learning"
@@ -75,7 +75,7 @@ export const About = () => {
                         />
                     </div>
 
-                    <div className="mt-12 flex items-center gap-6">
+                    <div className="mt-8 flex items-center gap-6">
                         <Button variant="outline" size="lg" asChild className="group">
                             <Link href="/register">
                                 Learn our story
@@ -135,7 +135,7 @@ export const About = () => {
                 </motion.div>
             </div>
 
-            <Divider className="mt-24 sm:mt-32 opacity-20" />
+            <Divider className="mt-12 sm:mt-16 opacity-20" />
         </Section>
     );
 };

@@ -22,8 +22,8 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
-  title: "AWS Student Community Day",
-  description: "Student Community Day - Powered by AWS Cloud Club",
+  title: "GENESIS | AWS Student Community Day Cameroon 2026",
+  description: "Igniting Cameroon's Cloud Journey – The First Student Community Day.",
 };
 
 export default function RootLayout({

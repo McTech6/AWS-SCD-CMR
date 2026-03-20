@@ -73,8 +73,8 @@ export default function AdminLoginPage() {
                 className="w-full max-w-md z-10"
             >
                 <header className="mb-10 text-center">
-                    <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--electric)] text-white shadow-glow mb-6">
-                        <Cloud size={32} />
+                    <div className="inline-flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-[var(--border)] bg-white p-2 mb-6 shadow-glow">
+                        <img src="/images (1).png" alt="Logo" className="h-full w-full object-contain rounded-full" />
                     </div>
                     <Badge variant="outline" className="mb-4 uppercase tracking-[0.2em] text-[var(--electric-light)] underline decoration-[var(--electric)]/20 underline-offset-4">Internal Access Only</Badge>
                     <h1 className="font-display text-4xl font-extrabold text-[var(--text-1)]">Admin Portal</h1>

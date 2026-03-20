@@ -87,7 +87,7 @@ export default function OrganizersPage() {
                                     
                                     <div className="relative h-full bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-3xl)] overflow-hidden flex flex-col transition-all duration-500 group-hover:-translate-y-2">
                                         {/* Image Container */}
-                                        <div className="relative aspect-[4/5] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+                                        <div className="relative aspect-[4/5] overflow-hidden group-hover:bg-[var(--void)] transition-all duration-700">
                                             {organizer.imageUrl ? (
                                                 <img 
                                                     src={organizer.imageUrl} 

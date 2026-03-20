@@ -1,83 +1,77 @@
 "use client";
 
 import * as React from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Rocket } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
 /**
- * Animated Particle Mesh Background (Pure CSS approach)
+ * Animated Particle Mesh Background engineered for Light/Professional Theme
  */
 const ParticleField = () => {
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {/* Cinematic Background Image */}
+            {/* Cinematic Background Image (Multiply works great on white) */}
             <div
-                className="absolute inset-0 opacity-20 contrast-125 saturate-50 mix-blend-screen"
+                className="absolute inset-0 opacity-[0.04] mix-blend-multiply saturate-0"
                 style={{
                     backgroundImage: `url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2000&auto=format&fit=crop')`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                 }}
             />
+            {/* Dynamic Connecting Grid */}
             <div
-                className="absolute inset-0 opacity-[0.15]"
+                className="absolute inset-0 opacity-[0.2] mix-blend-multiply"
                 style={{
                     backgroundImage: `radial-gradient(circle at 2px 2px, var(--electric) 1px, transparent 0)`,
                     backgroundSize: "40px 40px",
                 }}
             />
-            {/* Radial Vignette */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,var(--void)_80%)]" />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--void)]/50 to-[var(--void)]" />
-            {/* Dynamic particles using Framer Motion */}
-            {[...Array(20)].map((_, i) => (
-                <motion.div
-                    key={i}
-                    className="absolute h-1 w-1 rounded-full bg-[var(--electric)] opacity-30 shadow-[0_0_8px_var(--electric)]"
-                    initial={{
-                        x: Math.random() * 100 + "%",
-                        y: Math.random() * 100 + "%",
-                        opacity: 0.1
-                    }}
-                    animate={{
-                        y: [null, "-100%"],
-                        opacity: [0.1, 0.4, 0.1],
-                    }}
-                    transition={{
-                        duration: Math.random() * 10 + 10,
-                        repeat: Infinity,
-                        ease: "linear",
-                        delay: Math.random() * 5,
-                    }}
-                />
-            ))}
-        </div>
-    );
-};
-
-/**
- * Flip Countdown (Simplified version for initial build)
- */
-const CountdownItem = ({ value, label }: { value: number; label: string }) => {
-    return (
-        <div className="flex flex-col items-center">
-            <div className="relative h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 overflow-hidden rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--panel)]">
-                <div className="absolute inset-0 flex items-center justify-center font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[var(--electric-light)]">
-                    {String(value).padStart(2, "0")}
-                </div>
-                <div className="absolute inset-x-0 top-1/2 h-px bg-[var(--border)] opacity-30" />
-            </div>
-            <span className="mt-2 text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[var(--text-3)]">
-                {label}
-            </span>
+            {/* Vignette focused fading */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--void)]/70 to-[var(--void)]" />
+            
+            {/* Hardcore Flowing Particles */}
+            {[...Array(30)].map((_, i) => {
+                const size = Math.random() * 6 + 2;
+                return (
+                    <motion.div
+                        key={i}
+                        className="absolute rounded-full bg-gradient-to-t from-[var(--ember)] to-[var(--electric)] shadow-[0_0_12px_var(--electric)]"
+                        style={{
+                            width: size + "px",
+                            height: size + "px",
+                            left: Math.random() * 100 + "%",
+                            top: Math.random() * 100 + 20 + "%",
+                        }}
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{
+                            y: [0, Math.random() * -300 - 150],
+                            x: [0, Math.random() * 100 - 50],
+                            opacity: [0, 0.7, 0],
+                            scale: [0, 1.5, 0],
+                            filter: ["hue-rotate(0deg)", "hue-rotate(30deg)", "hue-rotate(0deg)"]
+                        }}
+                        transition={{
+                            duration: Math.random() * 6 + 4,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: Math.random() * 5,
+                        }}
+                    />
+                );
+            })}
         </div>
     );
 };
 
 export const Hero = () => {
+    const { scrollY } = useScroll();
+    const yTransform = useTransform(scrollY, [0, 500], [0, 150]);
+    const opacityTransform = useTransform(scrollY, [0, 300], [1, 1]); // Keep fully visible
+
     const [timeLeft, setTimeLeft] = React.useState({
         days: 0,
         hours: 0,
@@ -86,9 +80,7 @@ export const Hero = () => {
     });
 
     React.useEffect(() => {
-        // Set target date for the event (e.g., 30 days from now)
-        const targetDate = new Date();
-        targetDate.setDate(targetDate.getDate() + 45);
+        const targetDate = new Date("2026-05-23T09:00:00");
 
         const timer = setInterval(() => {
             const now = new Date();
@@ -105,117 +97,166 @@ export const Hero = () => {
         return () => clearInterval(timer);
     }, []);
 
-    const headline = "Architecting the Future of Cloud.";
+    const headline = "GENESIS: From Campus to Cloud";
     const words = headline.split(" ");
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1, delayChildren: 0.3 }
+        }
+    };
+
+    const wordVariants = {
+        hidden: { opacity: 0, y: 50, rotateX: -60, filter: "blur(10px)" },
+        visible: { 
+            opacity: 1, 
+            y: 0, 
+            rotateX: 0, 
+            filter: "blur(0px)",
+            transition: { type: "spring" as const, stiffness: 100, damping: 15 }
+        }
+    };
+
     return (
-        <section className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[var(--void)] pt-16">
+        <section className="relative flex min-h-[90svh] w-full flex-col items-center justify-center overflow-hidden bg-[var(--void)] pt-24 pb-12 perspective-1000">
             <ParticleField />
 
-            <div className="container relative z-10 mx-auto flex flex-col items-center px-6 text-center">
-                {/* Badge Label */}
+            <motion.div 
+                style={{ y: yTransform, opacity: opacityTransform }}
+                className="container relative z-10 mx-auto flex flex-col items-center px-6 text-center"
+            >
+                {/* Elite Badge Header */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="mb-8 overflow-hidden rounded-full border border-[var(--border)] bg-[var(--surface)]/50 px-4 py-1.5 backdrop-blur-sm"
+                    initial={{ opacity: 0, scale: 0.5, y: -20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                    className="mb-8 overflow-hidden rounded-full border border-[var(--electric)]/30 bg-[var(--surface)]/80 px-5 py-2 shadow-glow backdrop-blur-md hover:border-[var(--electric)] transition-colors duration-300 group cursor-default"
                 >
-                    <span className="text-xs font-medium tracking-tight text-[var(--text-2)]">
-                        <span className="text-[var(--electric)]">☁</span> Student Community Day · Powered by AWS Cloud Club
+                    <span className="flex items-center gap-2 text-xs sm:text-sm font-bold tracking-tight text-[var(--text-1)]">
+                        <motion.span 
+                            animate={{ rotate: [0, 15, -15, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
+                            className="text-[var(--ember)]"
+                        >
+                            <Rocket size={16} />
+                        </motion.span>
+                        Student Community Day · <span className="text-[var(--electric)]">Powered by AWS Cloud Club</span>
                     </span>
                 </motion.div>
 
-                {/* Staggered Headline Reveal */}
-                <h1 className="max-w-4xl font-display text-4xl font-extrabold tracking-tight text-[var(--text-1)] sm:text-6xl lg:text-7xl xl:text-8xl px-4">
+                {/* Hardcore Staggered 3D Headline Reveal */}
+                <motion.h1 
+                    className="max-w-4xl font-display text-4xl font-black tracking-tighter text-[var(--text-1)] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl px-4 leading-[1.1] preserve-3d"
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                >
                     {words.map((word, i) => (
                         <motion.span
                             key={i}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.1 * i, duration: 0.8, ease: "easeOut" }}
-                            className="inline-block mr-[0.25em]"
+                            variants={wordVariants}
+                            className={cn(
+                                "inline-block mr-[0.25em]",
+                                (word === "GENESIS:" || word === "Cloud") && "text-transparent bg-clip-text bg-gradient-to-br from-[var(--electric)] to-[var(--ember)] filter drop-shadow-[0_0_15px_rgba(255,153,0,0.4)]"
+                            )}
                         >
                             {word}
                         </motion.span>
                     ))}
-                </h1>
+                </motion.h1>
 
-                {/* Event Subtext */}
+                {/* Event Subtext with fade-up */}
                 <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.2, duration: 1 }}
-                    className="mt-6 max-w-2xl text-lg text-[var(--text-2)] sm:text-xl px-4"
+                    initial={{ opacity: 0, y: 30 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1, duration: 1, ease: "easeOut" }}
+                    className="mt-8 max-w-2xl text-lg text-[var(--text-2)] sm:text-xl md:text-2xl font-medium px-4 leading-relaxed"
                 >
-                    Join 500+ students for a full day of hands-on workshops,
-                    expert sessions, and cloud innovation.
-                    <span className="block mt-4 font-black text-[var(--text-1)] uppercase tracking-[0.2em] text-sm sm:text-base bg-white/5 py-3 rounded-full border border-white/10 backdrop-blur-md">
-                        XX Month XX · AWS Cloud Headquarters
+                    Igniting Cameroon's Cloud Journey – The First Student Community Day.
+                    <span className="block mt-6 flex items-center justify-center">
+                        <span className="font-extrabold text-[var(--electric)] uppercase tracking-[0.25em] text-xs sm:text-sm bg-[var(--surface)]/60 px-6 py-3 rounded-full border border-[var(--border)] shadow-sm backdrop-blur-md mix-blend-luminosity hover:mix-blend-normal transition-all duration-300 hover:scale-105 cursor-pointer">
+                            May 23, 2026 · Douala, Cameroon
+                        </span>
                     </span>
                 </motion.p>
 
-                {/* CTA Section */}
+                {/* Pulsing CTA Section */}
                 <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.5, duration: 0.8 }}
-                    className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 w-full px-6"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 1.3, duration: 0.6, type: "spring" }}
+                    className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 w-full px-6"
                 >
-                    <Button variant="ember" size="lg" asChild className="w-full sm:w-auto px-12 h-14 rounded-full shadow-glow font-bold">
-                        <Link href="/register">Register — It's Free</Link>
-                    </Button>
-                    <Button variant="ghost" size="lg" asChild className="w-full sm:w-auto px-12 h-14 rounded-full border border-white/10 font-bold hover:bg-white/5">
+                    <div className="relative group w-full sm:w-auto">
+                        <div className="absolute inset-0 rounded-full bg-[var(--electric)] opacity-50 blur-xl group-hover:opacity-100 group-hover:blur-2xl transition-all duration-500 will-change-transform" />
+                        <Button variant="ember" size="lg" asChild className="relative w-full sm:w-auto px-12 h-16 text-lg rounded-full font-black uppercase tracking-widest motion-btn overflow-hidden">
+                            <Link href="/register">
+                                <span className="relative z-10 flex items-center gap-2">
+                                    Register — It's Free
+                                </span>
+                                {/* Shimmer sweep effect */}
+                                <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent group-hover:animate-[shimmer_1.5s_infinite]" />
+                            </Link>
+                        </Button>
+                    </div>
+                    
+                    <Button variant="outline" size="lg" asChild className="w-full sm:w-auto px-12 h-16 text-lg rounded-full font-bold hover:bg-[var(--electric)] hover:text-white hover:border-transparent transition-all duration-300 border-[var(--border)] bg-[var(--surface)]/50 backdrop-blur-sm motion-btn">
                         <Link href="/speak">Apply to Speak</Link>
                     </Button>
                 </motion.div>
 
-                {/* Countdown Timer */}
+                {/* Hardcore Flipping Countdown Timer */}
                 <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 2, duration: 1 }}
-                    className="mt-20 flex gap-3 sm:gap-6 lg:gap-8 flex-wrap justify-center overflow-hidden"
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 1.6, duration: 0.8, type: "spring" }}
+                    className="mt-16 flex gap-4 sm:gap-6 lg:gap-10 flex-wrap justify-center overflow-visible preserve-3d"
                 >
-                    <div className="flex flex-col items-center">
-                        <div className="relative h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 overflow-hidden rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--panel)]">
-                            <div className="absolute inset-0 flex items-center justify-center font-display text-2xl sm:text-3xl lg:text-4xl font-black text-[var(--text-3)] opacity-20">XX</div>
-                        </div>
-                        <span className="mt-2 text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[var(--text-3)]">Days</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <div className="relative h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 overflow-hidden rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--panel)]">
-                            <div className="absolute inset-0 flex items-center justify-center font-display text-2xl sm:text-3xl lg:text-4xl font-black text-[var(--text-3)] opacity-20">XX</div>
-                        </div>
-                        <span className="mt-2 text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[var(--text-3)]">Hrs</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <div className="relative h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 overflow-hidden rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--panel)]">
-                            <div className="absolute inset-0 flex items-center justify-center font-display text-2xl sm:text-3xl lg:text-4xl font-black text-[var(--text-3)] opacity-20">XX</div>
-                        </div>
-                        <span className="mt-2 text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[var(--text-3)]">Min</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <div className="relative h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 overflow-hidden rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--panel)]">
-                            <div className="absolute inset-0 flex items-center justify-center font-display text-2xl sm:text-3xl lg:text-4xl font-black text-[var(--text-3)] opacity-20">XX</div>
-                        </div>
-                        <span className="mt-2 text-[10px] sm:text-xs font-mono uppercase tracking-widest text-[var(--text-3)]">Sec</span>
-                    </div>
+                    {Object.entries(timeLeft).map(([unit, value], index) => (
+                        <motion.div 
+                            key={unit} 
+                            className="flex flex-col items-center group perspective-1000"
+                            whileHover={{ scale: 1.1, rotateY: 10, rotateX: 10 }}
+                        >
+                            <div className="relative h-20 w-20 sm:h-24 sm:w-24 lg:h-32 lg:w-32 overflow-hidden rounded-2xl border-2 border-[var(--border)] bg-gradient-to-br from-[var(--surface)] to-[var(--panel)] shadow-elevated group-hover:border-[var(--electric)] transition-all duration-500">
+                                <motion.div 
+                                    className="absolute inset-0 flex items-center justify-center font-display text-4xl sm:text-5xl lg:text-7xl font-black text-[var(--electric)] drop-shadow-md"
+                                    key={value}
+                                    initial={{ rotateX: 90, opacity: 0 }}
+                                    animate={{ rotateX: 0, opacity: 1 }}
+                                    transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                                >
+                                    {String(value).padStart(2, "0")}
+                                </motion.div>
+                                <div className="absolute inset-x-0 top-1/2 h-px bg-[var(--border)] opacity-50 shadow-[0_0_10px_rgba(0,0,0,0.1)]" />
+                                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/5 to-transparent pointer-events-none" />
+                            </div>
+                            <span className="mt-4 text-[10px] sm:text-sm font-extrabold uppercase tracking-[0.3em] text-[var(--text-3)] group-hover:text-[var(--text-1)] transition-colors duration-300">
+                                {unit}
+                            </span>
+                        </motion.div>
+                    ))}
                 </motion.div>
-            </div>
+            </motion.div>
 
-            {/* Scroll indicator */}
+            {/* Bouncing Scroll indicator */}
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 3, duration: 1 }}
-                className="absolute bottom-10 left-1/2 -translate-x-1/2 text-[var(--text-3)]"
+                transition={{ delay: 2.2, duration: 1 }}
+                className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[var(--text-3)] hover:text-[var(--electric)] transition-colors duration-300 cursor-pointer"
             >
-                <motion.div
-                    animate={{ y: [0, 8, 0] }}
-                    transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                >
-                    <ChevronDown size={24} />
-                </motion.div>
+                <Link href="#about">
+                    <motion.div
+                        animate={{ y: [0, 12, 0] }}
+                        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+                        className="bg-[var(--surface)]/50 p-3 rounded-full border border-[var(--border)] backdrop-blur-md hover:scale-110 transition-transform"
+                    >
+                        <ChevronDown size={28} />
+                    </motion.div>
+                </Link>
             </motion.div>
         </section>
     );

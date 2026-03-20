@@ -73,9 +73,8 @@ export const registerAttendee = async (req, res, next) => {
 
         // compute registrationId same way as other endpoints (match frontend mock)
         const computeRegistrationId = (id) => {
-            const parts = id.split('-');
-            const second = parts[1] || '';
-            const suffix = (second.substring(0, 4).toUpperCase() || 'XXXX') + 'X7P';
+            // Uses the last 8 chars of CUID (random entropy) to generate a short, unique alphanumeric suffix
+            const suffix = id.slice(-8).toUpperCase();
             return `AWS-SCD-CMR-2026-${suffix}`;
         };
         const registrationId = computeRegistrationId(result.attendee.id);
@@ -264,9 +263,8 @@ export const getAttendeesForUI = async (req, res, next) => {
 
         // helper for registrationId matching frontend mock: take 4 chars of second UUID segment, append X7P
         const computeRegistrationId = (id) => {
-            const parts = id.split('-');
-            const second = parts[1] || '';
-            const suffix = (second.substring(0, 4).toUpperCase() || 'XXXX') + 'X7P';
+            // Uses the last 8 chars of CUID (random entropy) to generate a short, unique alphanumeric suffix
+            const suffix = id.slice(-8).toUpperCase();
             return `AWS-SCD-CMR-2026-${suffix}`;
         };
 
@@ -321,9 +319,8 @@ export const getAttendeeById = async (req, res, next) => {
 
         // compute registration id (same logic as frontend mock)
         const computeRegistrationId = (id) => {
-            const parts = id.split('-');
-            const second = parts[1] || '';
-            const suffix = (second.substring(0, 4).toUpperCase() || 'XXXX') + 'X7P';
+            // Uses the last 8 chars of CUID (random entropy) to generate a short, unique alphanumeric suffix
+            const suffix = id.slice(-8).toUpperCase();
             return `AWS-SCD-CMR-2026-${suffix}`;
         };
 
@@ -413,9 +410,8 @@ export const checkInAttendee = async (req, res, next) => {
 
         // compute registrationId helper
         const computeRegistrationId = (id) => {
-            const parts = id.split('-');
-            const second = parts[1] || '';
-            const suffix = (second.substring(0, 4).toUpperCase() || 'XXXX') + 'X7P';
+            // Uses the last 8 chars of CUID (random entropy) to generate a short, unique alphanumeric suffix
+            const suffix = id.slice(-8).toUpperCase();
             return `AWS-SCD-CMR-2026-${suffix}`;
         };
 

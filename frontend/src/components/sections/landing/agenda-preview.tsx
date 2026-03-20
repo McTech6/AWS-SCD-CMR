@@ -97,15 +97,15 @@ const EmptyAgenda = () => {
                     <Calendar size={40} className="text-[var(--electric)]" />
                 </div>
             </div>
-            
+
             <h3 className="font-display text-3xl font-extrabold text-[var(--text-1)] mb-4">
                 Schedule Coming Soon
             </h3>
             <p className="text-[var(--text-2)] max-w-md mb-8 leading-relaxed">
-                We're crafting an incredible lineup of sessions, workshops, and networking events. 
+                We're crafting an incredible lineup of sessions, workshops, and networking events.
                 The full agenda will be revealed soon!
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4">
                 <Button variant="primary" size="lg" asChild className="group">
                     <Link href="/register">
@@ -164,10 +164,10 @@ export const AgendaPreview = () => {
     }));
 
     return (
-        <Section id="agenda" className="py-24 lg:py-32 relative overflow-hidden">
+        <Section id="agenda" className="py-10 lg:py-14 relative overflow-hidden">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] bg-[var(--electric)]/5 blur-[120px] rounded-full pointer-events-none" />
 
-            <div className="mb-16 flex flex-col items-center justify-between gap-8 md:flex-row md:items-end relative z-10">
+            <div className="mb-10 flex flex-col items-center justify-between gap-8 md:flex-row md:items-end relative z-10">
                 <div className="max-w-2xl">
                     <Badge variant="outline" className="mb-4 uppercase tracking-[0.2em] text-[var(--electric-light)] px-4 py-1">The Schedule</Badge>
                     <h2 className="font-display text-4xl font-extrabold text-[var(--text-1)] sm:text-5xl lg:text-7xl tracking-tighter">
@@ -233,7 +233,7 @@ export const AgendaPreview = () => {
             </div>
 
             {!isLoading && agendaItems.length > 0 && (
-                <div className="mt-16 text-center">
+                <div className="mt-10 text-center">
                     <p className="text-[var(--text-3)] font-mono text-sm uppercase tracking-widest mb-8">Ready to join the cloud revolution?</p>
                     <Button variant="primary" size="lg" asChild className="group px-10 h-14 rounded-full shadow-glow">
                         <Link href="/register">
@@ -244,7 +244,7 @@ export const AgendaPreview = () => {
                 </div>
             )}
 
-            <Divider className="mt-24 sm:mt-32 opacity-10" />
+            <Divider className="mt-12 sm:mt-16 opacity-10" />
         </Section>
     );
 };

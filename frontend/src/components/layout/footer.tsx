@@ -38,8 +38,9 @@ export function Footer() {
           <div>
             <Link
               href="/"
-              className="font-display text-xl font-extrabold text-[var(--text-1)]"
+              className="flex items-center gap-2 font-display text-xl font-extrabold text-[var(--text-1)]"
             >
+              <img src="/images (1).png" alt="Logo" className="h-8 w-8 object-contain rounded-full bg-white p-0.5" />
               AWS Cloud Club
             </Link>
             <p className="mt-2 text-sm text-[var(--text-2)]">

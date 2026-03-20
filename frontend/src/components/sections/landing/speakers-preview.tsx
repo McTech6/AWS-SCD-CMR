@@ -48,11 +48,11 @@ const SpeakerCard = ({
                     </div>
 
                     {/* Speaker Avatar */}
-                    <div className="mx-auto mb-6 h-32 w-32 shrink-0 overflow-hidden rounded-full border-2 border-[var(--border)] group-hover:border-[var(--electric)] transition-all duration-300">
+                    <div className="mx-auto mb-6 h-40 w-40 shrink-0 overflow-hidden rounded-2xl border-2 border-[var(--border)] group-hover:border-[var(--electric)] transition-all duration-300 shadow-elevated">
                         <img
                             src={image}
                             alt={name}
-                            className="h-full w-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0 group-hover:scale-110"
+                            className="h-full w-full object-cover transition-all duration-500 group-hover:scale-110"
                         />
                     </div>
 
@@ -143,7 +143,7 @@ export const SpeakersPreview = () => {
 
     if (isLoading) {
         return (
-            <Section className="py-24 lg:py-32 overflow-visible">
+            <Section className="py-16 lg:py-20 overflow-visible">
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     {Array.from({ length: 4 }).map((_, i) => (
                         <div key={i} className="h-[400px] rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] animate-pulse" />
@@ -154,8 +154,8 @@ export const SpeakersPreview = () => {
     }
 
     return (
-        <Section className="py-24 lg:py-32 overflow-visible">
-            <div className="mb-16 flex flex-col items-center justify-between gap-6 md:flex-row md:items-end">
+        <Section className="py-16 lg:py-20 overflow-visible">
+            <div className="mb-10 flex flex-col items-center justify-between gap-6 md:flex-row md:items-end">
                 <div className="max-w-2xl text-center md:text-left">
                     <Badge variant="outline" className="mb-4 uppercase tracking-[0.2em] text-[var(--electric-light)] underline decoration-[var(--electric)]/20 underline-offset-4">Cloud Pioneers</Badge>
                     <h2 className="font-display text-4xl font-extrabold text-[var(--text-1)] sm:text-5xl lg:text-6xl">
@@ -180,7 +180,7 @@ export const SpeakersPreview = () => {
                 ))}
             </div>
 
-            <Divider className="mt-24 sm:mt-32 opacity-20" />
+            <Divider className="mt-8 sm:mt-12 opacity-20" />
         </Section>
     );
 };

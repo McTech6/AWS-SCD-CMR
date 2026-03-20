@@ -61,7 +61,7 @@ const TShirtSelector = ({
             type="button"
             onClick={() => onChange(size)}
             className={cn(
-              "flex h-12 w-12 items-center justify-center rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] text-sm font-bold transition-all duration-200",
+              "flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface)] text-xs sm:text-sm font-bold transition-all duration-200",
               value === size
                 ? "border-[var(--electric)] bg-[var(--electric)]/10 text-[var(--electric)] shadow-glow"
                 : "text-[var(--text-2)] hover:border-[var(--text-3)]",
@@ -179,19 +179,19 @@ export default function RegisterPage() {
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 border border-white/10 text-[var(--electric)] transition-transform group-hover:scale-110">
                     <Calendar size={18} />
                   </div>
-                  <span className="text-lg">XX Month XX</span>
+                  <span className="text-lg">May 23, 2026</span>
                 </div>
                 <div className="flex items-center gap-4 group">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 border border-white/10 text-[var(--electric)] transition-transform group-hover:scale-110">
                     <MapPin size={18} />
                   </div>
-                  <span className="text-lg">AWS Headquarters, Conference Level 4</span>
+                  <span className="text-lg">Douala, Cameroon</span>
                 </div>
                 <div className="flex items-center gap-4 group">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 border border-white/10 text-[var(--electric)] transition-transform group-hover:scale-110">
                     <Clock size={18} />
                   </div>
-                  <span className="text-lg">XX:XX AM — XX:XX PM EST</span>
+                  <span className="text-lg">09:00 AM — 05:00 PM</span>
                 </div>
               </div>
 
@@ -354,7 +354,7 @@ export default function RegisterPage() {
 
                   <div className="mt-12 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--panel)] p-4 w-full">
                     <span className="block text-xs font-mono uppercase tracking-[0.2em] text-[var(--text-3)] mb-2">Registration ID</span>
-                    <span className="font-mono text-[var(--electric-light)] tracking-tight">#AWS-CLUB-2026-X8R4</span>
+                    <span className="font-mono text-[var(--electric-light)] tracking-tight">AWS-SCD-CMR-2026-[UNIQUE_ID]</span>
                   </div>
                 </motion.div>
               )}

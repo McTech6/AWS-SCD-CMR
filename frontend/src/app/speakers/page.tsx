@@ -14,7 +14,6 @@ import {
   Skeleton,
   Divider
 } from "@/components/ui";
-import { PageWrapper, Navbar, Footer, Section } from "@/components/layout";
 import {
   Search,
   Linkedin,
@@ -25,8 +24,10 @@ import {
   ChevronRight,
   User,
   X,
-  LayoutGrid
+  LayoutGrid,
+  ArrowUpRight
 } from "lucide-react";
+import { PageWrapper, Navbar, Footer, Section } from "@/components/layout";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { getPublicSpeakers } from "@/lib/api";
@@ -57,50 +58,76 @@ const SpeakerCard = ({ speaker, onClick }: { speaker: Speaker, onClick: () => vo
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
       whileHover={{ y: -6 }}
-      className="group relative h-full cursor-pointer overflow-hidden rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-6 transition-all duration-300 hover:border-[var(--electric)]/50 hover:shadow-glow"
+      className="group relative h-full cursor-pointer overflow-hidden rounded-[var(--radius-3xl)] border border-[var(--border)] bg-[var(--surface)] transition-all duration-500 hover:border-[var(--electric)]/50 hover:shadow-elevated flex flex-col"
       onClick={onClick}
     >
-      <div className="flex flex-col gap-6">
-        <div className="flex items-start justify-between">
-          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border-2 border-[var(--border)] group-hover:border-[var(--electric)] transition-colors duration-300">
-            <img
-              src={speaker.image}
-              alt={speaker.name}
-              className="h-full w-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0 group-hover:scale-110"
-            />
-          </div>
-          <Badge variant="outline" className="bg-[var(--electric)]/5 px-3 py-1 text-[10px] uppercase tracking-widest text-[var(--electric-light)] border-[var(--electric)]/20">
+      {/* Image Header */}
+      <div className="relative aspect-[4/5] overflow-hidden group-hover:bg-[var(--void)] transition-all duration-700">
+        <img
+          src={speaker.image}
+          alt={speaker.name}
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+        />
+        
+        {/* Track Badge Overlay */}
+        <div className="absolute top-4 right-4 z-10">
+          <Badge variant="outline" className="bg-black/60 backdrop-blur-md px-3 py-1 text-[10px] uppercase font-mono tracking-widest text-[var(--electric-light)] border-[var(--electric)]/20 shadow-glow">
             {speaker.track}
           </Badge>
         </div>
-
-        <div className="space-y-2">
-          <h3 className="font-display text-xl font-bold text-[var(--text-1)] group-hover:text-[var(--electric-light)] transition-colors">
-            {speaker.name}
-          </h3>
-          <p className="text-sm font-medium text-[var(--text-2)]">
-            {speaker.role} <span className="text-[var(--text-3)]">@</span> {speaker.company}
-          </p>
-        </div>
-
-        <p className="line-clamp-2 text-sm leading-relaxed text-[var(--text-2)]">
-          {speaker.topic}
-        </p>
-
-        <div className="mt-auto pt-6 flex items-center justify-between border-t border-[var(--border)]/50">
-          <div className="flex gap-3 text-[var(--text-3)]">
-            {speaker.linkedin && <Linkedin size={16} className="hover:text-[var(--electric)] transition-colors" />}
-            {speaker.twitter && <Twitter size={16} className="hover:text-[var(--electric)] transition-colors" />}
-            {speaker.github && <Github size={16} className="hover:text-[var(--electric)] transition-colors" />}
-          </div>
-          <span className="flex items-center gap-1 text-xs font-mono font-bold uppercase tracking-tighter text-[var(--text-3)] group-hover:text-[var(--electric-light)]">
-            Details <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-          </span>
+        
+        {/* Overlay Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface)] via-transparent to-transparent opacity-80" />
+        
+        {/* Floating Socials */}
+        <div className="absolute bottom-6 right-6 flex flex-col gap-3 translate-x-12 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-500 delay-100">
+          {speaker.linkedin && (
+            <div className="h-10 w-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-[var(--electric)] transition-colors border border-white/10">
+              <Linkedin size={18} />
+            </div>
+          )}
+          {speaker.twitter && (
+            <div className="h-10 w-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-[#1da1f2] transition-colors border border-white/10">
+              <Twitter size={18} />
+            </div>
+          )}
+          {speaker.github && (
+            <div className="h-10 w-10 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-[#333] transition-colors border border-white/10">
+              <Github size={18} />
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Inner Glow Overlay */}
-      <div className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-[radial-gradient(circle_at_top_right,var(--electric-light)_0%,transparent_50%)]/5" />
+      {/* Profile Content */}
+      <div className="p-8 pb-10 flex-1 flex flex-col">
+        <div className="mb-4">
+          <h3 className="text-2xl font-black text-[var(--text-1)] tracking-tight group-hover:text-[var(--electric-light)] transition-colors">
+            {speaker.name}
+          </h3>
+          <div className="mt-2">
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[var(--electric-light)] mb-1">
+              {speaker.role}
+            </p>
+            <p className="text-xs text-[var(--text-3)] font-mono font-medium opacity-60">
+              {speaker.company}
+            </p>
+          </div>
+        </div>
+
+        <p className="text-sm text-[var(--text-2)] leading-relaxed font-medium opacity-70 mb-6 line-clamp-2">
+          {speaker.topic}
+        </p>
+
+        <div className="mt-auto pt-6 border-t border-[var(--border)] flex items-center justify-between">
+          <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-3)] flex items-center gap-2">
+            Session Intel <ChevronRight size={10} className="text-[var(--electric)]" />
+          </span>
+          <span className="text-[10px] font-mono font-bold text-[var(--text-3)] uppercase tracking-tighter group-hover:text-[var(--text-1)] transition-colors">
+            Profile Link <ArrowUpRight size={12} className="inline ml-1" />
+          </span>
+        </div>
+      </div>
     </motion.div>
   );
 };
@@ -317,7 +344,7 @@ export default function SpeakersPage() {
                   <img
                     src={selectedSpeaker.image}
                     className="h-full w-full object-cover blur-xl opacity-30 saturate-200"
-                    alt=""
+                    alt="Speaker detail banner logo background"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[var(--void)] via-[var(--void)]/50 to-transparent" />
 
@@ -325,7 +352,7 @@ export default function SpeakersPage() {
                     <motion.div
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="mb-6 h-28 w-28 overflow-hidden rounded-full border-4 border-[var(--electric)] shadow-glow"
+                      className="mb-6 h-28 w-28 overflow-hidden rounded-xl border-4 border-[var(--electric)] shadow-glow"
                     >
                       <img src={selectedSpeaker.image} className="h-full w-full object-cover" alt={selectedSpeaker.name} />
                     </motion.div>

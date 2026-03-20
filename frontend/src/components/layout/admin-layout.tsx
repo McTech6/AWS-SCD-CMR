@@ -55,8 +55,8 @@ export const AdminSidebar = ({
             {/* Brand */}
             <div className="p-6 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--electric)] text-white shadow-glow">
-                        <Cloud size={20} />
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--border)] bg-white p-1">
+                        <img src="/images (1).png" alt="Logo" className="h-full w-full object-contain rounded-full" />
                     </div>
                     {!isCollapsed && (
                         <span className="font-display font-bold text-[var(--text-1)] tracking-tight">

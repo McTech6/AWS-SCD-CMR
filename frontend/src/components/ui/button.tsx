@@ -11,7 +11,7 @@ const buttonVariants = cva(
         primary:
           "bg-[var(--electric)] text-white hover:bg-[var(--electric-light)] hover:shadow-[var(--shadow-glow)]",
         ghost:
-          "text-[var(--text-1)] hover:bg-white/5 hover:text-white",
+          "text-[var(--text-1)] hover:bg-[var(--electric)]/10 hover:text-[var(--electric)]",
         outline:
           "border border-[var(--border)] bg-transparent hover:bg-white/5 hover:border-[var(--electric)]",
         ember:
