@@ -32,7 +32,9 @@ import {
     Avatar,
     Divider,
     Checkbox,
-    Switch
+    Switch,
+    Skeleton,
+    Spinner
 } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
@@ -59,31 +61,67 @@ export default function AttendeesPage() {
     const [page, setPage] = React.useState(1);
     const itemsPerPage = 8;
 
-    const loadAttendees = React.useCallback(async () => {
+    const [allAttendees, setAllAttendees] = React.useState<any[]>([]);
+    const [isSyncing, setIsSyncing] = React.useState(false);
+
+    // Initial load and periodic sync
+    const syncAttendees = React.useCallback(async (showLoading = false) => {
         try {
-            setLoading(true);
-            const response = await getAttendeesForUI(page, itemsPerPage, search);
+            if (showLoading) setLoading(true);
+            else setIsSyncing(true);
+            
+            // Fetch all attendees (using a large limit for client-side search)
+            const response = await getAttendeesForUI(1, 2000, "");
             if (response.success) {
-                setAttendees(response.data);
+                setAllAttendees(response.data);
                 setTotal(response.meta.total);
             }
         } catch (error) {
-            toast.error("Failed to load attendees");
+            console.error("Sync failed:", error);
+            // toast.error("Background sync failed"); // Don't annoy with toast for bg sync
         } finally {
             setLoading(false);
+            setIsSyncing(false);
         }
-    }, [page, search]);
+    }, []);
 
     React.useEffect(() => {
-        // Debounce search
-        const timeout = setTimeout(() => {
-            loadAttendees();
-        }, 300);
-        return () => clearTimeout(timeout);
-    }, [loadAttendees]);
+        syncAttendees(true);
+        
+        // Background sync every 30 seconds
+        const interval = setInterval(() => {
+            syncAttendees(false);
+        }, 30000);
+        
+        return () => clearInterval(interval);
+    }, [syncAttendees]);
 
-    const totalPages = Math.ceil(total / itemsPerPage) || 1;
-    const paginatedAttendees = attendees;
+    // Instant local filtering
+    const filteredAttendees = React.useMemo(() => {
+        if (!search) return allAttendees;
+        const s = search.toLowerCase();
+        return allAttendees.filter(a => 
+            a.name.toLowerCase().includes(s) || 
+            a.email.toLowerCase().includes(s) || 
+            a.university.toLowerCase().includes(s) ||
+            a.registrationId.toLowerCase().includes(s)
+        );
+    }, [allAttendees, search]);
+
+    // Client-side pagination
+    const paginatedAttendees = React.useMemo(() => {
+        const start = (page - 1) * itemsPerPage;
+        return filteredAttendees.slice(start, start + itemsPerPage);
+    }, [filteredAttendees, page, itemsPerPage]);
+
+    // Total filtered count for pagination display
+    const filteredTotal = filteredAttendees.length;
+    const totalPages = Math.ceil(filteredTotal / itemsPerPage) || 1;
+
+    // Reset page to 1 when search query changes for instant results
+    React.useEffect(() => {
+        setPage(1);
+    }, [search]);
 
     const exportToCSV = async () => {
         try {
@@ -124,7 +162,7 @@ export default function AttendeesPage() {
             }
             toast.success(`Successfully checked in ${selectedIds.length} attendees`);
             setSelectedIds([]);
-            loadAttendees();
+            syncAttendees(true);
         } catch (error) {
             toast.error("Failed to check in some attendees");
         } finally {
@@ -143,7 +181,7 @@ export default function AttendeesPage() {
             }
             toast.success(`Successfully deleted ${selectedIds.length} attendees`);
             setSelectedIds([]);
-            loadAttendees();
+            syncAttendees(true);
         } catch (error) {
             toast.error("Failed to delete some attendees");
         } finally {
@@ -155,7 +193,7 @@ export default function AttendeesPage() {
         try {
             await checkInAttendee(id);
             toast.success(currentChecked ? "Checked out successfully" : "Checked in successfully");
-            loadAttendees();
+            syncAttendees(true);
         } catch (error) {
             toast.error("Failed to toggle check-in");
         }
@@ -193,6 +231,12 @@ export default function AttendeesPage() {
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
+                                {isSyncing && (
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                                        <span className="text-[10px] font-mono font-bold text-[var(--electric)] animate-pulse hidden sm:block">SYNCING</span>
+                                        <Spinner className="h-4 w-4 border-2 border-[var(--electric)]/20 border-t-[var(--electric)]" />
+                                    </div>
+                                )}
                             </div>
                             <div className="flex items-center gap-3 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
                                 <Button variant="outline" size="sm" className="border-[var(--border)] whitespace-nowrap text-xs gap-2">
@@ -253,81 +297,122 @@ export default function AttendeesPage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-[var(--border)]/50">
-                                {paginatedAttendees.map((attendee, i) => (
-                                    <motion.tr
-                                        key={attendee.id}
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        transition={{ delay: i * 0.05 }}
-                                        className="group hover:bg-white/10 transition-colors cursor-pointer"
-                                        onClick={() => router.push(`/admin/attendees/${attendee.id}`)}
-                                    >
-                                        <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
-                                            <Checkbox
-                                                checked={selectedIds.includes(attendee.id)}
-                                                onCheckedChange={() => toggleSelectOne(attendee.id)}
-                                            />
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="text-[10px] font-mono font-bold text-[var(--text-3)] bg-[var(--void)]/50 px-2 py-1 rounded border border-[var(--border)]">{attendee.registrationId}</span>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                                <Avatar name={attendee.name} className="h-8 w-8 text-[10px] border border-white/10 shadow-sm" />
-                                                <div className="flex flex-col">
-                                                    <span className="text-sm font-bold text-[var(--text-1)] group-hover:text-[var(--electric-light)] transition-colors">{attendee.name}</span>
-                                                    <span className="text-[10px] font-mono text-[var(--text-3)] lowercase">{attendee.email}</span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <span className="text-xs font-bold text-[var(--text-2)]">{attendee.university}</span>
-                                        </td>
-                                        <td className="px-6 py-4 text-center">
-                                            <Switch
-                                                checked={attendee.checkedIn}
-                                                onCheckedChange={() => handleSingleCheckInToggle(attendee.id, attendee.checkedIn)}
-                                                className="data-[state=checked]:bg-[var(--success)]"
-                                                onClick={(e) => e.stopPropagation()}
-                                            />
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-1.5">
-                                                {SWAG_ITEMS.map(swag => (
-                                                    <div
-                                                        key={swag.id}
-                                                        className={cn(
-                                                            "flex h-7 w-7 items-center justify-center rounded-md border text-base transition-all",
-                                                            attendee.swag[swag.id as keyof typeof attendee.swag]
-                                                                ? "border-[var(--electric)]/40 bg-[var(--electric)]/10 opacity-100"
-                                                                : "border-[var(--border)] bg-transparent opacity-20 grayscale border-dashed"
-                                                        )}
-                                                        title={swag.label}
-                                                    >
-                                                        <span className="scale-[0.6]">{swag.icon}</span>
+                                {loading ? (
+                                    Array.from({ length: itemsPerPage }).map((_, i) => (
+                                        <tr key={i} className="animate-pulse">
+                                            <td className="px-6 py-4"><Skeleton className="h-4 w-4 bg-white/5" /></td>
+                                            <td className="px-6 py-4"><Skeleton className="h-4 w-24 bg-white/5" /></td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-3">
+                                                    <Skeleton className="h-8 w-8 rounded-full bg-white/5" />
+                                                    <div className="space-y-2">
+                                                        <Skeleton className="h-4 w-32 bg-white/5" />
+                                                        <Skeleton className="h-3 w-24 bg-white/5" />
                                                     </div>
-                                                ))}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4"><Skeleton className="h-4 w-28 bg-white/5" /></td>
+                                            <td className="px-6 py-4 text-center"><Skeleton className="h-7 w-10 mx-auto rounded-full bg-white/5" /></td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex gap-1.5">
+                                                    {[...Array(6)].map((_, j) => <Skeleton key={j} className="h-7 w-7 rounded-md bg-white/5" />)}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4"><Skeleton className="h-3 w-12 bg-white/5" /></td>
+                                            <td className="px-6 py-4 text-right"><Skeleton className="h-8 w-8 rounded-full bg-white/5" /></td>
+                                        </tr>
+                                    ))
+                                ) : paginatedAttendees.length > 0 ? (
+                                    paginatedAttendees.map((attendee, i) => (
+                                        <motion.tr
+                                            key={attendee.id}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: i * 0.05, duration: 0.3 }}
+                                            className="group hover:bg-white/10 transition-colors cursor-pointer"
+                                            onClick={() => router.push(`/admin/attendees/${attendee.id}`)}
+                                        >
+                                            <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                                                <Checkbox
+                                                    checked={selectedIds.includes(attendee.id)}
+                                                    onCheckedChange={() => toggleSelectOne(attendee.id)}
+                                                />
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="text-[10px] font-mono font-bold text-[var(--text-3)] bg-[var(--void)]/50 px-2 py-1 rounded border border-[var(--border)]">{attendee.registrationId}</span>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-3">
+                                                    <Avatar name={attendee.name} className="h-8 w-8 text-[10px] border border-white/10 shadow-sm" />
+                                                    <div className="flex flex-col">
+                                                        <span className="text-sm font-bold text-[var(--text-1)] group-hover:text-[var(--electric-light)] transition-colors">{attendee.name}</span>
+                                                        <span className="text-[10px] font-mono text-[var(--text-3)] lowercase">{attendee.email}</span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <span className="text-xs font-bold text-[var(--text-2)]">{attendee.university}</span>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <Switch
+                                                    checked={attendee.checkedIn}
+                                                    onCheckedChange={() => handleSingleCheckInToggle(attendee.id, attendee.checkedIn)}
+                                                    className="data-[state=checked]:bg-[var(--success)]"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                />
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-1.5">
+                                                    {SWAG_ITEMS.map(swag => (
+                                                        <div
+                                                            key={swag.id}
+                                                            className={cn(
+                                                                "flex h-7 w-7 items-center justify-center rounded-md border text-base transition-all",
+                                                                attendee.swag[swag.id as keyof typeof attendee.swag]
+                                                                    ? "border-[var(--electric)]/40 bg-[var(--electric)]/10 opacity-100"
+                                                                    : "border-[var(--border)] bg-transparent opacity-20 grayscale border-dashed"
+                                                            )}
+                                                            title={swag.label}
+                                                        >
+                                                            <span className="scale-[0.6]">{swag.icon}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-4">
+                                                <Badge
+                                                    variant="outline"
+                                                    className={cn(
+                                                        "text-[9px] uppercase tracking-widest h-5 px-1.5 border-0 bg-transparent font-mono font-bold",
+                                                        attendee.certificateStatus === 'Sent' ? "text-[var(--success)]" :
+                                                            attendee.certificateStatus === 'Failed' ? "text-[var(--error)]" : "text-[var(--text-3)]"
+                                                    )}
+                                                >
+                                                    {attendee.certificateStatus}
+                                                </Badge>
+                                            </td>
+                                            <td className="px-6 py-4 text-right">
+                                                <button className="h-8 w-8 rounded-full flex items-center justify-center hover:bg-white/5 text-[var(--text-3)] hover:text-[var(--text-1)] transition-colors">
+                                                    <MoreHorizontal size={18} />
+                                                </button>
+                                            </td>
+                                        </motion.tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={8} className="px-6 py-20 text-center">
+                                            <div className="flex flex-col items-center gap-4 text-[var(--text-3)] opacity-40">
+                                                <div className="h-16 w-16 rounded-full border border-white/5 flex items-center justify-center">
+                                                    <Users size={32} />
+                                                </div>
+                                                <p className="font-display text-lg font-bold">No builders found matching your search.</p>
+                                                <Button variant="outline" size="xs" onClick={() => setSearch("")} className="mt-2 h-8 font-mono text-[10px] tracking-widest uppercase">
+                                                    Clear search
+                                                </Button>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4">
-                                            <Badge
-                                                variant="outline"
-                                                className={cn(
-                                                    "text-[9px] uppercase tracking-widest h-5 px-1.5 border-0 bg-transparent font-mono font-bold",
-                                                    attendee.certificateStatus === 'Sent' ? "text-[var(--success)]" :
-                                                        attendee.certificateStatus === 'Failed' ? "text-[var(--error)]" : "text-[var(--text-3)]"
-                                                )}
-                                            >
-                                                {attendee.certificateStatus}
-                                            </Badge>
-                                        </td>
-                                        <td className="px-6 py-4 text-right">
-                                            <button className="h-8 w-8 rounded-full flex items-center justify-center hover:bg-white/5 text-[var(--text-3)] hover:text-[var(--text-1)] transition-colors">
-                                                <MoreHorizontal size={18} />
-                                            </button>
-                                        </td>
-                                    </motion.tr>
-                                ))}
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>
@@ -335,7 +420,7 @@ export default function AttendeesPage() {
                     {/* Pagination */}
                     <div className="p-6 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-[var(--border)]">
                         <span className="text-xs font-mono font-bold text-[var(--text-3)] uppercase tracking-widest">
-                            Showing {(page - 1) * itemsPerPage + 1}–{Math.min(page * itemsPerPage, total)} of {total} entries
+                            Showing {(page - 1) * itemsPerPage + 1}–{Math.min(page * itemsPerPage, filteredTotal)} of {filteredTotal} matches
                         </span>
                         <div className="flex items-center gap-2">
                             <Button

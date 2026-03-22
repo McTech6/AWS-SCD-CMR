@@ -8,10 +8,27 @@ import swaggerUi from 'swagger-ui-express';
 import { swaggerSpec } from './utils/swagger.js';
 import router from './routes/index.js';
 
+import rateLimit from 'express-rate-limit';
+
 dotenv.config();
 
 const app = express();
 
+// Security: Global Rate Limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    limit: 100, // Limit each IP to 100 requests per window
+    standardHeaders: 'draft-7',
+    legacyHeaders: false,
+    message: {
+        success: false,
+        message: 'Too many requests from this IP, please try again after 15 minutes.'
+    }
+});
+
+app.use(limiter);
+
+// Security: Content Security Policy & Headers
 app.use(helmet({
     contentSecurityPolicy: {
         directives: {
@@ -20,11 +37,18 @@ app.use(helmet({
         },
     },
 }));
+
 app.use(cookieParser());
+
+// CORS Configuration (Uses .env)
+const origins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:3000'];
 app.use(cors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-    credentials: true
+    origin: origins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
 }));
+
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));

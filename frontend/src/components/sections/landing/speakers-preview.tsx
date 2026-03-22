@@ -143,7 +143,7 @@ export const SpeakersPreview = () => {
 
     if (isLoading) {
         return (
-            <Section className="py-16 lg:py-20 overflow-visible">
+            <Section className="py-16 lg:py-20 overflow-hidden">
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     {Array.from({ length: 4 }).map((_, i) => (
                         <div key={i} className="h-[400px] rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] animate-pulse" />
@@ -154,7 +154,7 @@ export const SpeakersPreview = () => {
     }
 
     return (
-        <Section className="py-16 lg:py-20 overflow-visible">
+        <Section className="relative overflow-hidden py-16 lg:py-20">
             <div className="mb-10 flex flex-col items-center justify-between gap-6 md:flex-row md:items-end">
                 <div className="max-w-2xl text-center md:text-left">
                     <Badge variant="outline" className="mb-4 uppercase tracking-[0.2em] text-[var(--electric-light)] underline decoration-[var(--electric)]/20 underline-offset-4">Cloud Pioneers</Badge>

@@ -17,7 +17,10 @@ async function testEmail() {
             variables: {
                 name: 'Test User',
                 email: 'test@example.com',
-                university: 'Test University'
+                university: 'Test University',
+                eventDate: "May 23, 2026",
+                eventTime: "09:00 AM — 05:00 PM",
+                eventVenue: "Douala, Cameroon"
             }
         });
         

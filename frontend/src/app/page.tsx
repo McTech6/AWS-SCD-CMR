@@ -6,6 +6,7 @@ import {
   About,
   AgendaPreview,
   SpeakersPreview,
+  FAQ,
   SponsorsSection
 } from "@/components/sections/landing";
 
@@ -30,6 +31,7 @@ export default function Home() {
         <About />
         <AgendaPreview />
         <SpeakersPreview />
+        <FAQ />
         <SponsorsSection />
       </main>
       <Footer />

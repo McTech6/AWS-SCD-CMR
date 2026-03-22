@@ -3,7 +3,8 @@
 import * as React from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui";
-import { ChevronDown, Rocket } from "lucide-react";
+import { ChevronDown, Rocket, Calendar as CalendarIcon } from "lucide-react";
+import { CalendarButton } from "@/components/ui/calendar-button";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +12,23 @@ import { cn } from "@/lib/utils";
  * Animated Particle Mesh Background engineered for Light/Professional Theme
  */
 const ParticleField = () => {
+    const [mounted, setMounted] = React.useState(false);
+    const [particles] = React.useState(() => 
+        [...Array(30)].map((_, i) => ({
+            size: Math.random() * 6 + 2,
+            left: Math.random() * 100 + "%",
+            top: Math.random() * 100 + 20 + "%",
+            y: [0, Math.random() * -300 - 150],
+            x: [0, Math.random() * 100 - 50],
+            duration: Math.random() * 6 + 4,
+            delay: Math.random() * 5,
+        }))
+    );
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
+
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
             {/* Cinematic Background Image (Multiply works great on white) */}
@@ -34,35 +52,32 @@ const ParticleField = () => {
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--void)]/70 to-[var(--void)]" />
             
             {/* Hardcore Flowing Particles */}
-            {[...Array(30)].map((_, i) => {
-                const size = Math.random() * 6 + 2;
-                return (
-                    <motion.div
-                        key={i}
-                        className="absolute rounded-full bg-gradient-to-t from-[var(--ember)] to-[var(--electric)] shadow-[0_0_12px_var(--electric)]"
-                        style={{
-                            width: size + "px",
-                            height: size + "px",
-                            left: Math.random() * 100 + "%",
-                            top: Math.random() * 100 + 20 + "%",
-                        }}
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{
-                            y: [0, Math.random() * -300 - 150],
-                            x: [0, Math.random() * 100 - 50],
-                            opacity: [0, 0.7, 0],
-                            scale: [0, 1.5, 0],
-                            filter: ["hue-rotate(0deg)", "hue-rotate(30deg)", "hue-rotate(0deg)"]
-                        }}
-                        transition={{
-                            duration: Math.random() * 6 + 4,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                            delay: Math.random() * 5,
-                        }}
-                    />
-                );
-            })}
+            {mounted && particles.map((p, i) => (
+                <motion.div
+                    key={i}
+                    className="absolute rounded-full bg-gradient-to-t from-[var(--ember)] to-[var(--electric)] shadow-[0_0_12px_var(--electric)]"
+                    style={{
+                        width: p.size + "px",
+                        height: p.size + "px",
+                        left: p.left,
+                        top: p.top,
+                    }}
+                    initial={{ opacity: 0, scale: 0 }}
+                    animate={{
+                        y: p.y,
+                        x: p.x,
+                        opacity: [0, 0.7, 0],
+                        scale: [0, 1.5, 0],
+                        filter: ["hue-rotate(0deg)", "hue-rotate(30deg)", "hue-rotate(0deg)"]
+                    }}
+                    transition={{
+                        duration: p.duration,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: p.delay,
+                    }}
+                />
+            ))}
         </div>
     );
 };
@@ -127,28 +142,11 @@ export const Hero = () => {
                 style={{ y: yTransform, opacity: opacityTransform }}
                 className="container relative z-10 mx-auto flex flex-col items-center px-6 text-center"
             >
-                {/* Elite Badge Header */}
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.5, y: -20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                    className="mb-8 overflow-hidden rounded-full border border-[var(--electric)]/30 bg-[var(--surface)]/80 px-5 py-2 shadow-glow backdrop-blur-md hover:border-[var(--electric)] transition-colors duration-300 group cursor-default"
-                >
-                    <span className="flex items-center gap-2 text-xs sm:text-sm font-bold tracking-tight text-[var(--text-1)]">
-                        <motion.span 
-                            animate={{ rotate: [0, 15, -15, 0] }}
-                            transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
-                            className="text-[var(--ember)]"
-                        >
-                            <Rocket size={16} />
-                        </motion.span>
-                        Student Community Day · <span className="text-[var(--electric)]">Powered by AWS Cloud Club</span>
-                    </span>
-                </motion.div>
+
 
                 {/* Hardcore Staggered 3D Headline Reveal */}
                 <motion.h1 
-                    className="max-w-4xl font-display text-4xl font-black tracking-tighter text-[var(--text-1)] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl px-4 leading-[1.1] preserve-3d"
+                    className="max-w-4xl font-display text-3xl font-black tracking-tighter text-[var(--text-1)] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl px-4 leading-[1.1] preserve-3d"
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
@@ -176,9 +174,11 @@ export const Hero = () => {
                 >
                     Igniting Cameroon's Cloud Journey – The First Student Community Day.
                     <span className="block mt-6 flex items-center justify-center">
-                        <span className="font-extrabold text-[var(--electric)] uppercase tracking-[0.25em] text-xs sm:text-sm bg-[var(--surface)]/60 px-6 py-3 rounded-full border border-[var(--border)] shadow-sm backdrop-blur-md mix-blend-luminosity hover:mix-blend-normal transition-all duration-300 hover:scale-105 cursor-pointer">
-                            May 23, 2026 · Douala, Cameroon
-                        </span>
+                        <CalendarButton>
+                            <span className="font-extrabold text-[var(--electric)] uppercase tracking-[0.25em] text-xs sm:text-sm bg-[var(--surface)]/60 px-6 py-3 rounded-full border border-[var(--border)] shadow-sm backdrop-blur-md mix-blend-luminosity hover:mix-blend-normal transition-all duration-300 hover:scale-105 cursor-pointer">
+                                May 23, 2026 · Douala, Cameroon
+                            </span>
+                        </CalendarButton>
                     </span>
                 </motion.p>
 

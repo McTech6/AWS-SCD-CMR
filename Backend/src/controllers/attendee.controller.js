@@ -116,12 +116,15 @@ export const registerAttendee = async (req, res, next) => {
         try {
             await sendEmail({
                 to: result.user.email,
-                subject: 'Welcome to AWS Student Community Day Cameroon 2026',
+                subject: 'Registration Confirmed: AWS Student Community Day (May 23, 2026)',
                 template: 'welcome',
                 variables: {
                     name: result.user.name,
                     email: result.user.email,
-                    university: result.attendee.university
+                    university: result.attendee.university,
+                    eventDate: "May 23, 2026",
+                    eventTime: "09:00 AM — 05:00 PM",
+                    eventVenue: "Douala, Cameroon"
                 }
             });
             console.log('Welcome email sent');

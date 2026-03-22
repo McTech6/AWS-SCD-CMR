@@ -80,6 +80,7 @@ const TShirtSelector = ({
 export default function RegisterPage() {
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [registrationId, setRegistrationId] = React.useState("");
 
   const {
     register,
@@ -107,6 +108,7 @@ export default function RegisterPage() {
       });
 
       if (response.success) {
+        setRegistrationId(response.data.attendee.registrationId);
         toast.success("Registration successful! Welcome to the event!");
         setIsSubmitting(false);
         setIsSuccess(true);
@@ -118,11 +120,6 @@ export default function RegisterPage() {
           origin: { y: 0.6 },
           colors: ["#5B6EF5", "#FF6B35", "#FFFFFF"],
         });
-
-        // Redirect after a short delay
-        setTimeout(() => {
-          router.push("/");
-        }, 3000);
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : "Registration failed";
@@ -134,7 +131,7 @@ export default function RegisterPage() {
   return (
     <PageWrapper>
       <Navbar />
-      <main className="flex min-h-screen items-stretch bg-[var(--void)]">
+      <main className="flex min-h-screen items-stretch bg-[var(--void)] pt-24">
       {/* Split layout (50/50) */}
       <div className="grid w-full grid-cols-1 lg:grid-cols-2">
 
@@ -150,15 +147,7 @@ export default function RegisterPage() {
           <div className="absolute inset-0 bg-gradient-to-tr from-[var(--void)] via-[var(--surface)]/80 to-[var(--electric)]/20" />
 
           <div className="relative z-10 h-full flex flex-col">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 font-display text-xl font-extrabold text-[var(--text-1)] mb-auto hover:text-[var(--electric-light)] transition-colors"
-            >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--electric)] text-white shadow-glow">
-                <Cloud size={20} strokeWidth={3} />
-              </div>
-              AWS Cloud Club
-            </Link>
+            <div className="mb-auto" />
 
             <motion.div
               initial={{ opacity: 0, x: -20 }}
@@ -237,18 +226,6 @@ export default function RegisterPage() {
                   exit={{ opacity: 0, scale: 1.05 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <div className="mb-10 lg:hidden text-center">
-                    <Link
-                      href="/"
-                      className="inline-flex items-center gap-2 font-display text-lg font-extrabold text-[var(--text-1)] mb-6"
-                    >
-                      <div className="flex h-6 w-6 items-center justify-center rounded bg-[var(--electric)] text-white">
-                        <Cloud size={14} />
-                      </div>
-                      AWS Cloud Club
-                    </Link>
-                  </div>
-
                   <header className="mb-10 text-center lg:text-left">
                     <h2 className="font-display text-3xl font-extrabold text-[var(--text-1)] lg:text-4xl">Register.</h2>
                     <p className="mt-2 text-[var(--text-2)]">Welcome back, builder. Secure your spot below.</p>
@@ -345,16 +322,16 @@ export default function RegisterPage() {
                     Get ready to architect the future.
                   </p>
 
-                  <div className="mt-12 flex w-full flex-col gap-4">
-                    <Button variant="outline" size="lg" className="h-14 w-full" asChild>
+                  <div className="mt-12 flex w-full flex-col sm:flex-row gap-4">
+                    <Button variant="ghost" size="lg" className="h-14 w-full flex-1" asChild>
                       <Link href="/">Back to Home</Link>
                     </Button>
-                    <CalendarButton />
+                    <CalendarButton variant="ember" className="flex-1 shadow-glow" />
                   </div>
 
                   <div className="mt-12 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--panel)] p-4 w-full">
                     <span className="block text-xs font-mono uppercase tracking-[0.2em] text-[var(--text-3)] mb-2">Registration ID</span>
-                    <span className="font-mono text-[var(--electric-light)] tracking-tight">AWS-SCD-CMR-2026-[UNIQUE_ID]</span>
+                    <span className="font-mono text-[var(--electric-light)] tracking-tight">{registrationId || "AWS-SCD-CMR-2026-XXXX"}</span>
                   </div>
                 </motion.div>
               )}

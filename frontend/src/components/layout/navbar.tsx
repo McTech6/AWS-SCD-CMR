@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui";
@@ -121,45 +121,59 @@ export function Navbar() {
       </div>
 
       {/* Mobile drawer with glassmorphism */}
-      {isMobileOpen && (
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="absolute inset-x-4 top-24 z-40 flex flex-col gap-2 rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)]/95 p-6 shadow-elevated backdrop-blur-xl md:hidden"
-        >
-          {navLinks.map((link) => {
-            const isActive = activeTab === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => {
-                  setActiveTab(link.href);
-                  setIsMobileOpen(false);
-                }}
-                className={cn(
-                  "rounded-lg px-4 py-3 text-lg font-bold transition-all",
-                  isActive
-                    ? "bg-[var(--electric)]/10 text-[var(--electric)]"
-                    : "text-[var(--text-1)] hover:bg-[var(--void)]"
-                )}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-          <div className="mt-4 flex flex-col gap-3 border-t border-[var(--border)] pt-4">
-            <Button variant="ghost" size="lg" className="w-full justify-start rounded-full font-bold" asChild>
-              <Link href="/speak" onClick={() => setIsMobileOpen(false)}>Apply as Speaker</Link>
-            </Button>
-            <Button variant="ember" size="lg" className="w-full justify-between rounded-full shadow-glow font-bold" asChild>
-              <Link href="/register" onClick={() => setIsMobileOpen(false)}>
-                Register Now <ArrowRight size={16} />
-              </Link>
-            </Button>
-          </div>
-        </motion.div>
-      )}
+      <AnimatePresence>
+        {isMobileOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsMobileOpen(false)}
+              className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm md:hidden"
+            />
+            
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: -10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -10 }}
+              className="fixed inset-x-4 top-24 z-50 flex max-h-[calc(100vh-120px)] flex-col gap-2 overflow-y-auto rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-elevated backdrop-blur-xl md:hidden scrollbar-none"
+            >
+              {navLinks.map((link) => {
+                const isActive = activeTab === link.href;
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={() => {
+                      setActiveTab(link.href);
+                      setIsMobileOpen(false);
+                    }}
+                    className={cn(
+                      "rounded-lg px-4 py-3 text-lg font-bold transition-all",
+                      isActive
+                        ? "bg-[var(--electric)]/10 text-[var(--electric)]"
+                        : "text-[var(--text-1)] hover:bg-[var(--void)]"
+                    )}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
+              <div className="mt-4 flex flex-col gap-3 border-t border-[var(--border)] pt-4">
+                <Button variant="ghost" size="lg" className="w-full justify-start rounded-full font-bold" asChild>
+                  <Link href="/speak" onClick={() => setIsMobileOpen(false)}>Apply as Speaker</Link>
+                </Button>
+                <Button variant="ember" size="lg" className="w-full justify-between rounded-full shadow-glow font-bold" asChild>
+                  <Link href="/register" onClick={() => setIsMobileOpen(false)}>
+                    Register Now <ArrowRight size={16} />
+                  </Link>
+                </Button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </header>
   );
 }

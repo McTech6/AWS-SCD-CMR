@@ -180,13 +180,13 @@ export const AgendaPreview = () => {
                 </div>
 
                 {!isLoading && agendaItems.length > 0 && (
-                    <div className="flex flex-wrap gap-2 p-1 rounded-full bg-[var(--surface)] border border-[var(--border)]">
+                    <div className="flex max-w-full items-center gap-2 p-1 overflow-x-auto scrollbar-none rounded-2xl sm:rounded-full bg-[var(--surface)] border border-[var(--border)]">
                         {tracks.map(track => (
                             <button
                                 key={track}
                                 onClick={() => setActiveTrack(track)}
                                 className={cn(
-                                    "px-6 py-2 rounded-full text-xs font-bold transition-all duration-300",
+                                    "px-4 sm:px-6 py-2 rounded-full text-[10px] sm:text-xs font-bold transition-all duration-300 whitespace-nowrap",
                                     activeTrack === track
                                         ? "bg-[var(--electric)] text-white shadow-glow"
                                         : "text-[var(--text-3)] hover:text-[var(--text-1)]"

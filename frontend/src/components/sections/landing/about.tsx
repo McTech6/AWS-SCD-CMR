@@ -28,7 +28,7 @@ const FeatureCard = ({
 
 export const About = () => {
     return (
-        <Section className="relative overflow-visible py-16 lg:py-20">
+        <Section className="relative overflow-hidden py-16 lg:py-20">
             {/* Decorative gradient blur */}
             <div className="absolute -left-20 top-0 h-[500px] w-[500px] rounded-full bg-[var(--electric)]/5 blur-[120px] pointer-events-none" />
 
