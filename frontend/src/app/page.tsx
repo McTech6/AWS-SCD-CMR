@@ -16,8 +16,25 @@ export const metadata: Metadata = {
   keywords: ["AWS", "AWS Student Community Day", "Cameroon", "Douala", "Cloud Computing", "Student Event", "GENESIS 2026"],
   openGraph: {
     title: "GENESIS: From Campus to Cloud | Douala 2026",
-    description: "The premier AWS event for student builders in Cameroon.",
-    images: ["https://res.cloudinary.com/dqcsk8r4p/image/upload/v1710940000/genesis_og.png"],
+    description: "The premier AWS event for student builders in Cameroon. Join 500+ builders on May 23, 2026.",
+    url: "https://awsscd.cmr",
+    siteName: "AWS Student Community Day Cameroon",
+    images: [
+      {
+        url: "/themain.png",
+        width: 1200,
+        height: 630,
+        alt: "GENESIS – AWS Student Community Day Cameroon 2026",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GENESIS: From Campus to Cloud | Douala 2026",
+    description: "The premier AWS event for student builders in Cameroon. Join 500+ builders on May 23, 2026.",
+    images: ["/themain.png"],
   },
 };
 

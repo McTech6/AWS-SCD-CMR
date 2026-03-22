@@ -1,13 +1,7 @@
 import prisma from '../db/prisma.js';
 import { organizerSchema, organizerUpdateSchema } from '../utils/validation.js';
+import { uploadImage } from '../utils/cloudinary.js';
 
-/**
- * @openapi
- * /organizers:
- *   get:
- *     summary: List all organizers
- *     tags: [Organizers]
- */
 export const getOrganizers = async (req, res, next) => {
     try {
         const { all } = req.query;
@@ -24,13 +18,6 @@ export const getOrganizers = async (req, res, next) => {
     }
 };
 
-/**
- * @openapi
- * /organizers:
- *   post:
- *     summary: Create an organizer profile (Admin)
- *     tags: [Organizers]
- */
 export const createOrganizer = async (req, res, next) => {
     try {
         const validated = organizerSchema.parse(req.body);
@@ -42,13 +29,6 @@ export const createOrganizer = async (req, res, next) => {
     }
 };
 
-/**
- * @openapi
- * /organizers/{id}:
- *   patch:
- *     summary: Update an organizer profile (Admin)
- *     tags: [Organizers]
- */
 export const updateOrganizer = async (req, res, next) => {
     try {
         const validated = organizerUpdateSchema.parse(req.body);
@@ -63,17 +43,34 @@ export const updateOrganizer = async (req, res, next) => {
     }
 };
 
-/**
- * @openapi
- * /organizers/{id}:
- *   delete:
- *     summary: Remove an organizer profile (Admin)
- *     tags: [Organizers]
- */
 export const deleteOrganizer = async (req, res, next) => {
     try {
         await prisma.organizer.delete({ where: { id: req.params.id } });
         res.status(200).json({ success: true, message: 'Organizer profile deleted' });
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * POST /organizers/:id/upload-image
+ * Accepts a base64-encoded image, uploads it to Cloudinary, and stores the URL.
+ */
+export const uploadOrganizerImage = async (req, res, next) => {
+    try {
+        const { imageBase64 } = req.body;
+        if (!imageBase64) {
+            return res.status(400).json({ success: false, message: 'No image data provided' });
+        }
+
+        const { url } = await uploadImage(imageBase64, 'organizers');
+
+        const organizer = await prisma.organizer.update({
+            where: { id: req.params.id },
+            data: { imageUrl: url }
+        });
+
+        res.status(200).json({ success: true, data: { imageUrl: url, organizer } });
     } catch (error) {
         next(error);
     }

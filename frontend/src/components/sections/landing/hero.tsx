@@ -166,21 +166,21 @@ export const Hero = () => {
                 </motion.h1>
 
                 {/* Event Subtext with fade-up */}
-                <motion.p
+                <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 1, duration: 1, ease: "easeOut" }}
-                    className="mt-8 max-w-2xl text-lg text-[var(--text-2)] sm:text-xl md:text-2xl font-medium px-4 leading-relaxed"
+                    className="mt-8 max-w-2xl text-lg text-[var(--text-2)] sm:text-xl md:text-2xl font-medium px-4 leading-relaxed text-center"
                 >
                     Igniting Cameroon's Cloud Journey – The First Student Community Day.
-                    <span className="block mt-6 flex items-center justify-center">
+                    <div className="mt-6 flex items-center justify-center">
                         <CalendarButton>
                             <span className="font-extrabold text-[var(--electric)] uppercase tracking-[0.25em] text-xs sm:text-sm bg-[var(--surface)]/60 px-6 py-3 rounded-full border border-[var(--border)] shadow-sm backdrop-blur-md mix-blend-luminosity hover:mix-blend-normal transition-all duration-300 hover:scale-105 cursor-pointer">
                                 May 23, 2026 · Douala, Cameroon
                             </span>
                         </CalendarButton>
-                    </span>
-                </motion.p>
+                    </div>
+                </motion.div>
 
                 {/* Pulsing CTA Section */}
                 <motion.div

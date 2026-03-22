@@ -25,9 +25,8 @@ import {
     Plus,
     Trash2,
     Edit2,
-    Save,
-    ExternalLink,
-    Image as ImageIcon,
+    Upload,
+    Camera,
     Shield,
     UserCircle,
     AlertCircle,
@@ -36,14 +35,17 @@ import {
     Twitter,
     Github,
     Globe,
-    User
+    User,
+    X,
+    Loader2
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { 
-    getOrganizers, 
-    createOrganizer, 
-    updateOrganizer, 
-    deleteOrganizer 
+import {
+    getOrganizers,
+    createOrganizer,
+    updateOrganizer,
+    deleteOrganizer,
+    uploadOrganizerImage
 } from "@/lib/api";
 import { toast } from "react-hot-toast";
 import { useForm, Controller } from "react-hook-form";
@@ -55,7 +57,7 @@ const organizerFormSchema = z.object({
     role: z.string().min(2, "Role is required"),
     club: z.string().optional(),
     bio: z.string().optional(),
-    imageUrl: z.string().url("Valid image URL required").or(z.literal("")),
+    imageUrl: z.string().optional(),
     linkedinUrl: z.string().url("Valid URL required").or(z.literal("")),
     twitterUrl: z.string().url("Valid URL required").or(z.literal("")),
     githubUrl: z.string().url("Valid URL required").or(z.literal("")),
@@ -65,17 +67,143 @@ const organizerFormSchema = z.object({
 
 type OrganizerFormValues = z.infer<typeof organizerFormSchema>;
 
+// ─── Image Uploader Component ──────────────────────────────────────────────────
+function ImageUploader({
+    currentUrl,
+    onUpload,
+    organizerId,
+    disabled
+}: {
+    currentUrl?: string;
+    onUpload: (url: string) => void;
+    organizerId?: string;
+    disabled?: boolean;
+}) {
+    const [preview, setPreview] = React.useState<string | null>(currentUrl || null);
+    const [isUploading, setIsUploading] = React.useState(false);
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+    React.useEffect(() => {
+        setPreview(currentUrl || null);
+    }, [currentUrl]);
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Validate size (5MB max)
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error("Image must be under 5MB");
+            return;
+        }
+
+        // Read as base64
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+            const base64 = reader.result as string;
+            setPreview(base64);
+
+            if (organizerId) {
+                // Organizer already created — upload immediately
+                setIsUploading(true);
+                try {
+                    const res = await uploadOrganizerImage(organizerId, base64);
+                    if (res.success) {
+                        onUpload(res.data.imageUrl);
+                        toast.success("Photo uploaded!");
+                    }
+                } catch (err: any) {
+                    toast.error(err.message || "Upload failed");
+                } finally {
+                    setIsUploading(false);
+                }
+            } else {
+                // New organizer — pass base64 back so parent can upload after create
+                onUpload(base64);
+            }
+        };
+        reader.readAsDataURL(file);
+    };
+
+    return (
+        <div className="space-y-3">
+            <label className="text-[10px] font-bold uppercase text-[var(--text-3)] ml-1">
+                Profile Photo
+            </label>
+            <div className="flex items-center gap-4">
+                {/* Preview */}
+                <div className="relative h-20 w-20 flex-shrink-0 rounded-[var(--radius-lg)] border-2 border-[var(--electric)]/20 overflow-hidden bg-[var(--void)]">
+                    {isUploading ? (
+                        <div className="h-full w-full flex items-center justify-center">
+                            <Loader2 size={20} className="animate-spin text-[var(--electric)]" />
+                        </div>
+                    ) : preview ? (
+                        <img
+                            src={preview}
+                            alt="Preview"
+                            className="h-full w-full object-cover"
+                        />
+                    ) : (
+                        <div className="h-full w-full flex items-center justify-center text-[var(--text-3)]">
+                            <User size={28} />
+                        </div>
+                    )}
+                </div>
+
+                {/* Controls */}
+                <div className="flex flex-col gap-2">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="gap-2 text-[10px] font-bold uppercase tracking-widest"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={disabled || isUploading}
+                    >
+                        <Camera size={12} />
+                        {preview ? "Change Photo" : "Upload Photo"}
+                    </Button>
+                    {preview && (
+                        <button
+                            type="button"
+                            onClick={() => { setPreview(null); onUpload(""); }}
+                            className="text-[10px] text-[var(--text-3)] hover:text-[var(--error)] transition-colors font-mono uppercase tracking-widest"
+                        >
+                            Remove
+                        </button>
+                    )}
+                    <p className="text-[9px] text-[var(--text-3)] font-mono uppercase tracking-widest">
+                        JPG, PNG, WEBP · Max 5MB
+                    </p>
+                </div>
+
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="hidden"
+                    onChange={handleFileChange}
+                />
+            </div>
+        </div>
+    );
+}
+
+// ─── Main Page ─────────────────────────────────────────────────────────────────
 export default function OrganizersAdminPage() {
     const [organizers, setOrganizers] = React.useState<any[]>([]);
     const [isLoading, setIsLoading] = React.useState(true);
     const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
     const [editingOrganizer, setEditingOrganizer] = React.useState<any>(null);
     const [deleteId, setDeleteId] = React.useState<string | null>(null);
+    // store pending base64 for new organizer photo upload after creation
+    const [pendingImageBase64, setPendingImageBase64] = React.useState<string>("");
 
     const {
         register,
         handleSubmit,
-        control,
+        setValue,
+        watch,
         reset,
         formState: { errors, isSubmitting }
     } = useForm<OrganizerFormValues>({
@@ -94,10 +222,12 @@ export default function OrganizersAdminPage() {
         }
     });
 
+    const watchedImageUrl = watch("imageUrl");
+
     const fetchOrganizers = async () => {
         setIsLoading(true);
         try {
-            const response = await getOrganizers(true); // all=true
+            const response = await getOrganizers(true);
             if (response.success) {
                 setOrganizers(response.data);
             }
@@ -114,6 +244,7 @@ export default function OrganizersAdminPage() {
 
     React.useEffect(() => {
         if (isAddModalOpen) {
+            setPendingImageBase64("");
             if (editingOrganizer) {
                 reset({
                     name: editingOrganizer.name,
@@ -146,13 +277,33 @@ export default function OrganizersAdminPage() {
 
     const onSubmit = async (data: OrganizerFormValues) => {
         try {
+            // Strip imageUrl from body — managed separately via Cloudinary
+            const { imageUrl, ...rest } = data;
+
             if (editingOrganizer) {
-                await updateOrganizer(editingOrganizer.id, data);
+                await updateOrganizer(editingOrganizer.id, rest);
+                // If there's a new pending photo, upload it now
+                if (pendingImageBase64 && pendingImageBase64.startsWith("data:")) {
+                    try {
+                        const upRes = await uploadOrganizerImage(editingOrganizer.id, pendingImageBase64);
+                        if (!upRes.success) toast.error("Profile saved, but photo upload failed.");
+                    } catch {
+                        toast.error("Profile saved, but photo upload failed.");
+                    }
+                }
                 toast.success("Profile Updated");
             } else {
-                await createOrganizer(data);
+                const createRes = await createOrganizer(rest);
+                if (createRes.success && pendingImageBase64 && pendingImageBase64.startsWith("data:")) {
+                    try {
+                        await uploadOrganizerImage(createRes.data.id, pendingImageBase64);
+                    } catch {
+                        toast.error("Captain created, but photo upload failed.");
+                    }
+                }
                 toast.success("Captain Onboarded");
             }
+
             fetchOrganizers();
             setIsAddModalOpen(false);
         } catch (err: any) {
@@ -188,7 +339,7 @@ export default function OrganizersAdminPage() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h2 className="font-display text-4xl font-extrabold text-[var(--text-1)] tracking-tight">Leadership Hub</h2>
-                        <p className="text-[var(--text-3)] font-mono text-xs uppercase tracking-[0.2em] mt-2">Cloud Club Captains & Organizers</p>
+                        <p className="text-[var(--text-3)] font-mono text-xs uppercase tracking-[0.2em] mt-2">Cloud Club Captains &amp; Organizers</p>
                     </div>
 
                     <Button variant="primary" size="sm" className="shadow-glow text-xs font-bold gap-2" onClick={() => { setEditingOrganizer(null); setIsAddModalOpen(true); }}>
@@ -292,8 +443,23 @@ export default function OrganizersAdminPage() {
                             Configure leadership profile for public display
                         </ModalDescription>
                     </ModalHeader>
-                    
+
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-6">
+                        {/* Photo Uploader */}
+                        <ImageUploader
+                            currentUrl={editingOrganizer?.imageUrl || ""}
+                            organizerId={editingOrganizer?.id}
+                            disabled={isSubmitting}
+                            onUpload={(val) => {
+                                setPendingImageBase64(val);
+                                // If it's a real URL (already uploaded for existing organizer), refresh immediately
+                                if (val && !val.startsWith("data:") && editingOrganizer) {
+                                    setEditingOrganizer((prev: any) => ({ ...prev, imageUrl: val }));
+                                    fetchOrganizers();
+                                }
+                            }}
+                        />
+
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <label className="text-[10px] font-bold uppercase text-[var(--text-3)] ml-1">Full Name</label>
@@ -313,14 +479,6 @@ export default function OrganizersAdminPage() {
                         <div className="space-y-2">
                             <label className="text-[10px] font-bold uppercase text-[var(--text-3)] ml-1">Short Bio</label>
                             <Textarea {...register("bio")} placeholder="Describe the captain's impact..." className="min-h-[100px] bg-[var(--void)] border-[var(--border)]" />
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-[10px] font-bold uppercase text-[var(--text-3)] ml-1">Profile Photo URL</label>
-                            <div className="relative">
-                                <Input {...register("imageUrl")} placeholder="https://..." error={errors.imageUrl?.message} className="pl-10" />
-                                <ImageIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-3)]" />
-                            </div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -350,9 +508,9 @@ export default function OrganizersAdminPage() {
                         </div>
 
                         <div className="flex justify-end gap-3 pt-6">
-                            <Button type="button" variant="ghost" onClick={() => setIsAddModalOpen(false)}>Abort</Button>
-                            <Button type="submit" variant="primary" className="shadow-glow px-8 h-12 font-black uppercase tracking-widest text-[10px]" disabled={isSubmitting}>
-                                {isSubmitting ? "Transmitting..." : "Confirm Signal"}
+                            <Button type="button" variant="ghost" onClick={() => setIsAddModalOpen(false)}>Cancel</Button>
+                            <Button type="submit" variant="primary" className="shadow-glow px-8 h-12 font-black uppercase tracking-widest text-[10px]" loading={isSubmitting}>
+                                {editingOrganizer ? "Save Changes" : "Create Captain"}
                             </Button>
                         </div>
                     </form>

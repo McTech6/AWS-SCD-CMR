@@ -334,6 +334,13 @@ export async function deleteOrganizer(id: string) {
   return apiCall(`/organizers/${id}`, { method: 'DELETE' });
 }
 
+export async function uploadOrganizerImage(id: string, imageBase64: string) {
+  return apiCall(`/organizers/${id}/upload-image`, {
+    method: 'POST',
+    body: JSON.stringify({ imageBase64 }),
+  });
+}
+
 // Emails API
 export async function sendBroadcastEmail(data: {
   subject: string;
