@@ -225,9 +225,17 @@ export const SponsorsSection = () => {
                         <Button variant="primary" size="lg" asChild className="w-full sm:w-auto px-16 h-16 rounded-full shadow-glow font-black uppercase tracking-widest text-xs min-w-[240px]">
                             <Link href="/sponsorship/apply">Secure Partnership</Link>
                         </Button>
-                        <Button variant="outline" size="lg" asChild className="w-full sm:w-auto px-16 h-16 rounded-full border-[var(--border)] text-xs font-black uppercase tracking-widest hover:bg-white/5 min-w-[240px]">
-                            <Link href="/sponsorship-deck.pdf">Get Prospectus</Link>
-                        </Button>
+                        <div className="relative group/btn w-full sm:w-auto min-w-[240px]">
+                            <button
+                                disabled
+                                className="w-full px-16 h-16 rounded-full border border-[var(--border)] text-xs font-black uppercase tracking-widest bg-white/5 text-[var(--text-3)] cursor-not-allowed flex items-center justify-center gap-3 transition-colors"
+                            >
+                                Get Prospectus
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[var(--ember)]/10 border border-[var(--ember)]/20 text-[var(--ember)] text-[9px] font-black uppercase tracking-widest">
+                                    Coming Soon
+                                </span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </motion.div>
