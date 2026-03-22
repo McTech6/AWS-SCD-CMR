@@ -34,7 +34,8 @@ import {
     Checkbox,
     Switch,
     Skeleton,
-    Spinner
+    Spinner,
+    DeleteModal
 } from "@/components/ui";
 import { cn } from "@/lib/utils";
 
@@ -59,6 +60,8 @@ export default function AttendeesPage() {
     const [total, setTotal] = React.useState(0);
     const [actioningCount, setActioningCount] = React.useState(0);
     const [page, setPage] = React.useState(1);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+    const [isDeleting, setIsDeleting] = React.useState(false);
     const itemsPerPage = 8;
 
     const [allAttendees, setAllAttendees] = React.useState<any[]>([]);
@@ -172,9 +175,12 @@ export default function AttendeesPage() {
 
     const handleBulkDelete = async () => {
         if (!selectedIds.length) return;
-        if (!window.confirm(`Are you sure you want to delete ${selectedIds.length} attendees?`)) return;
+        setIsDeleteModalOpen(true);
+    };
 
+    const confirmBulkDelete = async () => {
         try {
+            setIsDeleting(true);
             setActioningCount(selectedIds.length);
             for (const id of selectedIds) {
                 await deleteAttendee(id);
@@ -182,10 +188,12 @@ export default function AttendeesPage() {
             toast.success(`Successfully deleted ${selectedIds.length} attendees`);
             setSelectedIds([]);
             syncAttendees(true);
+            setIsDeleteModalOpen(false);
         } catch (error) {
             toast.error("Failed to delete some attendees");
         } finally {
             setActioningCount(0);
+            setIsDeleting(false);
         }
     };
 
@@ -459,6 +467,15 @@ export default function AttendeesPage() {
                     </div>
                 </Card>
             </div>
+
+            <DeleteModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={confirmBulkDelete}
+                itemCount={selectedIds.length}
+                loading={isDeleting}
+                description="This will permanently remove the selected builders from the registration database. This action cannot be undone."
+            />
         </AdminLayout>
     );
 }

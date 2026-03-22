@@ -42,7 +42,8 @@ import {
     Button,
     Input,
     Avatar,
-    Divider
+    Divider,
+    DeleteModal
 } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { SpeakerForm } from "@/components/forms/speaker-form";
@@ -56,7 +57,7 @@ const INITIAL_SPEAKERS = [
     { id: "spk-5", name: "Julian Rivera", email: "julian@cloudclub.com", track: "DevOps", topic: "GitOps Journey", status: "Rejected", date: "2024-05-14", image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop" },
 ];
 
-import { applySpeaker, getAllSpeakers, approveSpeaker, rejectSpeaker } from "@/lib/api";
+import { applySpeaker, getAllSpeakers, approveSpeaker, rejectSpeaker, deleteSpeaker } from "@/lib/api";
 import toast from "react-hot-toast";
 
 export default function SpeakersAdminPage() {
@@ -68,6 +69,8 @@ export default function SpeakersAdminPage() {
     const [loading, setLoading] = React.useState(true);
     const [isGuideOpen, setIsGuideOpen] = React.useState(false);
     const [actioningSpeaker, setActioningSpeaker] = React.useState<string | null>(null);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+    const [speakerToDelete, setSpeakerToDelete] = React.useState<{ id: string, name: string } | null>(null);
 
     React.useEffect(() => {
         loadSpeakers();
@@ -140,6 +143,30 @@ export default function SpeakersAdminPage() {
     const handleRejectClick = (spk: any, e: React.MouseEvent) => {
         e.stopPropagation();
         setConfirmAction({ type: 'REJECT', id: spk.id, name: spk.name });
+    };
+
+    const handleDeleteClick = (spk: any, e: React.MouseEvent) => {
+        e.stopPropagation();
+        setSpeakerToDelete({ id: spk.id, name: spk.name });
+        setIsDeleteModalOpen(true);
+    };
+
+    const confirmDeleteSpeaker = async () => {
+        if (!speakerToDelete) return;
+        try {
+            setIsSubmitting(true);
+            const response = await deleteSpeaker(speakerToDelete.id);
+            if (response.success) {
+                toast.success('Speaker deleted successfully');
+                await loadSpeakers();
+            }
+            setIsDeleteModalOpen(false);
+            setSpeakerToDelete(null);
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : 'Failed to delete speaker');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const filteredSpeakers = speakers.filter(s =>
@@ -320,6 +347,17 @@ export default function SpeakersAdminPage() {
                                                         </Button>
                                                     </>
                                                 )}
+                                                {spk.status !== 'Pending' && (
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-8 w-8 p-0 text-[var(--text-3)] hover:text-[var(--error)] transition-colors"
+                                                        onClick={(e) => handleDeleteClick(spk, e)}
+                                                        disabled={isSubmitting}
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </Button>
+                                                )}
                                                 <ChevronRight size={18} className="text-[var(--text-3)] group-hover:text-[var(--electric)] transition-transform group-hover:translate-x-1" />
                                             </div>
                                         </td>
@@ -473,6 +511,15 @@ export default function SpeakersAdminPage() {
                     </div>
                 </ModalContent>
             </Modal>
+
+            <DeleteModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={confirmDeleteSpeaker}
+                title="Remove Speaker"
+                description={`This will permanently remove ${speakerToDelete?.name} from the event program. This action cannot be undone.`}
+                loading={isSubmitting}
+            />
         </AdminLayout>
     );
 }

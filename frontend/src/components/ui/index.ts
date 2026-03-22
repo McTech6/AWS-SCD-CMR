@@ -16,3 +16,4 @@ export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "./tool
 export { CalendarButton } from "./calendar-button";
 export { Toaster } from "./toast";
 export { Switch } from "./switch";
+export { DeleteModal } from "./delete-modal";

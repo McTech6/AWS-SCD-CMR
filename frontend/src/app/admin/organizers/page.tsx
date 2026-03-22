@@ -18,7 +18,8 @@ import {
     ModalDescription,
     Textarea,
     Avatar,
-    Divider
+    Divider,
+    DeleteModal
 } from "@/components/ui";
 import {
     Plus,
@@ -359,25 +360,13 @@ export default function OrganizersAdminPage() {
             </Modal>
 
             {/* Delete Modal */}
-            <Modal open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
-                <ModalContent className="max-w-md bg-[var(--surface)] border-[var(--border)] shadow-glow">
-                    <ModalHeader>
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 mb-4">
-                            <Trash2 className="text-red-500" size={24} />
-                        </div>
-                        <ModalTitle className="text-xl font-black">Purge Profile?</ModalTitle>
-                        <ModalDescription className="text-sm text-[var(--text-3)] mt-2">
-                            This will permanently remove the organizer's profile from the telemetry logs. This action is irreversible.
-                        </ModalDescription>
-                    </ModalHeader>
-                    <div className="flex justify-end gap-3 mt-8">
-                        <Button variant="ghost" onClick={() => setDeleteId(null)}>Abort</Button>
-                        <Button variant="outline" className="border-red-500/30 text-red-500 hover:bg-red-500/10 px-8 h-10 font-bold uppercase text-[10px] tracking-widest" onClick={handleDelete}>
-                            Purge Record
-                        </Button>
-                    </div>
-                </ModalContent>
-            </Modal>
+            <DeleteModal
+                isOpen={!!deleteId}
+                onClose={() => setDeleteId(null)}
+                onConfirm={handleDelete}
+                title="Purge Profile?"
+                description="This will permanently remove the organizer's profile from the leadership program. This action cannot be undone."
+            />
         </AdminLayout>
     );
 }

@@ -21,7 +21,8 @@ import {
     SelectValue,
     SelectContent,
     SelectItem,
-    Textarea
+    Textarea,
+    DeleteModal
 } from "@/components/ui";
 import {
     Clock,
@@ -52,6 +53,8 @@ export default function AgendaAdminPage() {
     const [isAddModalOpen, setIsAddModalOpen] = React.useState(false);
     const [editingItem, setEditingItem] = React.useState<AgendaItem | null>(null);
     const [isSubmitting, setIsSubmitting] = React.useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = React.useState(false);
+    const [itemToDelete, setItemToDelete] = React.useState<AgendaItem | null>(null);
 
     const fetchAgenda = async () => {
         try {
@@ -107,15 +110,24 @@ export default function AgendaAdminPage() {
         }
     };
 
-    const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this session?")) return;
+    const handleDeleteClick = (item: AgendaItem) => {
+        setItemToDelete(item);
+        setIsDeleteModalOpen(true);
+    };
 
+    const confirmDelete = async () => {
+        if (!itemToDelete) return;
         try {
-            await deleteAgendaItem(id);
+            setIsSubmitting(true);
+            await deleteAgendaItem(itemToDelete.id);
             toast.success("Session deleted successfully");
             fetchAgenda();
+            setIsDeleteModalOpen(false);
+            setItemToDelete(null);
         } catch (err) {
             toast.error("Failed to delete session");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -202,7 +214,7 @@ export default function AgendaAdminPage() {
                                                 variant="ghost"
                                                 size="icon"
                                                 className="h-8 w-8 text-[var(--text-3)] hover:text-[var(--error)]"
-                                                onClick={() => handleDelete(item.id)}
+                                                onClick={() => handleDeleteClick(item)}
                                             >
                                                 <Trash2 size={14} />
                                             </Button>
@@ -324,6 +336,15 @@ export default function AgendaAdminPage() {
                     </form>
                 </ModalContent>
             </Modal>
+
+            <DeleteModal
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={confirmDelete}
+                title="Delete Session?"
+                description={`This will permanently remove "${itemToDelete?.title}" from the agenda. This action cannot be undone.`}
+                loading={isSubmitting}
+            />
         </AdminLayout>
     );
 }

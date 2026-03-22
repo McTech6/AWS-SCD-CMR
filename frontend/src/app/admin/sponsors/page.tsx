@@ -22,7 +22,8 @@ import {
     SelectContent,
     SelectItem,
     Avatar,
-    Divider
+    Divider,
+    DeleteModal
 } from "@/components/ui";
 import {
     Plus,
@@ -364,19 +365,27 @@ export default function SponsorsAdminPage() {
                 </ModalContent>
             </Modal>
 
-            {/* Confirmation Modals */}
-            <Modal open={!!confirmAction} onOpenChange={(open) => !open && setConfirmAction(null)}>
+            {/* Delete Modal */}
+            <DeleteModal
+                isOpen={confirmAction?.type === 'DELETE'}
+                onClose={() => setConfirmAction(null)}
+                onConfirm={handleConfirmAction}
+                itemCount={1}
+                title="Purge Partner Record?"
+                description={`This will permanently remove ${confirmAction?.sponsor?.name} from the database. This action cannot be undone.`}
+            />
+
+            {/* Confirmation Modals for Approve/Reject */}
+            <Modal open={!!confirmAction && confirmAction.type !== 'DELETE'} onOpenChange={(open) => !open && setConfirmAction(null)}>
                 <ModalContent className="max-w-md bg-[var(--surface)] border-[var(--border)] shadow-glow">
                     <ModalHeader>
                         <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/5 mb-4">
                             {confirmAction?.type === 'APPROVE' && <CheckCircle2 className="text-[var(--success)]" />}
                             {confirmAction?.type === 'REJECT' && <AlertCircle className="text-[var(--error)]" />}
-                            {confirmAction?.type === 'DELETE' && <Trash2 className="text-[var(--error)]" />}
                         </div>
                         <ModalTitle className="text-xl font-black">
                             {confirmAction?.type === 'APPROVE' && "Authorize Partnership"}
                             {confirmAction?.type === 'REJECT' && "Decline Application"}
-                            {confirmAction?.type === 'DELETE' && "Purge Record"}
                         </ModalTitle>
                         <ModalDescription className="text-xs uppercase tracking-widest font-mono text-[var(--text-3)] mt-2">
                             {confirmAction?.sponsor?.name}
@@ -401,11 +410,9 @@ export default function SponsorsAdminPage() {
                             </div>
                         )}
 
-                        {(confirmAction?.type === 'REJECT' || confirmAction?.type === 'DELETE') && (
+                        {confirmAction?.type === 'REJECT' && (
                             <p className="text-sm text-[var(--text-2)] leading-relaxed">
-                                {confirmAction?.type === 'REJECT' 
-                                    ? "Are you sure you want to decline this partnership? A professional notification email will be sent to the applicant."
-                                    : "This action is irreversible. All linked metadata for this partner will be purged from the telemetry logs."}
+                                Are you sure you want to decline this partnership? A professional notification email will be sent to the applicant.
                             </p>
                         )}
 
@@ -415,13 +422,12 @@ export default function SponsorsAdminPage() {
                                 variant={confirmAction?.type === 'APPROVE' ? 'primary' : 'outline'} 
                                 className={cn(
                                     "px-6 h-10 font-black uppercase tracking-widest text-[10px]",
-                                    confirmAction?.type === 'DELETE' && "border-[var(--error)] text-[var(--error)] hover:bg-[var(--error)]/10"
+                                    confirmAction?.type === 'REJECT' && "border-[var(--error)] text-[var(--error)] hover:bg-[var(--error)]/10"
                                 )}
                                 onClick={handleConfirmAction}
                             >
                                 {confirmAction?.type === 'APPROVE' && "Activate Signal"}
                                 {confirmAction?.type === 'REJECT' && "Drop Transmission"}
-                                {confirmAction?.type === 'DELETE' && "Purge Data"}
                             </Button>
                         </div>
                     </div>

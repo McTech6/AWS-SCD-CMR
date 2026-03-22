@@ -200,6 +200,10 @@ export async function rejectSpeaker(id: string, reviewNote: string) {
   });
 }
 
+export async function deleteSpeaker(id: string) {
+  return apiCall(`/speakers/${id}`, { method: 'DELETE' });
+}
+
 export async function getSpeakerById(id: string) {
   return apiCall(`/speakers/${id}`, { method: 'GET' });
 }
