@@ -22,6 +22,7 @@ const firaCode = Fira_Code({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://awsscdcmr.com"),
   title: "GENESIS | AWS Student Community Day Cameroon 2026",
   description: "Igniting Cameroon's Cloud Journey – The First Student Community Day.",
 };

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "GENESIS: From Campus to Cloud | Douala 2026",
     description: "The premier AWS event for student builders in Cameroon. Join 500+ builders on May 23, 2026.",
-    url: "https://awsscd.cmr",
+    url: "https://awsscdcmr.com",
     siteName: "AWS Student Community Day Cameroon",
     images: [
       {
