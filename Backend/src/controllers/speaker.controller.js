@@ -15,6 +15,17 @@ export const applySpeaker = async (req, res, next) => {
     console.log("==============================")
 
     try {
+        // Check if speaker applications are open
+        const config = await prisma.eventConfig.findFirst({
+            where: { id: 'default' }
+        });
+
+        if (config && !config.speakerAppsOpen) {
+            return res.status(403).json({
+                success: false,
+                message: 'Speaker applications are currently closed',
+            });
+        }
 
         const validated = speakerApplySchema.parse(req.body)
 
