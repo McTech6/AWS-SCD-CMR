@@ -15,7 +15,7 @@ dotenv.config();
 const app = express();
 
 // CORS Configuration
-const origins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:3000'];
+const origins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',').map(o => o.trim()) : ['http://localhost:3000'];
 app.use(cors({
     origin: origins,
     credentials: true,
