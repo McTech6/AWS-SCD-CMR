@@ -29,34 +29,24 @@ export default function SettingsAdminPage() {
         fetchConfig();
     }, []);
 
-    const handleToggleRegistration = async (checked: boolean) => {
-        // Toggle label is "Registration Closed"
-        // If checked (ON), registrationOpen should be false
-        const newStatus = !checked;
-        
-        try {
-            setConfig((prev: any) => ({ ...prev, registrationOpen: newStatus }));
-        } catch (error) {
-            toast.error("Failed to update status");
-        }
-    };
+    const updateConfigSetting = async (updatedFields: any, label: string) => {
+        // Optimistic update
+        const previousConfig = { ...config };
+        setConfig((prev: any) => ({ ...prev, ...updatedFields }));
 
-    const handleSave = async () => {
-        setSaving(true);
         try {
-            const response = await updateEventConfig({
-                registrationOpen: config.registrationOpen,
-                speakerAppsOpen: config.speakerAppsOpen,
-            });
+            const response = await updateEventConfig(updatedFields);
             if (response.success) {
-                toast.success("Settings saved successfully");
+                toast.success(`${label} updated`);
                 setConfig(response.data);
+            } else {
+                throw new Error("Update failed");
             }
         } catch (error) {
-            console.error("Failed to save config:", error);
-            toast.error("Failed to save settings");
-        } finally {
-            setSaving(false);
+            console.error(`Failed to update ${label}:`, error);
+            toast.error(`Error: Could not update ${label}`);
+            // Revert on failure
+            setConfig(previousConfig);
         }
     };
 
@@ -90,7 +80,7 @@ export default function SettingsAdminPage() {
                             </div>
                             <Toggle 
                                 checked={config ? !config.registrationOpen : false} 
-                                onCheckedChange={handleToggleRegistration}
+                                onCheckedChange={(checked) => updateConfigSetting({ registrationOpen: !checked }, "Registration Status")}
                             />
                         </div>
                         <Divider className="opacity-10" />
@@ -101,7 +91,7 @@ export default function SettingsAdminPage() {
                             </div>
                             <Toggle 
                                 checked={config ? !config.speakerAppsOpen : false} 
-                                onCheckedChange={(checked) => setConfig((prev: any) => ({ ...prev, speakerAppsOpen: !checked }))} 
+                                onCheckedChange={(checked) => updateConfigSetting({ speakerAppsOpen: !checked }, "Speaker Applications")}
                             />
                         </div>
                         <Divider className="opacity-10" />
@@ -111,23 +101,6 @@ export default function SettingsAdminPage() {
                                 <p className="text-xs text-[var(--text-3)]">Allow attendees to download certificates</p>
                             </div>
                             <Toggle checked={true} disabled />
-                        </div>
-
-                        <div className="pt-6">
-                            <Button 
-                                variant="primary" 
-                                size="sm" 
-                                className="shadow-glow uppercase tracking-widest text-[10px] font-bold"
-                                onClick={handleSave}
-                                disabled={saving}
-                            >
-                                {saving ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                                        Saving...
-                                    </>
-                                ) : "Save Global Changes"}
-                            </Button>
                         </div>
                     </CardContent>
                 </Card>
