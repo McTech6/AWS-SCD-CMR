@@ -14,7 +14,16 @@ dotenv.config();
 
 const app = express();
 
-// Security: Global Rate Limiting
+// CORS Configuration
+const origins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:3000'];
+app.use(cors({
+    origin: origins,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
+}));
+
+// Global Rate Limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     limit: 100, // Limit each IP to 100 requests per window
@@ -39,15 +48,6 @@ app.use(helmet({
 }));
 
 app.use(cookieParser());
-
-// CORS Configuration (Uses .env)
-const origins = process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : ['http://localhost:3000'];
-app.use(cors({
-    origin: origins,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept']
-}));
 
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
