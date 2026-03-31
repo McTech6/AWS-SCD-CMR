@@ -20,6 +20,7 @@ import uploadRouter from './upload.routes.js';
 import emailRouter from './email.routes.js';
 import certificatesRouter from './certificates.routes.js';
 import organizerRouter from './organizer.routes.js';
+import volunteerRouter from './volunteer.routes.js';
 
 router.use('/auth', authRouter);
 router.use('/attendees', attendeeRouter);
@@ -31,5 +32,6 @@ router.use('/upload', uploadRouter);
 router.use('/emails', emailRouter);
 router.use('/certificates', certificatesRouter);
 router.use('/organizers', organizerRouter);
+router.use('/volunteers', volunteerRouter);
 
 export default router;

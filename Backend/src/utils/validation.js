@@ -47,6 +47,7 @@ export const speakerApplySchema = z.object({
     githubUrl: z.string().optional().or(z.literal('')),
     track: z.enum(['CLOUD_FUNDAMENTALS', 'DEVOPS', 'AI_ML', 'SECURITY', 'OPEN_SOURCE']).optional(),
     experienceLevel: z.enum(['ZERO_TO_ONE', 'ONE_TO_THREE', 'THREE_TO_FIVE', 'FIVE_PLUS']).optional(),
+    sessionType: z.enum(['TALK', 'DEMO', 'WORKSHOP', 'KEYNOTE']).optional().default('TALK'),
     photoBase64: z.string().optional(),
 });
 
@@ -57,9 +58,25 @@ export const speakerUpdateSchema = z.object({
     talkAbstract: z.string().optional(),
     track: z.enum(['CLOUD_FUNDAMENTALS', 'DEVOPS', 'AI_ML', 'SECURITY', 'OPEN_SOURCE']).optional(),
     experienceLevel: z.enum(['ZERO_TO_ONE', 'ONE_TO_THREE', 'THREE_TO_FIVE', 'FIVE_PLUS']).optional(),
+    sessionType: z.enum(['TALK', 'DEMO', 'WORKSHOP', 'KEYNOTE']).optional(),
     sortOrder: z.number().optional(),
     featured: z.boolean().optional(),
     photoBase64: z.string().optional(),
+});
+
+export const volunteerApplySchema = z.object({
+    name: z.string().min(2, 'Name must be at least 2 characters'),
+    email: z.string().email('Invalid email address'),
+    phone: z.string().optional(),
+    university: z.string().min(2, 'University must be at least 2 characters'),
+    cloudClub: z.string().optional(),
+    skills: z.string().min(2, 'Area of contribution is required'), // Now a single selected string
+});
+
+export const volunteerUpdateSchema = z.object({
+    status: z.enum(['PENDING', 'APPROVED', 'REJECTED']).optional(),
+    reviewNote: z.string().optional(),
+    whatsappLink: z.string().url().optional(),
 });
 
 export const agendaSchema = z.object({
@@ -83,6 +100,7 @@ export const eventConfigUpdateSchema = z.object({
     tagline: z.string().optional(),
     registrationOpen: z.boolean().optional(),
     speakerAppsOpen: z.boolean().optional(),
+    volunteerAppsOpen: z.boolean().optional(),
     maxAttendees: z.number().optional(),
     contactEmail: z.string().email().optional(),
 }).partial();

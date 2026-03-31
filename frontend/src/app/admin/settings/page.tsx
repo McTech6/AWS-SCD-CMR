@@ -97,6 +97,17 @@ export default function SettingsAdminPage() {
                         <Divider className="opacity-10" />
                         <div className="flex items-center justify-between">
                             <div>
+                                <h4 className="text-sm font-bold text-[var(--text-1)]">Volunteer Applications Closed</h4>
+                                <p className="text-xs text-[var(--text-3)]">Enable or disable new volunteer submissions</p>
+                            </div>
+                            <Toggle 
+                                checked={config ? !config.volunteerAppsOpen : false} 
+                                onCheckedChange={(checked) => updateConfigSetting({ volunteerAppsOpen: !checked }, "Volunteer Applications")}
+                            />
+                        </div>
+                        <Divider className="opacity-10" />
+                        <div className="flex items-center justify-between">
+                            <div>
                                 <h4 className="text-sm font-bold text-[var(--text-1)]">Certificate Generation</h4>
                                 <p className="text-xs text-[var(--text-3)]">Allow attendees to download certificates</p>
                             </div>

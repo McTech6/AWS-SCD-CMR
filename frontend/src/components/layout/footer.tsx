@@ -13,6 +13,7 @@ const footerLinks = {
     { href: "/speakers", label: "Speakers" },
     { href: "/register", label: "Register" },
     { href: "/speak", label: "Apply to Speak" },
+    { href: "/volunteer", label: "Apply to Volunteer" },
   ],
   resources: [
     { href: "#agenda", label: "Agenda" },

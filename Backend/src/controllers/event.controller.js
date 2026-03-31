@@ -21,6 +21,8 @@ export const getDashboardStats = async (req, res, next) => {
         const pendingSpeakers = await prisma.speaker.count({ where: { status: 'PENDING' } });
         const totalSponsors = await prisma.sponsor.count();
         const totalOrganizers = await prisma.organizer.count();
+        const approvedVolunteers = await prisma.volunteer.count({ where: { status: 'APPROVED' } });
+        const pendingVolunteers = await prisma.volunteer.count({ where: { status: 'PENDING' } });
         
         // 2. Swag & Capacity
         const config = await prisma.eventConfig.findFirst({ where: { id: 'default' } });
@@ -59,6 +61,12 @@ export const getDashboardStats = async (req, res, next) => {
             include: { user: true }
         });
 
+        const latestVolunteerApps = await prisma.volunteer.findMany({
+            take: 5,
+            orderBy: { submittedAt: 'desc' },
+            include: { user: true }
+        });
+
         // Map to a unified activity format
         const activities = [
             ...latestAttendees.map(a => ({
@@ -81,8 +89,15 @@ export const getDashboardStats = async (req, res, next) => {
                 user: s.user.name,
                 time: s.submittedAt,
                 status: s.status === 'APPROVED' ? 'success' : 'warning'
+            })),
+            ...latestVolunteerApps.map(v => ({
+                id: `vol-${v.id}`,
+                type: 'volunteer',
+                user: v.user.name,
+                time: v.submittedAt,
+                status: v.status === 'APPROVED' ? 'success' : 'warning'
             }))
-        ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 8);
+        ].sort((a, b) => new Date(b.time).getTime() - new Date(a.time).getTime()).slice(0, 10);
 
         // 4. Time-based Growth (Mock growth for now or calculate last 24h)
         const last24h = new Date(Date.now() - 24 * 60 * 60 * 1000);
@@ -98,6 +113,7 @@ export const getDashboardStats = async (req, res, next) => {
                     { label: "Total Registered", value: totalRegistered, target: maxCapacity, icon: "Users", color: "var(--electric)", growth: `+${registeredLast24h}` },
                     { label: "Checked-In", value: checkedInCount, target: totalRegistered || 1, icon: "CheckCircle", color: "var(--success)", growth: `${Math.round((checkedInCount / (totalRegistered || 1)) * 100)}%` },
                     { label: "Approved Speakers", value: approvedSpeakers, target: 20, icon: "Mic2", color: "var(--ember)", growth: `${pendingSpeakers} pending` },
+                    { label: "Volunteers", value: approvedVolunteers, target: 50, icon: "Heart", color: "var(--electric-light)", growth: `${pendingVolunteers} pending` },
                     { label: "Verified Captains", value: totalOrganizers, target: 12, icon: "Shield", color: "var(--electric-light)", growth: `${totalOrganizers} active` },
                     { label: "Swag Distributed", value: fullSwagCount, target: checkedInCount || 1, icon: "Gift", color: "var(--success)", growth: `${fullSwagCount} packs` },
                 ],

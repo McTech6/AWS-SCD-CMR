@@ -105,32 +105,22 @@ export const applySpeaker = async (req, res, next) => {
         console.log("Creating speaker record...")
 
         const speaker = await prisma.speaker.create({
-
             data: {
-
                 userId: user.id,
-
                 topic,
                 talkTitle,
-
                 talkAbstract: talkAbstract || topic,
-
                 bio,
-
                 linkedinUrl,
                 twitterHandle,
                 githubUrl,
-
                 track: track || "CLOUD_FUNDAMENTALS",
-
                 experienceLevel: experienceLevel || "ZERO_TO_ONE",
-
+                sessionType: validated.sessionType || "TALK",
                 photoUrl,
                 photoKey,
-
                 status: "PENDING"
             }
-
         })
 
         console.log("Speaker created:", speaker.id)

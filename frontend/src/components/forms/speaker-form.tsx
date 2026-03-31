@@ -33,6 +33,7 @@ const speakSchema = z.object({
     bio: z.string().max(300, "Bio must be under 300 characters").min(20, "Please provide a brief bio (at least 20 chars)"),
     talkAbstract: z.string().min(20, "Talk abstract must be at least 20 chars"),
     experience: z.string().min(1, "Please select experience level"),
+    sessionType: z.string().min(1, "Please select a session type"),
     linkedin: z.string().url("Must be a valid URL").regex(/linkedin\.com/, "Must be a LinkedIn URL"),
     twitter: z.string().optional(),
     github: z.string().url("Must be a valid URL").optional().or(z.literal("")),
@@ -63,6 +64,7 @@ export function SpeakerForm({ onSubmit, isSubmitting = false }: SpeakerFormProps
         defaultValues: {
             track: "",
             experience: "",
+            sessionType: "Simple Talk",
             photo: "",
             bio: ""
         }
@@ -184,6 +186,24 @@ export function SpeakerForm({ onSubmit, isSubmitting = false }: SpeakerFormProps
                         {...register("topic")}
                         error={errors.topic?.message}
                     />
+                    <div className="space-y-2">
+                        <span className="text-sm font-medium text-[var(--text-2)]">Session Type</span>
+                        <Select
+                            onValueChange={(val) => setValue("sessionType", val, { shouldValidate: true })}
+                            defaultValue="Simple Talk"
+                        >
+                            <SelectTrigger className={errors.sessionType ? "border-[var(--error)]" : ""}>
+                                <SelectValue placeholder="Select type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Simple Talk">Simple Talk</SelectItem>
+                                <SelectItem value="Interactive Demo">Interactive Demo</SelectItem>
+                                <SelectItem value="Hands-on Workshop">Hands-on Workshop</SelectItem>
+                                <SelectItem value="Keynote">Keynote Session</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        {errors.sessionType && <p className="text-xs text-[var(--error)]">{errors.sessionType.message}</p>}
+                    </div>
                     <Textarea
                         label="Talk Abstract"
                         placeholder="Briefly describe what your talk is about..."
