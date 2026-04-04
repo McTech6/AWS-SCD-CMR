@@ -29,7 +29,7 @@ router.use('/speakers', speakerRouter);
 router.use('/agenda', agendaRouter);
 router.use('/event', eventRouter);
 router.use('/sponsors', sponsorRouter);
-router.use('/upload', uploadRouter);
+router.use('/uploads', uploadRouter);
 router.use('/emails', emailRouter);
 router.use('/certificates', certificatesRouter);
 router.use('/organizers', organizerRouter);

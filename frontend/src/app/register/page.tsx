@@ -30,6 +30,7 @@ import {
   MapPin,
   Calendar,
   Clock,
+  MessageCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
@@ -475,6 +476,19 @@ export default function RegisterPage() {
                         variant="ember"
                         className="flex-1 shadow-glow"
                       />
+                    </div>
+
+                    <div className="mt-6 w-full">
+                       <Button 
+                          variant="primary" 
+                          asChild 
+                          className="h-16 w-full shadow-glow gap-3 font-black uppercase text-xs tracking-widest bg-[#25D366] hover:bg-[#20bd5c] border-none text-white transition-all transform hover:scale-[1.02] active:scale-95"
+                       >
+                          <a href="https://chat.whatsapp.com/DY67dx8NWxu6xs6dVRNc2G?mode=gi_t" target="_blank" rel="noopener noreferrer">
+                             <MessageCircle size={20} fill="currentColor" />
+                             Join Community WhatsApp
+                          </a>
+                       </Button>
                     </div>
 
                     <div className="mt-12 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--panel)] p-4 w-full">

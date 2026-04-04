@@ -169,7 +169,7 @@ export const updateEventConfig = async (req, res, next) => {
                 eventName: 'AWS Cloud Club Student Community Day',
                 eventDate: new Date(),
                 venue: 'TBD',
-                contactEmail: 'admin@example.com',
+                contactEmail: 'awsstudentcommunitydaycmr@gmail.com',
                 ...data
             }
         });

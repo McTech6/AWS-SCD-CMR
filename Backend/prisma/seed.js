@@ -42,8 +42,9 @@ async function main() {
             eventName: 'AWS Cloud Club Student Community Day',
             eventDate: new Date('2026-05-15T09:00:00Z'),
             venue: 'Main Auditorium',
-            contactEmail: 'contact@awscommunity.day',
+            contactEmail: 'awsstudentcommunitydaycmr@gmail.com',
             maxAttendees: 500,
+            sponsorshipOpen: false,
         },
     });
     console.log('✅ Initial event config created');

@@ -5,8 +5,9 @@ import { Badge, Button, Spinner } from "@/components/ui";
 import { Section } from "@/components/layout";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { getSponsors } from "@/lib/api";
+import { getSponsors, getEventConfig } from "@/lib/api";
 import { ExternalLink } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type Sponsor = {
     id: string;
@@ -20,21 +21,25 @@ type Sponsor = {
 export const SponsorsSection = () => {
     const [sponsors, setSponsors] = useState<Sponsor[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [config, setConfig] = useState<any>(null);
 
     useEffect(() => {
-        const fetchSponsors = async () => {
+        const fetchData = async () => {
             try {
-                const response = await getSponsors();
-                if (response.success) {
-                    setSponsors(response.data);
-                }
+                const [sponsorsRes, configRes] = await Promise.all([
+                    getSponsors(),
+                    getEventConfig()
+                ]);
+                
+                if (sponsorsRes.success) setSponsors(sponsorsRes.data);
+                if (configRes.success) setConfig(configRes.data);
             } catch (err) {
-                console.error("Failed to fetch sponsors:", err);
+                console.error("Failed to fetch data:", err);
             } finally {
                 setIsLoading(false);
             }
         };
-        fetchSponsors();
+        fetchData();
     }, []);
 
     const goldSponsors = sponsors.filter(s => s.tier === 'GOLD');

@@ -101,6 +101,7 @@ export const eventConfigUpdateSchema = z.object({
     registrationOpen: z.boolean().optional(),
     speakerAppsOpen: z.boolean().optional(),
     volunteerAppsOpen: z.boolean().optional(),
+    sponsorshipOpen: z.boolean().optional(),
     maxAttendees: z.number().optional(),
     contactEmail: z.string().email().optional(),
 }).partial();

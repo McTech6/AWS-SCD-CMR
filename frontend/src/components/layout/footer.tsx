@@ -1,9 +1,6 @@
 import Link from "next/link";
 import {
-  Twitter,
-  Linkedin,
-  Instagram,
-  Github,
+  MessageCircle,
 } from "lucide-react";
 import { Divider } from "@/components/ui";
 
@@ -23,10 +20,7 @@ const footerLinks = {
 };
 
 const socialIcons = [
-  { Icon: Twitter, href: "#", label: "Twitter" },
-  { Icon: Linkedin, href: "#", label: "LinkedIn" },
-  { Icon: Instagram, href: "#", label: "Instagram" },
-  { Icon: Github, href: "#", label: "GitHub" },
+  { Icon: MessageCircle, href: "https://chat.whatsapp.com/DY67dx8NWxu6xs6dVRNc2G?mode=gi_t", label: "WhatsApp" },
 ];
 
 export function Footer() {
@@ -93,10 +87,10 @@ export function Footer() {
               Contact
             </h4>
             <a
-              href="mailto:cloudclub@example.com"
+              href="mailto:awsstudentcommunitydaycmr@gmail.com"
               className="text-sm text-[var(--text-2)] transition-colors hover:text-[var(--electric-light)]"
             >
-              cloudclub@example.com
+              awsstudentcommunitydaycmr@gmail.com
             </a>
             <div className="mt-4 flex gap-4">
               {socialIcons.map(({ Icon, href, label }) => (

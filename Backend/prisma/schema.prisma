@@ -352,6 +352,7 @@ model EventConfig {
   registrationOpen Boolean  @default(true)
   speakerAppsOpen  Boolean  @default(true)
   volunteerAppsOpen Boolean @default(false)
+  sponsorshipOpen  Boolean  @default(false)
   maxAttendees     Int      @default(500)
   contactEmail     String
   updatedAt        DateTime  @updatedAt

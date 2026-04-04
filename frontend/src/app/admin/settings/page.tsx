@@ -108,6 +108,17 @@ export default function SettingsAdminPage() {
                         <Divider className="opacity-10" />
                         <div className="flex items-center justify-between">
                             <div>
+                                <h4 className="text-sm font-bold text-[var(--text-1)]">Sponsorship Applications Closed</h4>
+                                <p className="text-xs text-[var(--text-3)]">Open or close the public sponsorship form</p>
+                            </div>
+                            <Toggle 
+                                checked={config ? !config.sponsorshipOpen : false} 
+                                onCheckedChange={(checked) => updateConfigSetting({ sponsorshipOpen: !checked }, "Sponsorship Status")}
+                            />
+                        </div>
+                        <Divider className="opacity-10" />
+                        <div className="flex items-center justify-between">
+                            <div>
                                 <h4 className="text-sm font-bold text-[var(--text-1)]">Certificate Generation</h4>
                                 <p className="text-xs text-[var(--text-3)]">Allow attendees to download certificates</p>
                             </div>
