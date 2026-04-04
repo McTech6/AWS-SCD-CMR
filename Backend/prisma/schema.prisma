@@ -6,7 +6,7 @@ datasource db {
   provider = "postgresql"
   // url removed - now in prisma.config.js
 }
- 
+
 //////////////////////////////////////////////////
 // ENUMS
 //////////////////////////////////////////////////
@@ -108,14 +108,14 @@ enum SessionType {
 //////////////////////////////////////////////////
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  name          String
-  passwordHash  String?
-  role          Role      @default(ATTENDEE)
-  avatarUrl     String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String?
+  role         Role     @default(ATTENDEE)
+  avatarUrl    String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   attendee      Attendee?
   speaker       Speaker?
@@ -135,7 +135,7 @@ model Session {
   ipAddress String?
   userAgent String?
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([token])
   @@index([userId])
@@ -147,7 +147,7 @@ model Admin {
   userId    String   @unique
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("admins")
 }
@@ -162,28 +162,30 @@ model Attendee {
   checkedInAt  DateTime?
   registeredAt DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+  hasPaid      Boolean    @default(false)
 
-  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  swag         SwagRecord?
-  certificate  Certificate?
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  swag        SwagRecord?
+  certificate Certificate?
+  payments    Payment[]
 
   @@index([checkedIn])
   @@map("attendees")
 }
 
 model SwagRecord {
-  id          String   @id @default(cuid())
-  attendeeId  String   @unique
-  tshirt      Boolean  @default(false)
-  stickers    Boolean  @default(false)
-  notebook    Boolean  @default(false)
-  badge       Boolean  @default(false)
-  pen         Boolean  @default(false)
-  wristband   Boolean  @default(false)
-  updatedAt   DateTime @updatedAt
-  updatedBy   String?
+  id         String   @id @default(cuid())
+  attendeeId String   @unique
+  tshirt     Boolean  @default(false)
+  stickers   Boolean  @default(false)
+  notebook   Boolean  @default(false)
+  badge      Boolean  @default(false)
+  pen        Boolean  @default(false)
+  wristband  Boolean  @default(false)
+  updatedAt  DateTime @updatedAt
+  updatedBy  String?
 
-  attendee    Attendee @relation(fields: [attendeeId], references: [id], onDelete: Cascade)
+  attendee Attendee @relation(fields: [attendeeId], references: [id], onDelete: Cascade)
 
   @@map("swag_records")
 }
@@ -217,17 +219,16 @@ model SwagRecord {
 //   @@map("speakers")
 // }
 
-
 model Speaker {
-  id              String          @id @default(cuid())
-  userId          String          @unique
+  id              String           @id @default(cuid())
+  userId          String           @unique
   topic           String
   talkTitle       String
   talkAbstract    String?
   bio             String
   track           SpeakerTrack?
   experienceLevel ExperienceLevel?
-  status          SpeakerStatus   @default(PENDING)
+  status          SpeakerStatus    @default(PENDING)
   linkedinUrl     String
   twitterHandle   String?
   githubUrl       String?
@@ -239,49 +240,50 @@ model Speaker {
   reviewNote      String?
   reviewedAt      DateTime?
   reviewedBy      String?
-  submittedAt     DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-  featured        Boolean         @default(false)
-  sortOrder       Int             @default(0)
+  submittedAt     DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  featured        Boolean          @default(false)
+  sortOrder       Int              @default(0)
 
-  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([status])
   @@map("speakers")
 }
-model Certificate {
-  id           String              @id @default(cuid())
-  attendeeId   String              @unique
-  status       CertificateStatus   @default(NOT_GENERATED)
-  fileUrl      String?
-  fileKey      String?
-  generatedAt  DateTime?
-  sentAt       DateTime?
-  failedAt     DateTime?
-  failReason   String?
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
 
-  attendee     Attendee            @relation(fields: [attendeeId], references: [id], onDelete: Cascade)
+model Certificate {
+  id          String            @id @default(cuid())
+  attendeeId  String            @unique
+  status      CertificateStatus @default(NOT_GENERATED)
+  fileUrl     String?
+  fileKey     String?
+  generatedAt DateTime?
+  sentAt      DateTime?
+  failedAt    DateTime?
+  failReason  String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  attendee Attendee @relation(fields: [attendeeId], references: [id], onDelete: Cascade)
 
   @@index([status])
   @@map("certificates")
 }
 
 model EmailLog {
-  id             String        @id @default(cuid())
+  id             String      @id @default(cuid())
   subject        String
   body           String
   target         EmailTarget
-  status         EmailStatus   @default(DRAFT)
-  recipientCount Int           @default(0)
-  successCount   Int           @default(0)
-  failCount      Int           @default(0)
+  status         EmailStatus @default(DRAFT)
+  recipientCount Int         @default(0)
+  successCount   Int         @default(0)
+  failCount      Int         @default(0)
   sentAt         DateTime?
-  createdAt      DateTime      @default(now())
+  createdAt      DateTime    @default(now())
   sentBy         String
 
-  recipients     EmailRecipient[]
+  recipients EmailRecipient[]
 
   @@index([status])
   @@index([createdAt])
@@ -289,15 +291,15 @@ model EmailLog {
 }
 
 model EmailRecipient {
-  id             String   @id @default(cuid())
+  id             String    @id @default(cuid())
   emailLogId     String
   recipientEmail String
   recipientName  String
-  delivered      Boolean  @default(false)
+  delivered      Boolean   @default(false)
   failReason     String?
   deliveredAt    DateTime?
 
-  emailLog       EmailLog @relation(fields: [emailLogId], references: [id], onDelete: Cascade)
+  emailLog EmailLog @relation(fields: [emailLogId], references: [id], onDelete: Cascade)
 
   @@index([emailLogId])
   @@map("email_recipients")
@@ -324,24 +326,24 @@ model Sponsor {
 }
 
 model AgendaItem {
-  id          String      @id @default(cuid())
+  id          String       @id @default(cuid())
   title       String
   description String?
   startTime   DateTime?
   endTime     DateTime?
   track       AgendaTrack?
   speakerId   String?
-  sortOrder   Int         @default(0)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  sortOrder   Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   @@index([startTime])
   @@map("agenda_items")
 }
 
 model EventConfig {
-  id               String   @id @default(cuid())
-  eventName        String   @default("AWS Cloud Club Student Community Day")
+  id               String    @id @default(cuid())
+  eventName        String    @default("AWS Cloud Club Student Community Day")
   eventDate        DateTime
   eventEndDate     DateTime?
   venue            String
@@ -352,25 +354,25 @@ model EventConfig {
   volunteerAppsOpen Boolean @default(false)
   maxAttendees     Int      @default(500)
   contactEmail     String
-  updatedAt        DateTime @updatedAt
+  updatedAt        DateTime  @updatedAt
 
   @@map("event_config")
 }
 
 model Organizer {
-  id           String   @id @default(cuid())
-  name         String
-  role         String   @default("Cloud Club Captain")
-  club         String?
-  bio          String?
-  imageUrl     String?
-  linkedinUrl  String?
-  twitterUrl   String?
-  githubUrl    String?
-  sortOrder    Int      @default(0)
-  visible      Boolean  @default(true)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id          String   @id @default(cuid())
+  name        String
+  role        String   @default("Cloud Club Captain")
+  club        String?
+  bio         String?
+  imageUrl    String?
+  linkedinUrl String?
+  twitterUrl  String?
+  githubUrl   String?
+  sortOrder   Int      @default(0)
+  visible     Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("organizers")
 }
@@ -394,4 +396,32 @@ model Volunteer {
 
   @@index([status])
   @@map("volunteers")
+}
+
+//////////////////////////////////////////////////
+// PAYMENT
+//////////////////////////////////////////////////
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  CANCELLED
+}
+
+model Payment {
+  id          String   @id @default(cuid())
+  attendeeId  String
+  amount      Float
+  phoneNumber String
+  providerRef String?
+  status      String   @default("PENDING")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  attendee Attendee @relation(fields: [attendeeId], references: [id], onDelete: Cascade)
+
+  @@index([attendeeId])
+  @@index([status])
+  @@map("payments")
 }

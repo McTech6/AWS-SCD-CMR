@@ -225,17 +225,15 @@ export const SponsorsSection = () => {
                         <Button variant="primary" size="lg" asChild className="w-full sm:w-auto px-16 h-16 rounded-full shadow-glow font-black uppercase tracking-widest text-xs min-w-[240px]">
                             <Link href="/sponsorship/apply">Secure Partnership</Link>
                         </Button>
-                        <div className="relative group/btn w-full sm:w-auto min-w-[240px]">
-                            <button
-                                disabled
-                                className="w-full px-16 h-16 rounded-full border border-[var(--border)] text-xs font-black uppercase tracking-widest bg-white/5 text-[var(--text-3)] cursor-not-allowed flex items-center justify-center gap-3 transition-colors"
+                        <Button variant="outline" size="lg" asChild className="w-full sm:w-auto px-16 h-16 rounded-full font-black uppercase tracking-widest text-xs min-w-[240px] border-[var(--border)] hover:bg-white/10 transition-colors">
+                            <a 
+                                href="https://drive.google.com/file/d/1XOmmIU_Wj4s7UYjcFJw9VvR_0ZtNEAFp/view?usp=sharing" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
                             >
                                 Get Prospectus
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[var(--ember)]/10 border border-[var(--ember)]/20 text-[var(--ember)] text-[9px] font-black uppercase tracking-widest">
-                                    Coming Soon
-                                </span>
-                            </button>
-                        </div>
+                            </a>
+                        </Button>
                     </div>
                 </div>
             </motion.div>

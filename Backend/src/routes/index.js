@@ -1,13 +1,13 @@
-import { Router } from 'express';
+import { Router } from "express";
 
 const router = Router();
 
 // Example Route
-router.get('/welcome', (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: 'Welcome to the AWS Student Community Day API'
-    });
+router.get("/welcome", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Welcome to the AWS Student Community Day API",
+  });
 });
 
 import authRouter from './auth.routes.js';
@@ -21,6 +21,7 @@ import emailRouter from './email.routes.js';
 import certificatesRouter from './certificates.routes.js';
 import organizerRouter from './organizer.routes.js';
 import volunteerRouter from './volunteer.routes.js';
+import paymentRouter from './payment.routes.js';
 
 router.use('/auth', authRouter);
 router.use('/attendees', attendeeRouter);
@@ -33,5 +34,6 @@ router.use('/emails', emailRouter);
 router.use('/certificates', certificatesRouter);
 router.use('/organizers', organizerRouter);
 router.use('/volunteers', volunteerRouter);
+router.use('/payments', paymentRouter);
 
 export default router;

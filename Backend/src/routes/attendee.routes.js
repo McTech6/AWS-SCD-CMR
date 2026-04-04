@@ -7,7 +7,8 @@ import {
     updateSwag,
     deleteAttendee,
     getAttendeeStats,
-    getAttendeesForUI
+    getAttendeesForUI,
+    getAttendeeByEmail
 } from '../controllers/attendee.controller.js';
 import { requireAuth, requireAdmin } from '../middleware/auth.middleware.js';
 
@@ -39,6 +40,9 @@ const router = Router();
  *         description: Registration closed or capacity full
  */
 router.post('/register', registerAttendee);
+
+// Check if email is already registered (for payment flow)
+router.post('/lookup', getAttendeeByEmail);
 
 // Admin only routes
 router.use(requireAuth, requireAdmin);

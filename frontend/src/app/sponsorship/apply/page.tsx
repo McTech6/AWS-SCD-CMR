@@ -27,23 +27,27 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { applySponsor } from "@/lib/api";
+import { applySponsor, uploadPublicLogo } from "@/lib/api";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
 import { PageWrapper, Navbar, Footer } from "@/components/layout";
+import { cn } from "@/lib/utils";
 
 const applySchema = z.object({
   name: z.string().min(2, "Company name is required"),
   contactName: z.string().min(2, "Contact person name is required"),
   contactEmail: z.string().email("Invalid contact email"),
   website: z.string().url("Please enter a valid URL (https://...)"),
-  logoUrl: z.string().url("Please enter a valid image URL for your logo"),
+  logoUrl: z.string().optional(), // Will be populated after upload
 });
 
 type ApplyFormValues = z.infer<typeof applySchema>;
 
 export default function SponsorshipApplyPage() {
   const [isSuccess, setIsSuccess] = React.useState(false);
+  const [logoFile, setLogoFile] = React.useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = React.useState<string | null>(null);
+  const [isUploading, setIsUploading] = React.useState(false);
   const {
     register,
     handleSubmit,
@@ -52,13 +56,55 @@ export default function SponsorshipApplyPage() {
     resolver: zodResolver(applySchema)
   });
 
+  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error("Logo file size must be under 2MB");
+        return;
+      }
+      setLogoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const onSubmit = async (data: ApplyFormValues) => {
+    if (!logoFile) {
+      toast.error("Please upload your company logo");
+      return;
+    }
+
+    setIsUploading(true);
     try {
-      await applySponsor(data);
+      // 1. Convert to base64 and upload
+      const reader = new FileReader();
+      const base64Promise = new Promise<string>((resolve) => {
+        const r = new FileReader();
+        r.onloadend = () => resolve(r.result as string);
+        r.readAsDataURL(logoFile);
+      });
+      
+      const base64 = await base64Promise;
+      const uploadRes = await uploadPublicLogo(base64);
+      
+      if (!uploadRes.success) throw new Error("Logo upload failed");
+
+      // 2. Submit form with uploaded URL
+      await applySponsor({
+        ...data,
+        logoUrl: uploadRes.url
+      });
+      
       setIsSuccess(true);
       toast.success("Application submitted successfully!");
     } catch (err: any) {
       toast.error(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -211,15 +257,36 @@ export default function SponsorshipApplyPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] uppercase font-bold tracking-widest text-[var(--text-3)] ml-1">Company Logo URL (SVG High-res)</label>
-                    <div className="relative">
-                      <Input 
-                        {...register("logoUrl")}
-                        error={errors.logoUrl?.message}
-                        placeholder="https://..." 
-                        className="pl-12 h-14 border-[var(--border)] bg-[var(--void)]/50 focus:bg-[var(--void)]"
-                      />
-                      <ImageIcon size={18} className="absolute left-4 top-4 text-[var(--text-3)]" />
+                    <label className="text-[10px] uppercase font-bold tracking-widest text-[var(--text-3)] ml-1">Company Logo (SVG/PNG/JPG)</label>
+                    <div className="relative group/upload">
+                      <div className={cn(
+                        "flex flex-col items-center justify-center w-full h-32 rounded-xl border-2 border-dashed border-[var(--border)] transition-all",
+                        logoPreview ? "bg-[var(--electric)]/5 border-[var(--electric)]/30" : "bg-[var(--void)]/50 hover:border-[var(--electric)]/50"
+                      )}>
+                        {logoPreview ? (
+                          <div className="relative w-full h-full p-2 flex items-center justify-center">
+                            <img src={logoPreview} alt="Logo preview" className="max-h-full max-w-full object-contain" />
+                            <button 
+                              type="button"
+                              onClick={() => { setLogoFile(null); setLogoPreview(null); }}
+                              className="absolute top-2 right-2 p-1 rounded-full bg-[var(--void)]/80 text-[var(--text-1)] border border-[var(--border)] hover:text-[var(--ember)] transition-colors"
+                            >
+                              <CheckCircle2 size={14} className="rotate-45" /> {/* Delete Icon Proxy */}
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center gap-2 pointer-events-none">
+                            <ImageIcon size={24} className="text-[var(--text-3)] group-hover/upload:text-[var(--electric-light)] transition-colors" />
+                            <span className="text-[10px] font-mono text-[var(--text-3)] uppercase tracking-wider">Click to Upload Logo</span>
+                          </div>
+                        )}
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          onChange={onFileChange}
+                          className="absolute inset-0 opacity-0 cursor-pointer"
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -229,10 +296,10 @@ export default function SponsorshipApplyPage() {
                     type="submit" 
                     variant="primary" 
                     className="w-full h-16 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-glow gap-3 group"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || isUploading}
                   >
-                    {isSubmitting ? (
-                      <span className="animate-pulse">Transmitting Data...</span>
+                    {isSubmitting || isUploading ? (
+                      <span className="animate-pulse">Processing...</span>
                     ) : (
                       <>
                         Request Partnership

@@ -15,7 +15,7 @@ const prismaClientSingleton = () => {
         connectionString,
         max: 20,
         idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 5000,
+        connectionTimeoutMillis: 20000, // increased to allow slow queries
         ssl: false // SSL disabled for internal VPS connection
     });
 

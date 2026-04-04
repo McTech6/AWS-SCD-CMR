@@ -69,6 +69,9 @@ export const registerAttendee = async (req, res, next) => {
             });
 
             return { user, attendee, swag };
+        }, {
+            maxWait: 5000,
+            timeout: 15000
         });
 
         // compute registrationId same way as other endpoints (match frontend mock)
@@ -140,6 +143,39 @@ export const registerAttendee = async (req, res, next) => {
     }
 };
 
+// Check registration status by email
+export const getAttendeeByEmail = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ success: false, message: 'Email is required' });
+        }
+
+        const user = await prisma.user.findUnique({
+            where: { email },
+            include: { attendee: true }
+        });
+
+        if (!user || !user.attendee) {
+            return res.status(404).json({ success: false, message: 'No registered attendee found with that email' });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: {
+                id: user.attendee.id,
+                name: user.name,
+                email: user.email,
+                university: user.attendee.university,
+                tshirtSize: user.attendee.tshirtSize,
+                hasPaid: user.attendee.hasPaid
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // Admin Only - List
 
 // original admin list endpoint (may remain for internal use)
@@ -196,7 +232,7 @@ export const getAttendees = async (req, res, next) => {
             return res.status(200).send(csvRows.join('\n'));
         }
 
-        const [attendees, total] = await prisma.$transaction([
+        const [attendees, total] = await Promise.all([
             prisma.attendee.findMany({
                 where,
                 skip,
@@ -253,7 +289,7 @@ export const getAttendeesForUI = async (req, res, next) => {
             ]
         };
 
-        const [attendees, total] = await prisma.$transaction([
+        const [attendees, total] = await Promise.all([
             prisma.attendee.findMany({
                 where,
                 skip,
@@ -290,6 +326,7 @@ export const getAttendeesForUI = async (req, res, next) => {
                 email: a.user.email,
                 university: a.university,
                 checkedIn: a.checkedIn,
+                hasPaid: a.hasPaid,
                 swag,
                 certificateStatus: a.certificate?.status || 'Not Sent'
             };
@@ -350,6 +387,7 @@ export const getAttendeeById = async (req, res, next) => {
             phone: attendee.phone,
             tshirtSize: attendee.tshirtSize,
             checkedIn: attendee.checkedIn,
+            hasPaid: attendee.hasPaid,
             checkedInAt: attendee.checkedInAt,
             registeredAt: attendee.registeredAt,
             status: attendee.checkedIn ? 'Confirmed' : 'Pending',
@@ -439,6 +477,7 @@ export const checkInAttendee = async (req, res, next) => {
             phone: updated.phone,
             tshirtSize: updated.tshirtSize,
             checkedIn: updated.checkedIn,
+            hasPaid: updated.hasPaid,
             checkedInAt: updated.checkedInAt,
             registeredAt: updated.registeredAt,
             status: updated.checkedIn ? 'Confirmed' : 'Pending',
