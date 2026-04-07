@@ -298,6 +298,7 @@ export default function AttendeesPage() {
                                     <th className="px-6 py-4">Reg ID</th>
                                     <th className="px-6 py-4">Attendee</th>
                                     <th className="px-6 py-4">University</th>
+                                    <th className="px-6 py-4 text-center">Payment</th>
                                     <th className="px-6 py-4 text-center">Check-in</th>
                                     <th className="px-6 py-4">Swag Items</th>
                                     <th className="px-6 py-4">Certificate</th>
@@ -320,6 +321,7 @@ export default function AttendeesPage() {
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4"><Skeleton className="h-4 w-28 bg-white/5" /></td>
+                                            <td className="px-6 py-4 text-center"><Skeleton className="h-5 w-12 mx-auto rounded bg-white/5" /></td>
                                             <td className="px-6 py-4 text-center"><Skeleton className="h-7 w-10 mx-auto rounded-full bg-white/5" /></td>
                                             <td className="px-6 py-4">
                                                 <div className="flex gap-1.5">
@@ -360,6 +362,17 @@ export default function AttendeesPage() {
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className="text-xs font-bold text-[var(--text-2)]">{attendee.university}</span>
+                                            </td>
+                                            <td className="px-6 py-4 text-center">
+                                                <Badge
+                                                    variant="outline"
+                                                    className={cn(
+                                                        "text-[9px] uppercase tracking-widest h-5 px-1.5 font-mono font-bold border border-[var(--border)]",
+                                                        attendee.hasPaid ? "text-[var(--success)] bg-[var(--success)]/10 border-[var(--success)]/20" : "text-[var(--text-3)] bg-transparent"
+                                                    )}
+                                                >
+                                                    {attendee.hasPaid ? "PAID" : "UNPAID"}
+                                                </Badge>
                                             </td>
                                             <td className="px-6 py-4 text-center">
                                                 <Switch
@@ -434,30 +447,23 @@ export default function AttendeesPage() {
                             <Button
                                 variant="outline"
                                 size="xs"
-                                className="h-9 w-9 p-0 border-[var(--border)]"
+                                className="h-9 w-9 p-0 border-[var(--border)] hover:bg-white/5 transition-colors"
                                 disabled={page === 1}
                                 onClick={() => setPage(page - 1)}
                             >
                                 <ChevronLeft size={16} />
                             </Button>
-                            {Array.from({ length: totalPages }).map((_, i) => (
-                                <Button
-                                    key={i}
-                                    variant={page === i + 1 ? "primary" : "outline"}
-                                    size="xs"
-                                    className={cn(
-                                        "h-9 w-9 p-0 text-xs font-bold",
-                                        page === i + 1 ? "shadow-glow" : "border-[var(--border)]"
-                                    )}
-                                    onClick={() => setPage(i + 1)}
-                                >
-                                    {i + 1}
-                                </Button>
-                            ))}
+                            
+                            <div className="flex h-9 items-center justify-center px-4 rounded-md border border-[var(--border)] bg-[var(--void)]/50 min-w-[100px]">
+                                <span className="text-[10px] font-mono font-black uppercase tracking-widest text-[var(--text-2)] text-center">
+                                    Page <span className="text-[var(--electric-light)]">{page}</span> of {totalPages}
+                                </span>
+                            </div>
+
                             <Button
                                 variant="outline"
                                 size="xs"
-                                className="h-9 w-9 p-0 border-[var(--border)]"
+                                className="h-9 w-9 p-0 border-[var(--border)] hover:bg-white/5 transition-colors"
                                 disabled={page === totalPages}
                                 onClick={() => setPage(page + 1)}
                             >

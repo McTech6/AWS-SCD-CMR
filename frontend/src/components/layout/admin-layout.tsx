@@ -29,6 +29,7 @@ const NAV_ITEMS = [
     { label: "Overview", icon: LayoutDashboard, href: "/admin" },
     { label: "Attendees", icon: Users, href: "/admin/attendees" },
     { label: "Speakers", icon: Mic2, href: "/admin/speakers" },
+    { label: "Volunteers", icon: Heart, href: "/admin/volunteers" },
     { label: "Agenda", icon: Calendar, href: "/admin/agenda" },
     { label: "Sponsors", icon: Heart, href: "/admin/sponsors" },
     { label: "Organizers", icon: Shield, href: "/admin/organizers" },

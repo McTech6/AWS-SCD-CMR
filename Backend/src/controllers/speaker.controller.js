@@ -15,6 +15,17 @@ export const applySpeaker = async (req, res, next) => {
     console.log("==============================")
 
     try {
+        // Check if speaker applications are open
+        const config = await prisma.eventConfig.findFirst({
+            where: { id: 'default' }
+        });
+
+        if (config && !config.speakerAppsOpen) {
+            return res.status(403).json({
+                success: false,
+                message: 'Speaker applications are currently closed',
+            });
+        }
 
         const validated = speakerApplySchema.parse(req.body)
 
@@ -94,32 +105,22 @@ export const applySpeaker = async (req, res, next) => {
         console.log("Creating speaker record...")
 
         const speaker = await prisma.speaker.create({
-
             data: {
-
                 userId: user.id,
-
                 topic,
                 talkTitle,
-
                 talkAbstract: talkAbstract || topic,
-
                 bio,
-
                 linkedinUrl,
                 twitterHandle,
                 githubUrl,
-
                 track: track || "CLOUD_FUNDAMENTALS",
-
                 experienceLevel: experienceLevel || "ZERO_TO_ONE",
-
+                sessionType: validated.sessionType || "TALK",
                 photoUrl,
                 photoKey,
-
                 status: "PENDING"
             }
-
         })
 
         console.log("Speaker created:", speaker.id)
@@ -150,9 +151,12 @@ export const getSpeakers = async (req, res, next) => {
     try {
         const { track, search } = req.query
 
+        const validTracks = ['CLOUD_FUNDAMENTALS', 'DEVOPS', 'AI_ML', 'SECURITY', 'OPEN_SOURCE']
+        const trackFilter = track && validTracks.includes(track) ? track : undefined
+
         const where = {
             status: "APPROVED",
-            ...(track && track !== 'All' && { track }),
+            ...(trackFilter && { track: trackFilter }),
             ...(search && {
                 OR: [
                     { user: { name: { contains: search, mode: 'insensitive' } } },

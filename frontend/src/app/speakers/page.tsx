@@ -50,6 +50,14 @@ type Speaker = {
 
 const TRACKS = ["All", "Serverless", "Architecture", "Security", "AI & ML", "DevOps"];
 
+const TRACK_TO_ENUM: Record<string, string> = {
+  "Serverless": "CLOUD_FUNDAMENTALS",
+  "Architecture": "CLOUD_FUNDAMENTALS",
+  "Security": "SECURITY",
+  "AI & ML": "AI_ML",
+  "DevOps": "DEVOPS",
+};
+
 const SpeakerCard = ({ speaker, onClick }: { speaker: Speaker, onClick: () => void }) => {
   return (
     <motion.div
@@ -153,7 +161,7 @@ export default function SpeakersPage() {
       try {
         setIsLoading(true);
         const response = await getPublicSpeakers(
-          activeTrack === "All" ? undefined : activeTrack,
+          activeTrack === "All" ? undefined : TRACK_TO_ENUM[activeTrack],
           debouncedSearch || undefined
         );
 

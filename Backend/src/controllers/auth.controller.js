@@ -66,6 +66,18 @@ export const registerAdmin = async (req, res, next) => {
 export const register = async (req, res, next) => {
     console.log(`📝 Registering new user: ${req.body?.email}`);
     try {
+        // Check if registration is open
+        const config = await prisma.eventConfig.findFirst({
+            where: { id: 'default' }
+        });
+
+        if (config && !config.registrationOpen) {
+            return res.status(403).json({
+                success: false,
+                message: 'Registration is currently closed',
+            });
+        }
+
         const validatedData = registerSchema.parse(req.body);
         const { name, email, password, university, phone, tshirtSize } = validatedData;
 

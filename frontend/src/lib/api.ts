@@ -86,6 +86,14 @@ export async function registerAttendee(data: {
   });
 }
 
+// Check attendee via email
+export async function lookupAttendeeByEmail(email: string) {
+  return apiCall("/attendees/lookup", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
 // Attendees API
 export async function getAttendees(
   page = 1,
@@ -178,6 +186,7 @@ export async function applySpeaker(data: {
   githubUrl?: string;
   track?: string;
   experienceLevel?: string;
+  sessionType?: string;
   photoBase64?: string | null;
 }) {
   return apiCall("/speakers/apply", {
@@ -219,6 +228,43 @@ export async function deleteSpeaker(id: string) {
 
 export async function getSpeakerById(id: string) {
   return apiCall(`/speakers/${id}`, { method: "GET" });
+}
+
+// Volunteers API
+export async function applyVolunteer(data: {
+  name: string;
+  email: string;
+  phone?: string;
+  university: string;
+  cloudClub?: string;
+  skills: string;
+}) {
+  return apiCall('/volunteers/apply', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+}
+
+export async function getAllVolunteers() {
+  return apiCall('/volunteers/all', { method: 'GET' });
+}
+
+export async function approveVolunteer(id: string, whatsappLink: string) {
+  return apiCall(`/volunteers/${id}/approve`, {
+    method: 'PATCH',
+    body: JSON.stringify({ whatsappLink }),
+  });
+}
+
+export async function rejectVolunteer(id: string, reviewNote: string) {
+  return apiCall(`/volunteers/${id}/reject`, {
+    method: 'PATCH',
+    body: JSON.stringify({ reviewNote }),
+  });
+}
+
+export async function deleteVolunteer(id: string) {
+  return apiCall(`/volunteers/${id}`, { method: 'DELETE' });
 }
 
 // Agenda API
@@ -405,5 +451,13 @@ export async function createPayment(data: {
   return apiCall("/payments", {
     method: "POST",
     body: JSON.stringify(data),
+  });
+}
+
+// UPLOADS API
+export async function uploadPublicLogo(file: string) {
+  return apiCall("/uploads/public", {
+    method: "POST",
+    body: JSON.stringify({ file }),
   });
 }

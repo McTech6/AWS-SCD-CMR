@@ -47,6 +47,7 @@ const speakSchema = z.object({
   track: z.string().min(1, "Please select a track"),
   bio: z.string().max(300, "Bio must be under 300 characters").min(20, "Please provide a brief bio (at least 20 chars)"),
   experience: z.string().min(1, "Please select experience level"),
+  sessionType: z.string().min(1, "Please select a session type"),
   linkedin: z.string().url("Must be a valid URL").regex(/linkedin\.com/, "Must be a LinkedIn URL"),
   twitter: z.string().optional(),
   github: z.string().url("Must be a valid URL").optional().or(z.literal("")),
@@ -79,6 +80,13 @@ export default function SpeakPage() {
         "3-5": "THREE_TO_FIVE",
         "5+": "FIVE_PLUS"
       };
+      
+      const sessionTypeMap: Record<string, string> = {
+        "Simple Talk": "TALK",
+        "Interactive Demo": "DEMO",
+        "Hands-on Workshop": "WORKSHOP",
+        "Keynote": "KEYNOTE"
+      };
 
       const response = await applySpeaker({
         name: data.fullName,
@@ -94,6 +102,7 @@ export default function SpeakPage() {
         githubUrl: data.github,
         track: trackMap[data.track],
         experienceLevel: experienceMap[data.experience],
+        sessionType: sessionTypeMap[data.sessionType] || "TALK",
         photoBase64: profilePhoto
       });
 

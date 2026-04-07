@@ -38,11 +38,18 @@ enum SponsorStatus {
   REJECTED
 }
 
+enum VolunteerStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum CertificateStatus {
   NOT_GENERATED
   GENERATED
   SENT
   FAILED
+  FAIL_EXPIRED
 }
 
 enum EmailStatus {
@@ -89,6 +96,13 @@ enum ExperienceLevel {
   FIVE_PLUS
 }
 
+enum SessionType {
+  TALK
+  DEMO
+  WORKSHOP
+  KEYNOTE
+}
+
 //////////////////////////////////////////////////
 // MODELS
 //////////////////////////////////////////////////
@@ -103,10 +117,11 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  attendee Attendee?
-  speaker  Speaker?
-  admin    Admin?
-  sessions Session[]
+  attendee      Attendee?
+  speaker       Speaker?
+  volunteer     Volunteer?
+  admin         Admin?
+  sessions      Session[]
 
   @@map("users")
 }
@@ -219,8 +234,9 @@ model Speaker {
   githubUrl       String?
   photoUrl        String?
   photoKey        String?
-  role            String           @default("SPEAKER")
-  company         String           @default("AWS Community")
+  role            String          @default("SPEAKER")
+  company         String          @default("AWS Community")
+  sessionType     SessionType     @default(TALK)
   reviewNote      String?
   reviewedAt      DateTime?
   reviewedBy      String?
@@ -333,9 +349,11 @@ model EventConfig {
   venue            String
   venueAddress     String?
   tagline          String?
-  registrationOpen Boolean   @default(true)
-  speakerAppsOpen  Boolean   @default(true)
-  maxAttendees     Int       @default(500)
+  registrationOpen Boolean  @default(true)
+  speakerAppsOpen  Boolean  @default(true)
+  volunteerAppsOpen Boolean @default(false)
+  sponsorshipOpen  Boolean  @default(false)
+  maxAttendees     Int      @default(500)
   contactEmail     String
   updatedAt        DateTime  @updatedAt
 
@@ -358,6 +376,27 @@ model Organizer {
   updatedAt   DateTime @updatedAt
 
   @@map("organizers")
+}
+
+model Volunteer {
+  id              String          @id @default(cuid())
+  userId          String          @unique
+  phone           String?
+  university      String
+  cloudClub       String?
+  skills          Json?
+  status          VolunteerStatus @default(PENDING)
+  reviewNote      String?
+  reviewedAt      DateTime?
+  reviewedBy      String?
+  whatsappLink    String?
+  submittedAt     DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("volunteers")
 }
 
 //////////////////////////////////////////////////

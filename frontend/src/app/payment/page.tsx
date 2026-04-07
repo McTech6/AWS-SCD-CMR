@@ -28,6 +28,11 @@ const PaymentPage = () => {
 
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSuccess, setIsSuccess] = React.useState(false);
+  const [savedTshirtSize, setSavedTshirtSize] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    setSavedTshirtSize(localStorage.getItem("tshirtSize") || null);
+  }, []);
 
   const {
     register,
@@ -35,6 +40,9 @@ const PaymentPage = () => {
     formState: { errors },
   } = useForm<PaymentData>({
     resolver: zodResolver(paymentSchema),
+    defaultValues: {
+      phoneNumber: ""
+    }
   });
 
   const onSubmit = async (data: PaymentData) => {
@@ -84,27 +92,30 @@ const PaymentPage = () => {
                 {/* HEADER */}
                 <header className="mb-10 text-center">
                   <Badge
-                    variant="outline"
-                    className="mb-4 uppercase tracking-widest"
+                    variant="warning"
+                    className="mb-4 uppercase tracking-widest bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
                   >
-                    Premium Offer
+                    Temporary Maintenance
                   </Badge>
 
-                  <h2 className="font-display text-3xl font-extrabold text(--text-1)">
-                    Pay for Your T-Shirt
+                  <h2 className="font-display text-3xl font-extrabold text-[var(--text-1)]">
+                    Payments are Paused
                   </h2>
 
-                  <p className="mt-2 text-(--text-2)">
-                    Complete payment to reserve your official Cloud Summit
-                    T-shirt.
+                  <p className="mt-2 text-[var(--text-2)]">
+                    T-shirt reservations are currently being processed manually. 
+                    Please check back later or contact the organizers.
                   </p>
                 </header>
 
-                {/* CARD */}
-                <div className="rounded-lg border border-(--border) bg-(--panel) p-6 shadow-elevated">
-                  {/* PRICE */}
-                  <div className="mb-6 rounded-lg border border-(--electric)/20 bg-(--electric)/5 p-4 text-center">
-                    <span className="block text-xs uppercase tracking-widest text-(--text-3)">
+                <div className="rounded-lg border border-[var(--border)] bg-[var(--panel)] p-6 shadow-elevated opacity-50 pointer-events-none mb-4">
+                  <div className="text-center py-4 italic text-[var(--text-3)]">
+                    This section is temporarily unavailable.
+                  </div>
+
+                  {/* 
+                  <div className="mb-6 rounded-lg border border-[var(--electric)]/20 bg-[var(--electric)]/5 p-4 text-center">
+                    <span className="block text-xs uppercase tracking-widest text-[var(--text-3)]">
                       Amount to Pay
                     </span>
                     <span className="font-display text-3xl font-extrabold text-(--electric)">
@@ -112,7 +123,6 @@ const PaymentPage = () => {
                     </span>
                   </div>
 
-                  {/* FORM */}
                   <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                     <Input
                       label="Mobile Money Number"
@@ -147,6 +157,7 @@ const PaymentPage = () => {
                   <p className="text-xs text-center text-(--text-3) font-mono uppercase tracking-widest">
                     You will receive a Mobile Money payment prompt on your phone
                   </p>
+                  */}
                 </div>
               </motion.div>
             ) : (

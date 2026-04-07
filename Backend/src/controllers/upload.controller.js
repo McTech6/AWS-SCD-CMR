@@ -3,6 +3,7 @@ import { z } from 'zod';
 import prisma from '../db/prisma.js';
 import { presignedUrlSchema, uploadConfirmSchema } from '../utils/validation.js';
 import { generateUploadUrl, checkObjectExists, deleteObject } from '../utils/s3.js';
+import { uploadImage } from '../utils/cloudinary.js';
 
 const ALLOWED_TYPES = [
   'image/jpeg',
@@ -38,6 +39,29 @@ export const getPresignedUrl = async (req, res, next) => {
     res.status(200).json({ success: true, uploadUrl, fileKey: key, publicUrl });
   } catch (error) {
     if (error.name === 'ZodError') return res.status(400).json({ success: false, errors: error.errors });
+    next(error);
+  }
+};
+
+/**
+ * Public upload for sponsorship logos (unauthenticated)
+ * Uses Cloudinary for direct upload of base64/buffer
+ */
+export const uploadPublicLogo = async (req, res, next) => {
+  try {
+    const { file } = req.body; // Expect base64 string
+    if (!file) {
+      return res.status(400).json({ success: false, message: 'No file provided' });
+    }
+
+    const result = await uploadImage(file, 'sponsors');
+    res.status(200).json({ 
+      success: true, 
+      url: result.url,
+      publicId: result.publicId 
+    });
+  } catch (error) {
+    console.error('Public upload error:', error);
     next(error);
   }
 };

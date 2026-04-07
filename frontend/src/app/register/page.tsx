@@ -30,10 +30,11 @@ import {
   MapPin,
   Calendar,
   Clock,
+  MessageCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { registerAttendee } from "@/lib/api";
+import { registerAttendee, lookupAttendeeByEmail } from "@/lib/api";
 import { log } from "console";
 
 export const registrationSchema = z.object({
@@ -63,7 +64,7 @@ const TShirtSelector = ({
   return (
     <div className="flex flex-col gap-3">
       <span className="text-sm font-medium text-[var(--text-2)]">
-        Select your T-Shirt size (Optional — T-shirt costs 2500 XAF)
+        Select your T-Shirt size (Optional)
       </span>
       <div className="flex flex-wrap gap-2">
         {sizes.map((size) => (
@@ -92,9 +93,12 @@ export default function RegisterPage() {
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [registrationId, setRegistrationId] = React.useState("");
-  const [selectedTShirt, setSelectedTShirt] = React.useState<string | null>(
-    null
-  );
+  const [selectedTShirt, setSelectedTShirt] = React.useState<string | null>(null);
+
+  // New lookup flow state
+  const [isLookupMode, setIsLookupMode] = React.useState(false);
+  const [lookupEmail, setLookupEmail] = React.useState("");
+  const [isLookingUp, setIsLookingUp] = React.useState(false);
 
   const {
     register,
@@ -104,6 +108,12 @@ export default function RegisterPage() {
     formState: { errors },
   } = useForm<RegistrationData>({
     resolver: zodResolver(registrationSchema),
+    defaultValues: {
+      fullName: "",
+      email: "",
+      institution: "",
+      phone: ""
+    }
   });
 
   const router = useRouter();
@@ -118,19 +128,13 @@ export default function RegisterPage() {
         email: data.email,
         university: data.institution,
         phone: data.phone,
-        tshirtSize: data.tShirtSize,
+        tshirtSize: data.tShirtSize || "M",
       });
 
       if (response.success) {
-        localStorage.setItem(
-          "attendeeId",
-          response.data.attendee.id
-        );
-        console.log(response.data.attendee.registrationId);
-        setRegistrationId(response.data.attendee.registrationId);
-
-        // only store if selected
+        localStorage.setItem("attendeeId", response.data.attendee.id);
         if (data.tShirtSize) {
+          localStorage.setItem("tshirtSize", data.tShirtSize);
           setSelectedTShirt(data.tShirtSize);
         }
 
@@ -150,6 +154,34 @@ export default function RegisterPage() {
         error instanceof Error ? error.message : "Registration failed";
       toast.error(message);
       setIsSubmitting(false);
+    }
+  };
+
+  const handleLookup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!lookupEmail) return toast.error("Please enter your email");
+
+    setIsLookingUp(true);
+    try {
+      const response = await lookupAttendeeByEmail(lookupEmail);
+      if (response.success) {
+        // Payment flow disconnected for now
+        /*
+        if (response.data.hasPaid) {
+          toast.success("You have already completed your payment.");
+          return;
+        }
+        localStorage.setItem("attendeeId", response.data.id);
+        localStorage.setItem("tshirtSize", response.data.tshirtSize);
+        toast.success(`Found registration for ${response.data.name}! Redirecting to payment...`);
+        router.push("/payment");
+        */
+        toast.success(`Found registration for ${response.data.name}! We look forward to seeing you at the event.`);
+      }
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Registration not found");
+    } finally {
+      setIsLookingUp(false);
     }
   };
 
@@ -262,79 +294,136 @@ export default function RegisterPage() {
                   >
                     <header className="mb-10 text-center lg:text-left">
                       <h2 className="font-display text-3xl font-extrabold text-[var(--text-1)] lg:text-4xl">
-                        Register.
+                        {isLookupMode ? "Find Registration." : "Register."}
                       </h2>
                       <p className="mt-2 text-[var(--text-2)]">
-                        Welcome back, builder. Secure your spot below.
+                        {isLookupMode 
+                          ? "Enter the email you used to register to continue to payment." 
+                          : "Welcome back, builder. Secure your spot below."}
                       </p>
                     </header>
 
-                    <form
-                      onSubmit={handleSubmit(onSubmit)}
-                      className="space-y-6"
-                    >
-                      <Input
-                        label="Full Name"
-                        placeholder="Jane Doe"
-                        {...register("fullName")}
-                        error={errors.fullName?.message}
-                      />
-                      <Input
-                        label="Email Address"
-                        type="email"
-                        placeholder="jane@university.edu"
-                        {...register("email")}
-                        error={errors.email?.message}
-                      />
-                      <Input
-                        label="University / Institution"
-                        placeholder="MIT / Harvard / Stanford"
-                        {...register("institution")}
-                        error={errors.institution?.message}
-                      />
-                      <Input
-                        label="Phone Number"
-                        type="tel"
-                        placeholder="+1 (555) 000-0000"
-                        {...register("phone")}
-                        error={errors.phone?.message}
-                      />
-
-                      <TShirtSelector
-                        value={selectedSize || ""}
-                        onChange={(size) =>
-                          setValue("tShirtSize", size as any, {
-                            shouldValidate: true,
-                          })
-                        }
-                        error={errors.tShirtSize?.message}
-                      />
-
-                      <Button
-                        variant="ember"
-                        size="lg"
-                        className="group w-full h-14 font-display text-lg shadow-glow mt-8"
-                        disabled={isSubmitting}
-                        type="submit"
+                    {isLookupMode ? (
+                      <form onSubmit={handleLookup} className="space-y-6">
+                        <Input
+                          label="Registered Email Address"
+                          type="email"
+                          placeholder="jane@university.edu"
+                          value={lookupEmail}
+                          onChange={(e) => setLookupEmail(e.target.value)}
+                        />
+                        <Button
+                          variant="primary"
+                          size="lg"
+                          className="group w-full h-14 font-display text-lg shadow-glow mt-8"
+                          disabled={isLookingUp}
+                          type="submit"
+                        >
+                          {isLookingUp ? (
+                            <div className="flex items-center gap-2">
+                              <Spinner className="h-5 w-5 border-2 text-white/50 border-t-white" />
+                              Searching...
+                            </div>
+                          ) : (
+                            <>
+                              Find Registration
+                              <ChevronRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                            </>
+                          )}
+                        </Button>
+                        <p className="mt-6 text-center text-sm font-mono text-[var(--text-2)]">
+                          New here?{" "}
+                          <button
+                            type="button"
+                            onClick={() => setIsLookupMode(false)}
+                            className="text-[var(--electric-light)] hover:underline"
+                          >
+                            Create a new registration
+                          </button>
+                        </p>
+                      </form>
+                    ) : (
+                      <form
+                        onSubmit={handleSubmit(onSubmit)}
+                        className="space-y-6"
                       >
-                        {isSubmitting ? (
-                          <div className="flex items-center gap-2">
-                            <Spinner className="h-5 w-5 border-2 text-white/50 border-t-white" />
-                            Processing...
-                          </div>
-                        ) : (
-                          <>
-                            Complete Registration
-                            <ChevronRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-                          </>
-                        )}
-                      </Button>
+                        <Input
+                          label="Full Name"
+                          placeholder="Jane Doe"
+                          {...register("fullName")}
+                          error={errors.fullName?.message}
+                        />
+                        <Input
+                          label="Email Address"
+                          type="email"
+                          placeholder="jane@university.edu"
+                          {...register("email")}
+                          error={errors.email?.message}
+                        />
+                        <Input
+                          label="University / Institution"
+                          placeholder="MIT / Harvard / Stanford"
+                          {...register("institution")}
+                          error={errors.institution?.message}
+                        />
+                        <Input
+                          label="Phone Number"
+                          type="tel"
+                          placeholder="+1 (555) 000-0000"
+                          {...register("phone")}
+                          error={errors.phone?.message}
+                        />
 
-                      <p className="mt-6 text-center text-[10px] uppercase tracking-widest text-[var(--text-3)] font-mono">
-                        By registering, you agree to our Code of Conduct &
-                        Privacy Policy
-                      </p>
-                    </form>
+                        <TShirtSelector
+                          value={selectedSize || ""}
+                          onChange={(size) =>
+                            setValue("tShirtSize", size as any, {
+                              shouldValidate: true,
+                            })
+                          }
+                          error={errors.tShirtSize?.message}
+                        />
+
+                        <Button
+                          variant="ember"
+                          size="lg"
+                          className="group w-full h-14 font-display text-lg shadow-glow mt-8"
+                          disabled={isSubmitting}
+                          type="submit"
+                        >
+                          {isSubmitting ? (
+                            <div className="flex items-center gap-2">
+                              <Spinner className="h-5 w-5 border-2 text-white/50 border-t-white" />
+                              Processing...
+                            </div>
+                          ) : (
+                            <>
+                              Complete Registration
+                              <ChevronRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                            </>
+                          )}
+                        </Button>
+
+                        {/* Payment flow disconnected for now */}
+                        {/* 
+                        <p className="mt-6 text-center text-sm font-mono text-[var(--text-2)]">
+                          Already registered?{" "}
+                          <button
+                            type="button"
+                            onClick={() => setIsLookupMode(true)}
+                            className="text-[var(--electric-light)] hover:underline"
+                          >
+                            Pay for your T-Shirt
+                          </button>
+                        </p>
+                        */}
+
+                        <p className="mt-2 text-center text-[10px] uppercase tracking-widest text-[var(--text-3)] font-mono">
+                          By registering, you agree to our Code of Conduct &
+                          Privacy Policy
+                        </p>
+                      </form>
+                    )}
                   </motion.div>
                 ) : (
                   <motion.div
@@ -389,59 +478,30 @@ export default function RegisterPage() {
                       />
                     </div>
 
+                    <div className="mt-6 w-full">
+                       <Button 
+                          variant="primary" 
+                          asChild 
+                          className="h-16 w-full shadow-glow gap-3 font-black uppercase text-xs tracking-widest bg-[#25D366] hover:bg-[#20bd5c] border-none text-white transition-all transform hover:scale-[1.02] active:scale-95"
+                       >
+                          <a href="https://chat.whatsapp.com/DY67dx8NWxu6xs6dVRNc2G?mode=gi_t" target="_blank" rel="noopener noreferrer">
+                             <MessageCircle size={20} fill="currentColor" />
+                             Join Community WhatsApp
+                          </a>
+                       </Button>
+                    </div>
+
                     <div className="mt-12 rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--panel)] p-4 w-full">
                       <span className="block text-xs font-mono uppercase tracking-[0.2em] text-[var(--text-3)] mb-2">
                         Registration ID
                       </span>
                       {/* Premium T-Shirt Offer */}
+                      {/* Payment flow disconnected for now */}
+                      {/* 
                       {selectedTShirt && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: 0.2 }}
-                          className="mt-8 w-full rounded-[var(--radius-lg)] border border-[var(--electric)]/30 bg-gradient-to-br from-[var(--electric)]/5 to-[var(--ember)]/5 p-6 shadow-glow"
-                        >
-                          <div className="flex flex-col gap-3">
-                            <div className="flex items-center gap-2">
-                              <Sparkles
-                                className="text-[var(--electric)]"
-                                size={18}
-                              />
-                              <span className="text-xs uppercase tracking-widest text-[var(--electric-light)] font-mono">
-                                Premium Offer
-                              </span>
-                            </div>
-
-                            <h3 className="text-xl font-bold text-[var(--text-1)]">
-                              Secure Your Official Cloud Summit T-Shirt
-                            </h3>
-
-                            <p className="text-sm text-[var(--text-2)] leading-relaxed">
-                              You selected size{" "}
-                              <span className="font-bold text-[var(--electric-light)]">
-                                {selectedTShirt}
-                              </span>
-                              . Complete payment now to reserve your official
-                              event T-shirt before stock runs out.
-                            </p>
-
-                            <Button
-                              variant="ember"
-                              size="lg"
-                              className="mt-4 h-14 font-display text-lg shadow-glow"
-                              onClick={() => router.push("/payment")}
-                            >
-                              Pay for T-Shirt
-                              <ChevronRight className="ml-2 h-5 w-5" />
-                            </Button>
-
-                            <span className="text-[10px] text-[var(--text-3)] font-mono uppercase tracking-widest">
-                              Limited edition • Available only for registered
-                              attendees
-                            </span>
-                          </div>
-                        </motion.div>
+                        ...
                       )}
+                      */}
                       <span className="font-mono text-[var(--electric-light)] tracking-tight">
                         {registrationId || "AWS-SCD-CMR-2026-XXXX"}
                       </span>

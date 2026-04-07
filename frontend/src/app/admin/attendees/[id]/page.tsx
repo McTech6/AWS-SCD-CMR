@@ -16,7 +16,8 @@ import {
     BadgeCheck,
     QrCode,
     Zap,
-    Download
+    Download,
+    CreditCard
 } from "lucide-react";
 import { AdminLayout } from "@/components/layout/admin-layout";
 import {
@@ -207,6 +208,18 @@ export default function AttendeeDetailPage() {
                                             <div className="flex-1">
                                                 <p className="text-[10px] uppercase font-bold text-[var(--text-3)] tracking-widest">Registration Date</p>
                                                 <p className="text-sm text-[var(--text-2)]">{attendee.date}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3 p-3 rounded-lg bg-[var(--void)]/30 border border-[var(--border)]/5 text-left hover:border-[var(--electric)]/20 transition-all">
+                                            <div className={cn("h-8 w-8 rounded flex items-center justify-center", attendee.hasPaid ? "bg-[var(--success)]/10 text-[var(--success)]" : "bg-[var(--void)] text-[var(--text-3)]")}>
+                                                <CreditCard size={16} />
+                                            </div>
+                                            <div className="flex-1">
+                                                <p className="text-[10px] uppercase font-bold text-[var(--text-3)] tracking-widest">Payment Status</p>
+                                                <div className="flex items-center gap-2">
+                                                    <p className="text-sm font-bold text-[var(--text-2)]">{attendee.hasPaid ? "Completed" : "Pending"}</p>
+                                                    <Badge variant="outline" className={cn("border-0 h-4 px-1 text-[8px] font-mono", attendee.hasPaid ? "bg-[var(--success)]/10 text-[var(--success)]" : "bg-transparent text-[var(--text-3)]")}>{attendee.hasPaid ? "PAID" : "UNPAID"}</Badge>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

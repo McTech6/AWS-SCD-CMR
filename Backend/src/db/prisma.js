@@ -11,16 +11,12 @@ const prismaClientSingleton = () => {
         console.error('❌ DATABASE_URL is not defined in environment variables');
     }
 
-    const sslDisabled = connectionString.includes('localhost') 
-        || connectionString.includes('sslmode=disable') 
-        || connectionString.includes('sslmode=no-verify');
-
     const pool = new pg.Pool({
         connectionString,
         max: 20,
         idleTimeoutMillis: 30000,
-        connectionTimeoutMillis: 5000,
-        ssl: sslDisabled ? false : { rejectUnauthorized: false }
+        connectionTimeoutMillis: 20000, // increased to allow slow queries
+        ssl: false // SSL disabled for internal VPS connection
     });
 
     const adapter = new PrismaPg(pool);
