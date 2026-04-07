@@ -14,6 +14,8 @@ const navLinks = [
   { href: "/organizers", label: "Organizers" },
   { href: "/#agenda", label: "Agenda" },
   { href: "/#sponsors", label: "Sponsors" },
+  { href: "/iwillbethere", label: "I will be there" },
+
 ];
 
 export function Navbar() {
