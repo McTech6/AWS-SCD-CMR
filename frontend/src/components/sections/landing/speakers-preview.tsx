@@ -20,6 +20,7 @@ type Speaker = {
 };
 
 const SpeakerCard = ({
+    id,
     name,
     role,
     company,
