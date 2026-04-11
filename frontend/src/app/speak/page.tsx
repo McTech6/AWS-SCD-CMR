@@ -71,7 +71,8 @@ export default function SpeakPage() {
         "DevOps": "DEVOPS",
         "AI & ML": "AI_ML",
         "Security": "SECURITY",
-        "Architecture": "CLOUD_FUNDAMENTALS"
+        "Architecture": "CLOUD_FUNDAMENTALS",
+        "Community Focused": "COMMUNITY_FOCUSED"
       };
 
       const experienceMap: Record<string, string> = {

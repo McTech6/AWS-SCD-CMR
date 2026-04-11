@@ -151,7 +151,7 @@ export const getSpeakers = async (req, res, next) => {
     try {
         const { track, search } = req.query
 
-        const validTracks = ['CLOUD_FUNDAMENTALS', 'DEVOPS', 'AI_ML', 'SECURITY', 'OPEN_SOURCE']
+        const validTracks = ['CLOUD_FUNDAMENTALS', 'DEVOPS', 'AI_ML', 'SECURITY', 'OPEN_SOURCE', 'COMMUNITY_FOCUSED']
         const trackFilter = track && validTracks.includes(track) ? track : undefined
 
         const where = {

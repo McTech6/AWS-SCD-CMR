@@ -48,7 +48,7 @@ type Speaker = {
   github?: string;
 };
 
-const TRACKS = ["All", "Serverless", "Architecture", "Security", "AI & ML", "DevOps"];
+const TRACKS = ["All", "Serverless", "Architecture", "Security", "AI & ML", "DevOps", "Community"];
 
 const TRACK_TO_ENUM: Record<string, string> = {
   "Serverless": "CLOUD_FUNDAMENTALS",
@@ -56,6 +56,7 @@ const TRACK_TO_ENUM: Record<string, string> = {
   "Security": "SECURITY",
   "AI & ML": "AI_ML",
   "DevOps": "DEVOPS",
+  "Community": "COMMUNITY_FOCUSED",
 };
 
 const SpeakerCard = ({ speaker, onClick }: { speaker: Speaker, onClick: () => void }) => {

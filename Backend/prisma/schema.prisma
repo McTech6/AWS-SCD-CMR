@@ -87,6 +87,7 @@ enum SpeakerTrack {
   AI_ML
   SECURITY
   OPEN_SOURCE
+  COMMUNITY_FOCUSED
 }
 
 enum ExperienceLevel {

@@ -171,6 +171,7 @@ export function SpeakerForm({ onSubmit, isSubmitting = false }: SpeakerFormProps
                                     <SelectItem value="AI & ML">AI & ML</SelectItem>
                                     <SelectItem value="Security">Security</SelectItem>
                                     <SelectItem value="Architecture">Architecture</SelectItem>
+                                    <SelectItem value="Community Focused">Community Focused</SelectItem>
                                 </SelectContent>
                             </Select>
                             {errors.track && <p className="text-xs text-[var(--error)]">{errors.track.message}</p>}
