@@ -60,7 +60,16 @@ import { SpeakerForm } from "@/components/forms/speaker-form";
 export default function SpeakPage() {
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [submittedData, setSubmittedData] = React.useState<{ fullName: string; topic: string; track: string; bio: string; profilePhoto: string | null } | null>(null);
+  const [submittedData, setSubmittedData] = React.useState<{ 
+    fullName: string; 
+    topic: string; 
+    track: string; 
+    bio: string; 
+    profilePhoto: string | null;
+    linkedin?: string;
+    twitter?: string;
+    github?: string;
+  } | null>(null);
 
   const onSubmit = async (data: any, profilePhoto: string | null) => {
     setIsSubmitting(true);
