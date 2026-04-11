@@ -21,7 +21,7 @@ export const applyVolunteer = async (req, res, next) => {
 
         const validated = volunteerApplySchema.parse(req.body);
 
-        const {
+        let {
             name,
             email,
             phone,
@@ -29,6 +29,7 @@ export const applyVolunteer = async (req, res, next) => {
             cloudClub,
             skills
         } = validated;
+        email = email.toLowerCase();
 
         // check existing user or create
         let user = await prisma.user.findUnique({

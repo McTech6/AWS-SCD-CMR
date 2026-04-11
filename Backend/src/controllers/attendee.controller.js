@@ -9,7 +9,8 @@ export const registerAttendee = async (req, res, next) => {
     console.log(`🎟️ New event registration: ${req.body?.email}`);
     try {
         const validatedData = registerSchema.parse(req.body);
-        const { name, email, university, phone, tshirtSize } = validatedData;
+        let { name, email, university, phone, tshirtSize } = validatedData;
+        email = email.toLowerCase();
 
         // 1. Check Event Config for capacity and status
         const config = await prisma.eventConfig.findFirst({
@@ -31,27 +32,32 @@ export const registerAttendee = async (req, res, next) => {
             });
         }
 
-        // 2. Check duplicate email
+        // 2. Check duplicate attendee
         const existingUser = await prisma.user.findUnique({
-            where: { email }
+            where: { email },
+            include: { attendee: true }
         });
 
-        if (existingUser) {
+        if (existingUser && existingUser.attendee) {
             return res.status(409).json({
                 success: false,
-                message: 'This email is already registered for the event'
+                message: 'This email is already registered as an attendee for the event'
             });
         }
 
         // 3. Create records in transaction
         const result = await prisma.$transaction(async (tx) => {
-            const user = await tx.user.create({
-                data: {
-                    name,
-                    email,
-                    role: 'ATTENDEE'
-                }
-            });
+            let user = existingUser;
+            
+            if (!user) {
+                user = await tx.user.create({
+                    data: {
+                        name,
+                        email,
+                        role: 'ATTENDEE'
+                    }
+                });
+            }
 
             const attendee = await tx.attendee.create({
                 data: {
@@ -146,10 +152,11 @@ export const registerAttendee = async (req, res, next) => {
 // Check registration status by email
 export const getAttendeeByEmail = async (req, res, next) => {
     try {
-        const { email } = req.body;
+        let { email } = req.body;
         if (!email) {
             return res.status(400).json({ success: false, message: 'Email is required' });
         }
+        email = email.toLowerCase();
 
         const user = await prisma.user.findUnique({
             where: { email },

@@ -5,7 +5,11 @@ import { registerSchema, loginSchema } from '../utils/validation.js';
 export const registerAdmin = async (req, res, next) => {
     console.log(`👨‍💼 Registering new admin: ${req.body?.email}`);
     try {
-        const { name, email, password } = req.body;
+        let { name, email, password } = req.body;
+        if (!email) {
+            return res.status(400).json({ success: false, message: 'Email is required' });
+        }
+        email = email.toLowerCase();
 
         if (!name || !email || !password) {
             return res.status(400).json({
@@ -79,7 +83,8 @@ export const register = async (req, res, next) => {
         }
 
         const validatedData = registerSchema.parse(req.body);
-        const { name, email, password, university, phone, tshirtSize } = validatedData;
+        let { name, email, password, university, phone, tshirtSize } = validatedData;
+        email = email.toLowerCase();
 
         // Check if user already exists
         const existingUser = await prisma.user.findUnique({
@@ -152,7 +157,8 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
     console.log(`🔑 Login attempt: ${req.body?.email}`);
     try {
-        const { email, password } = loginSchema.parse(req.body);
+        let { email, password } = loginSchema.parse(req.body);
+        email = email.toLowerCase();
 
         const user = await prisma.user.findUnique({
             where: { email },

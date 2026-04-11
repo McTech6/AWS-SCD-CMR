@@ -100,8 +100,8 @@ const SpeakerCard = ({
                             </Button>
                         )}
                         <Button variant="ghost" size="default" className="w-full" asChild>
-                            <Link href="/speakers">
-                                View All Details <ExternalLink size={14} className="ml-2" />
+                            <Link href={`/speakers/${id}`}>
+                                View Full Profile <ExternalLink size={14} className="ml-2" />
                             </Link>
                         </Button>
                     </div>

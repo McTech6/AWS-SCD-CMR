@@ -31,7 +31,6 @@ export const applySpeaker = async (req, res, next) => {
 
         const {
             name,
-            email,
             topic,
             talkTitle,
             bio,
@@ -44,20 +43,27 @@ export const applySpeaker = async (req, res, next) => {
             experienceLevel,
             photoBase64
         } = validated
+        const email = validated.email.toLowerCase();
 
         console.log("Validated:", validated)
 
         // check existing user
         let user = await prisma.user.findUnique({
-            where: { email }
+            where: { email },
+            include: { speaker: true }
         })
 
         console.log("Existing user:", user)
 
+        if (user && user.speaker) {
+            return res.status(409).json({
+                success: false,
+                message: "You have already applied as a speaker with this email."
+            });
+        }
+
         if (!user) {
-
             console.log("Creating new user...")
-
             user = await prisma.user.create({
                 data: {
                     name,
@@ -65,7 +71,6 @@ export const applySpeaker = async (req, res, next) => {
                     role: "SPEAKER"
                 }
             })
-
             console.log("User created:", user.id)
         }
 

@@ -204,9 +204,21 @@ export default function SpeakPage() {
                     </div>
 
                     <div className="mt-8 flex gap-3">
-                      <div className="h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[var(--text-3)]"><Linkedin size={14} /></div>
-                      <div className="h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[var(--text-3)]"><Twitter size={14} /></div>
-                      <div className="h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[var(--text-3)]"><Github size={14} /></div>
+                      {submittedData?.linkedin && (
+                        <a href={submittedData.linkedin} target="_blank" rel="noopener noreferrer" className="h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[var(--text-3)] hover:text-[var(--electric)] hover:border-[var(--electric)]/30 transition-colors">
+                          <Linkedin size={14} />
+                        </a>
+                      )}
+                      {submittedData?.twitter && (
+                        <a href={submittedData.twitter} target="_blank" rel="noopener noreferrer" className="h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[var(--text-3)] hover:text-[#1da1f2] hover:border-[#1da1f2]/30 transition-colors">
+                          <Twitter size={14} />
+                        </a>
+                      )}
+                      {submittedData?.github && (
+                        <a href={submittedData.github} target="_blank" rel="noopener noreferrer" className="h-8 w-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-[var(--text-3)] hover:text-white hover:border-white/30 transition-colors">
+                          <Github size={14} />
+                        </a>
+                      )}
                     </div>
                   </div>
                 </div>
