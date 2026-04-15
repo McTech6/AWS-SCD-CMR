@@ -69,6 +69,7 @@ enum EmailTarget {
 enum SponsorTier {
   GOLD
   SILVER
+  BRONZE
   COMMUNITY
 }
 

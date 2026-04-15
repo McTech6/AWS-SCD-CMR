@@ -44,6 +44,7 @@ export const SponsorsSection = () => {
 
     const goldSponsors = sponsors.filter(s => s.tier === 'GOLD');
     const silverSponsors = sponsors.filter(s => s.tier === 'SILVER');
+    const bronzeSponsors = sponsors.filter(s => s.tier === 'BRONZE');
     const communitySponsors = sponsors.filter(s => s.tier === 'COMMUNITY');
 
     const sponsorGroups = [
@@ -60,6 +61,13 @@ export const SponsorsSection = () => {
             sponsors: silverSponsors,
             gridCols: "grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
             cardHeight: "h-36"
+        },
+        { 
+            tier: "Innovation Partners", 
+            badge: "Bronze Tier", 
+            sponsors: bronzeSponsors,
+            gridCols: "grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+            cardHeight: "h-32"
         },
     ].filter(group => group.sponsors.length > 0);
 

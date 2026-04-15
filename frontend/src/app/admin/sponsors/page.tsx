@@ -50,7 +50,8 @@ import {
     updateSponsor, 
     deleteSponsor as deleteSponsorApi, 
     approveSponsor, 
-    rejectSponsor 
+    rejectSponsor,
+    uploadPublicLogo
 } from "@/lib/api";
 import { toast } from "react-hot-toast";
 import { useForm, Controller } from "react-hook-form";
@@ -59,9 +60,9 @@ import { z } from "zod";
 
 const sponsorFormSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
-    tier: z.enum(["GOLD", "SILVER", "COMMUNITY"]),
+    tier: z.enum(["GOLD", "SILVER", "BRONZE", "COMMUNITY"]),
     website: z.string().url("Valid URL required").or(z.literal("")),
-    logoUrl: z.string().url("Valid image URL required"),
+    logoUrl: z.string().min(1, "Image is required"),
     visible: z.boolean(),
     status: z.enum(["PENDING", "APPROVED", "REJECTED"]),
 });
@@ -76,12 +77,16 @@ export default function SponsorsAdminPage() {
     const [editingSponsor, setEditingSponsor] = React.useState<any>(null);
     const [confirmAction, setConfirmAction] = React.useState<{ type: 'APPROVE' | 'REJECT' | 'DELETE', sponsor: any } | null>(null);
     const [selectedTier, setSelectedTier] = React.useState("COMMUNITY");
+    const [isUploadingLogo, setIsUploadingLogo] = React.useState(false);
+    const [logoBase64, setLogoBase64] = React.useState<string | null>(null);
 
     const {
         register,
         handleSubmit,
         control,
         reset,
+        watch,
+        setValue,
         formState: { errors, isSubmitting }
     } = useForm<SponsorFormValues>({
         resolver: zodResolver(sponsorFormSchema),
@@ -109,12 +114,43 @@ export default function SponsorsAdminPage() {
         }
     };
 
+    const logoUrlValue = watch("logoUrl");
+
+    const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            const img = new Image();
+            img.src = URL.createObjectURL(file);
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 500;
+                let width = img.width;
+                let height = img.height;
+                
+                if (width > MAX_WIDTH) {
+                    height = height * (MAX_WIDTH / width);
+                    width = MAX_WIDTH;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx?.drawImage(img, 0, 0, width, height);
+                
+                const dataUrl = canvas.toDataURL('image/webp', 0.8);
+                setLogoBase64(dataUrl);
+                setValue("logoUrl", "pending-base64", { shouldValidate: true });
+            };
+        }
+    };
+
     React.useEffect(() => {
         fetchSponsors();
     }, []);
 
     React.useEffect(() => {
         if (isAddModalOpen) {
+            setLogoBase64(null);
             if (editingSponsor) {
                 reset({
                     name: editingSponsor.name,
@@ -139,17 +175,37 @@ export default function SponsorsAdminPage() {
 
     const onSubmit = async (data: SponsorFormValues) => {
         try {
+            setIsUploadingLogo(true);
+            let finalLogoUrl = data.logoUrl;
+
+            // Send to cloudinary
+            if (logoBase64) {
+                toast.loading("Transferring visual assets to Network...", { id: "uploading-logo" });
+                const response = await uploadPublicLogo(logoBase64);
+                if (!response.success || !response.url) {
+                    throw new Error("Failed to relay image via Cloudinary. Try Direct URL.");
+                }
+                finalLogoUrl = response.url;
+                toast.dismiss("uploading-logo");
+            }
+
+            const payload = { ...data, logoUrl: finalLogoUrl };
+
             if (editingSponsor) {
-                await updateSponsor(editingSponsor.id, data);
+                await updateSponsor(editingSponsor.id, payload);
                 toast.success("Sponsor updated");
             } else {
-                await createSponsor(data);
+                await createSponsor(payload);
                 toast.success("Partner verified");
             }
             fetchSponsors();
             setIsAddModalOpen(false);
+            setLogoBase64(null);
         } catch (err: any) {
+            toast.dismiss("uploading-logo");
             toast.error(err.message);
+        } finally {
+            setIsUploadingLogo(false);
         }
     };
 
@@ -181,6 +237,7 @@ export default function SponsorsAdminPage() {
         switch (tier) {
             case 'GOLD': return <Badge className="bg-yellow-500/10 text-yellow-500 border-yellow-500/20 gap-1.5"><Trophy size={10} /> Gold</Badge>;
             case 'SILVER': return <Badge className="bg-slate-400/10 text-slate-400 border-slate-400/20 gap-1.5"><Shield size={10} /> Silver</Badge>;
+            case 'BRONZE': return <Badge className="bg-amber-700/10 text-amber-700 border-amber-700/20 gap-1.5"><Award size={10} /> Bronze</Badge>;
             case 'COMMUNITY': return <Badge className="bg-blue-500/10 text-blue-500 border-blue-500/20 gap-1.5"><UserCircle size={10} /> Community</Badge>;
             default: return <Badge variant="outline" className="opacity-50">Pending Tier</Badge>;
         }
@@ -326,25 +383,53 @@ export default function SponsorsAdminPage() {
                     </ModalHeader>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-6">
                         <div className="space-y-4">
-                            <Input {...register("name")} placeholder="Organization Name" error={errors.name?.message} />
+                            <Input label="Organization Name *" {...register("name")} placeholder="Ex: Cloud Tech Inc." error={errors.name?.message} />
                             <div className="grid grid-cols-2 gap-4">
-                                <Controller
-                                    name="tier"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Select onValueChange={field.onChange} value={field.value}>
-                                            <SelectTrigger><SelectValue placeholder="Tier" /></SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value="GOLD">Gold Partner</SelectItem>
-                                                <SelectItem value="SILVER">Silver Partner</SelectItem>
-                                                <SelectItem value="COMMUNITY">Community Partner</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    )}
-                                />
-                                <Input {...register("website")} placeholder="https://..." error={errors.website?.message} />
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-[var(--text-2)]">Sponsor Tier *</label>
+                                    <Controller
+                                        name="tier"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select onValueChange={field.onChange} value={field.value}>
+                                                <SelectTrigger><SelectValue placeholder="Tier" /></SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value="GOLD">Gold Partner</SelectItem>
+                                                    <SelectItem value="SILVER">Silver Partner</SelectItem>
+                                                    <SelectItem value="BRONZE">Bronze Partner</SelectItem>
+                                                    <SelectItem value="COMMUNITY">Community Partner</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
+                                <Input label="Website URL" {...register("website")} placeholder="https://..." error={errors.website?.message} />
                             </div>
-                            <Input {...register("logoUrl")} placeholder="Logo Vector URL" error={errors.logoUrl?.message} />
+                            <div className="space-y-2">
+                                <label className="text-xs font-bold text-[var(--text-2)] uppercase tracking-widest">Logo Upload</label>
+                                <div className="flex items-center gap-4">
+                                    {(logoBase64 || logoUrlValue) && logoUrlValue !== "pending-base64" && !logoBase64 && (
+                                        <div className="h-16 w-16 overflow-hidden rounded bg-white/5 p-2 flex items-center justify-center border border-[var(--border)]">
+                                            <img src={logoUrlValue} alt="Logo preview" className="h-full w-full object-contain grayscale invert opacity-80" />
+                                        </div>
+                                    )}
+                                    {logoBase64 && (
+                                        <div className="h-16 w-16 overflow-hidden rounded bg-white/5 p-2 flex items-center justify-center border border-[var(--electric)] relative">
+                                            <img src={logoBase64} alt="Pending" className="h-full w-full object-contain" />
+                                        </div>
+                                    )}
+                                    <div className="flex-1 border-2 border-dashed border-[var(--border)] rounded-lg p-4 text-center hover:border-[var(--electric)] transition-colors cursor-pointer relative bg-black/20" onClick={() => document.getElementById('logo-upload')?.click()}>
+                                        <input type="file" id="logo-upload" className="hidden" accept="image/*" onChange={handleLogoUpload} />
+                                        <span className="text-[10px] uppercase font-bold tracking-widest text-[var(--text-3)] flex flex-col items-center justify-center gap-2 group-hover:text-[var(--electric-light)]">
+                                            <ImageIcon size={16} className="text-[var(--electric)]" /> Click to {logoBase64 ? "change" : "upload"} company logo
+                                        </span>
+                                    </div>
+                                </div>
+                                {errors.logoUrl && <p className="text-[10px] text-[var(--error)] mt-1">{errors.logoUrl.message}</p>}
+                                {!logoBase64 && (
+                                     <Input {...register("logoUrl")} placeholder="(Optional) Paste direct Image URL here" className="text-xs font-mono mt-2" />
+                                )}
+                            </div>
                             
                             <div className="flex items-center justify-between p-4 rounded-lg bg-white/5 border border-[var(--border)]">
                                 <div className="space-y-0.5">
@@ -401,6 +486,7 @@ export default function SponsorsAdminPage() {
                                     <SelectContent>
                                         <SelectItem value="GOLD">Gold Partner</SelectItem>
                                         <SelectItem value="SILVER">Silver Partner</SelectItem>
+                                        <SelectItem value="BRONZE">Bronze Partner</SelectItem>
                                         <SelectItem value="COMMUNITY">Community Partner</SelectItem>
                                     </SelectContent>
                                 </Select>

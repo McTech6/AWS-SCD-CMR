@@ -41,6 +41,7 @@ export const getSponsors = async (req, res, next) => {
         const grouped = {
             GOLD: safeSponsors.filter(s => s.tier === 'GOLD'),
             SILVER: safeSponsors.filter(s => s.tier === 'SILVER'),
+            BRONZE: safeSponsors.filter(s => s.tier === 'BRONZE'),
             COMMUNITY: safeSponsors.filter(s => s.tier === 'COMMUNITY'),
             OTHER: safeSponsors.filter(s => !s.tier)
         };

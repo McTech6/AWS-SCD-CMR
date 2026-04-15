@@ -112,7 +112,7 @@ export const sponsorSchema = z.object({
     website: z.string().url('Invalid Website URL').optional().or(z.literal('')),
     contactName: z.string().optional(),
     contactEmail: z.string().email().optional(),
-    tier: z.enum(['GOLD', 'SILVER', 'COMMUNITY']).optional(),
+    tier: z.enum(['GOLD', 'SILVER', 'BRONZE', 'COMMUNITY']).optional(),
     status: z.enum(['PENDING', 'APPROVED', 'REJECTED']).default('APPROVED'),
     sortOrder: z.number().default(0),
     visible: z.boolean().default(true),
