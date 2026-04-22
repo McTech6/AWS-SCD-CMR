@@ -22,6 +22,8 @@ import certificatesRouter from './certificates.routes.js';
 import organizerRouter from './organizer.routes.js';
 import volunteerRouter from './volunteer.routes.js';
 import paymentRouter from './payment.routes.js';
+import posterRouter from './poster.routes.js';
+
 
 router.use('/auth', authRouter);
 router.use('/attendees', attendeeRouter);
@@ -35,5 +37,7 @@ router.use('/certificates', certificatesRouter);
 router.use('/organizers', organizerRouter);
 router.use('/volunteers', volunteerRouter);
 router.use('/payments', paymentRouter);
+router.use('/poster', posterRouter);
+
 
 export default router;
