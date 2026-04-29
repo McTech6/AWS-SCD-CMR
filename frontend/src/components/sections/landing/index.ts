@@ -5,3 +5,4 @@ export { AgendaPreview } from "./agenda-preview";
 export { SpeakersPreview } from "./speakers-preview";
 export { SponsorsSection } from "./sponsors-section";
 export { FAQ } from "./faq";
+export { VenueSection } from "./venue-section";

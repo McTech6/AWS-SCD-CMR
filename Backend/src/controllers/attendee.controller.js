@@ -164,7 +164,7 @@ export const getAttendeeByEmail = async (req, res, next) => {
         });
 
         if (!user || !user.attendee) {
-            return res.status(404).json({ success: false, message: 'No registered attendee found with that email' });
+            return res.status(200).json({ success: false, message: 'No registered attendee found with that email' });
         }
 
         res.status(200).json({

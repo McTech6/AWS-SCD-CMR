@@ -473,24 +473,12 @@ export async function generatePoster(email: string, image: File) {
   formData.append("email", email);
   formData.append("image", image);
 
-  const blob = await apiCall<Blob>("/poster/generate", {
+  const res = await apiCall<{ success: boolean; url: string; publicId: string }>("/poster/generate", {
     method: "POST",
     body: formData,
   });
 
-  const url = window.URL.createObjectURL(blob);
-
-  //////////////////////////////////////////////////
-  // AUTO DOWNLOAD
-  //////////////////////////////////////////////////
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "my-poster.png";
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-
-  return url; // ← used for preview
+  return res.url;
 }
 // UPLOADS API
 export async function uploadPublicLogo(file: string) {

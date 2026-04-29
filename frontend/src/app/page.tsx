@@ -7,7 +7,8 @@ import {
   AgendaPreview,
   SpeakersPreview,
   FAQ,
-  SponsorsSection
+  SponsorsSection,
+  VenueSection
 } from "@/components/sections/landing";
 
 export const metadata: Metadata = {
@@ -49,6 +50,7 @@ export default function Home() {
         <AgendaPreview />
         <SpeakersPreview />
         <FAQ />
+        <VenueSection />
         <SponsorsSection />
       </main>
       <Footer />

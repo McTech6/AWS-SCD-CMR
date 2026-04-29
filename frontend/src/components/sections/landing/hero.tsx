@@ -176,7 +176,7 @@ export const Hero = () => {
                     <div className="mt-6 flex items-center justify-center">
                         <CalendarButton>
                             <span className="font-extrabold text-[var(--electric)] uppercase tracking-[0.25em] text-xs sm:text-sm bg-[var(--surface)]/60 px-6 py-3 rounded-full border border-[var(--border)] shadow-sm backdrop-blur-md mix-blend-luminosity hover:mix-blend-normal transition-all duration-300 hover:scale-105 cursor-pointer">
-                                May 23, 2026 · Douala, Cameroon
+                                May 23, 2026 · IUC Logbessou, Douala
                             </span>
                         </CalendarButton>
                     </div>
@@ -187,7 +187,7 @@ export const Hero = () => {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 1.3, duration: 0.6, type: "spring" }}
-                    className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6 w-full px-6"
+                    className="mt-12 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-6 w-full px-6"
                 >
                     <div className="relative group w-full sm:w-auto">
                         <div className="absolute inset-0 rounded-full bg-[var(--electric)] opacity-50 blur-xl group-hover:opacity-100 group-hover:blur-2xl transition-all duration-500 will-change-transform" />
@@ -204,6 +204,14 @@ export const Hero = () => {
                     
                     <Button variant="outline" size="lg" asChild className="w-full sm:w-auto px-12 h-16 text-lg rounded-full font-bold hover:bg-[var(--electric)] hover:text-white hover:border-transparent transition-all duration-300 border-[var(--border)] bg-[var(--surface)]/50 backdrop-blur-sm motion-btn">
                         <Link href="/speak">Apply to Speak</Link>
+                    </Button>
+
+                    <Button variant="outline" size="lg" asChild className="w-full sm:w-auto px-12 h-16 text-lg rounded-full font-bold hover:bg-amber-500 hover:text-white hover:border-transparent transition-all duration-300 border-[var(--border)] bg-[var(--surface)]/50 backdrop-blur-sm motion-btn group">
+                        <Link href="/iwillbethere">
+                            <span className="relative z-10 flex items-center gap-2">
+                                I Will Be There Poster
+                            </span>
+                        </Link>
                     </Button>
                 </motion.div>
 

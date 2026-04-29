@@ -3,6 +3,7 @@ import puppeteer from "puppeteer";
 import path from "path";
 import fs from "fs";
 import { buildPosterHTML } from "../assets/posterTemplate.js";
+import { uploadImage } from "../utils/cloudinary.js";
 
 //////////////////////////////////////////////////////
 // Generate Poster — Puppeteer HTML → PNG screenshot
@@ -34,7 +35,7 @@ export const generatePoster = async (req, res) => {
     //////////////////////////////////////////////////////
     const attendee = await prisma.attendee.findFirst({
       where: { user: { email } },
-      include: { user: true, certificate: true, payments: true },
+      include: { user: true },
     });
 
     if (!attendee) {
@@ -48,24 +49,34 @@ export const generatePoster = async (req, res) => {
     console.log("✅ User found:", name);
 
     //////////////////////////////////////////////////////
-    // 3. Convert user image → base64 data URI
-    //    Puppeteer is sandboxed — local paths are blocked,
-    //    so the image must be embedded inline.
+    // 3. Upload user image to Cloudinary
     //////////////////////////////////////////////////////
-    const imageBuffer = fs.readFileSync(userImagePath);
-    const mimeType = req.file.mimetype || "image/jpeg";
-    const imageDataUri = `data:${mimeType};base64,${imageBuffer.toString("base64")}`;
+    console.log("☁️ Uploading user image to Cloudinary...");
+    const uploadedImage = await uploadImage(userImagePath, "posters/uploads");
+    const imageDataUri = uploadedImage.url;
+    console.log("✅ User image uploaded:", imageDataUri);
+
+    // Clean up local file after upload
+    try { fs.unlinkSync(userImagePath); } catch (_) {}
+    userImagePath = null;
 
     //////////////////////////////////////////////////////
-    // 4. Build the HTML
+    // 4. Get Event Config for Date/Venue
     //////////////////////////////////////////////////////
-    const html = buildPosterHTML({ name, imageDataUri });
+    const config = await prisma.eventConfig.findFirst();
+    const eventDate = config ? config.eventDate : undefined;
+    const eventVenue = config ? config.venue : undefined;
 
     //////////////////////////////////////////////////////
-    // 5. Launch Puppeteer
+    // 5. Build the HTML
+    //////////////////////////////////////////////////////
+    const html = buildPosterHTML({ name, imageDataUri, eventDate, eventVenue });
+
+    //////////////////////////////////////////////////////
+    // 6. Launch Puppeteer
     //////////////////////////////////////////////////////
     browser = await puppeteer.launch({
-      headless: "new",
+      headless: true,
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
@@ -76,17 +87,10 @@ export const generatePoster = async (req, res) => {
     });
 
     const page = await browser.newPage();
-
-    // Exact poster size — no scrollbars, no clipping
-    await page.setViewport({ width: 1080, height: 1080, deviceScaleFactor: 1 });
-
-    // networkidle0 waits for Tailwind CDN + Google Fonts to fully load
+    await page.setViewport({ width: 1200, height: 1200, deviceScaleFactor: 1 });
     await page.setContent(html, { waitUntil: "networkidle0" });
-
-    // Belt-and-suspenders: also wait for document.fonts.ready
     await page.evaluateHandle("document.fonts.ready");
 
-    // Screenshot the #poster element only (exactly 1080×1080)
     const posterElement = await page.$("#poster");
     const screenshotBuffer = await posterElement.screenshot({ type: "png" });
 
@@ -94,33 +98,26 @@ export const generatePoster = async (req, res) => {
     browser = null;
 
     //////////////////////////////////////////////////////
-    // 6. Write to disk and stream back
+    // 7. Upload generated poster to Cloudinary
     //////////////////////////////////////////////////////
-    const fileName = `poster-${Date.now()}.png`;
-    const filePath = path.join("uploads", fileName);
+    console.log("☁️ Uploading generated poster to Cloudinary...");
+    const base64Poster = `data:image/png;base64,${screenshotBuffer.toString("base64")}`;
+    const posterUpload = await uploadImage(base64Poster, "posters/generated");
+    console.log("✅ Poster uploaded:", posterUpload.url);
 
-    fs.writeFileSync(filePath, screenshotBuffer);
-
-    return res.download(filePath, "my-aws-poster.png", () => {
-      try {
-        fs.unlinkSync(filePath);
-      } catch (_) {}
-      try {
-        fs.unlinkSync(userImagePath);
-      } catch (_) {}
+    return res.status(200).json({
+      success: true,
+      url: posterUpload.url,
+      publicId: posterUpload.publicId
     });
   } catch (error) {
     console.error("POSTER ERROR:", error);
 
     if (browser) {
-      try {
-        await browser.close();
-      } catch (_) {}
+      try { await browser.close(); } catch (_) {}
     }
     if (userImagePath) {
-      try {
-        fs.unlinkSync(userImagePath);
-      } catch (_) {}
+      try { fs.unlinkSync(userImagePath); } catch (_) {}
     }
 
     return res.status(500).json({
