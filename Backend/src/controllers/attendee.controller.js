@@ -537,7 +537,9 @@ export const deleteAttendee = async (req, res, next) => {
 // Admin Only - Stats
 export const getAttendeeStats = async (req, res, next) => {
     try {
-        const totalRegistered = await prisma.attendee.count();
+        let totalRegistered = await prisma.attendee.count();
+        totalRegistered += 45; // Adding 45 as requested by user
+        
         const checkedInCount = await prisma.attendee.count({ where: { checkedIn: true } });
 
         // Count attendees who got all 6 swag items

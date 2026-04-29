@@ -15,7 +15,9 @@ import prisma from '../db/prisma.js';
 export const getDashboardStats = async (req, res, next) => {
     try {
         // 1. Core Counts
-        const totalRegistered = await prisma.attendee.count();
+        let totalRegistered = await prisma.attendee.count();
+        totalRegistered += 45; // Adding 45 as requested by user
+        
         const checkedInCount = await prisma.attendee.count({ where: { checkedIn: true } });
         const approvedSpeakers = await prisma.speaker.count({ where: { status: 'APPROVED' } });
         const pendingSpeakers = await prisma.speaker.count({ where: { status: 'PENDING' } });
@@ -184,7 +186,9 @@ export const updateEventConfig = async (req, res, next) => {
 // Public - Get Stats
 export const getPublicStats = async (req, res, next) => {
     try {
-        const totalRegistered = await prisma.attendee.count();
+        let totalRegistered = await prisma.attendee.count();
+        totalRegistered += 45; // Adding 45 as requested by user
+        
         const approvedSpeakers = await prisma.speaker.count({ where: { status: 'APPROVED' } });
         const workshopCount = await prisma.agendaItem.count({ where: { track: 'WORKSHOP' } });
 
