@@ -11,9 +11,11 @@ const footerLinks = {
     { href: "/register", label: "Register" },
     { href: "/speak", label: "Apply to Speak" },
     { href: "/volunteer", label: "Apply to Volunteer" },
+    { href: "/iwillbethere", label: "I'll Be There 🎉" },
   ],
   resources: [
     { href: "#agenda", label: "Agenda" },
+    { href: "#venue", label: "Venue" },
     { href: "#sponsors", label: "Sponsors" },
     { href: "#contact", label: "Contact" },
   ],
