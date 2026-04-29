@@ -31,7 +31,7 @@ function buildPosterHTML({
   const dateStr = eventDate
     ? new Date(eventDate).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }).toUpperCase()
     : "23 MAY 2026";
-  const venueStr = eventVenue ? eventVenue.toUpperCase() : "IUC DOUALA, CAMEROON";
+  const venueStr = eventVenue ? eventVenue.toUpperCase() : "IUC LOGBESSOU, DOUALA";
 
   const photoEl = imageDataUri
     ? `<image href="${imageDataUri}" x="0" y="0" width="1080" height="1080" clip-path="url(#photoClip)" preserveAspectRatio="xMidYMid slice" />`
