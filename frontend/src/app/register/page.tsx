@@ -37,7 +37,7 @@ import { cn } from "@/lib/utils";
 import { registerAttendee, lookupAttendeeByEmail } from "@/lib/api";
 import { log } from "console";
 
-const registrationSchema = z.object({
+export const registrationSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
   institution: z.string().min(2, "Institution name is required"),
@@ -45,7 +45,7 @@ const registrationSchema = z.object({
   tShirtSize: z.enum(["XS", "S", "M", "L", "XL", "XXL"]).optional(),
 });
 
-type RegistrationData = z.infer<typeof registrationSchema>;
+export type RegistrationData = z.infer<typeof registrationSchema>;
 
 /**
  * T-Shirt Segmented Control

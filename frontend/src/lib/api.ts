@@ -13,8 +13,10 @@ export async function apiCall<T = any>(
 ): Promise<T> {
   const url = `${API_URL}${endpoint}`;
 
+  const isFormData = options.body instanceof FormData;
+
   const defaultHeaders: Record<string, string> = {
-    "Content-Type": "application/json",
+    ...(isFormData ? {} : { "Content-Type": "application/json" }),
     ...options.headers,
   };
 
@@ -28,18 +30,26 @@ export async function apiCall<T = any>(
   const response = await fetch(url, {
     ...options,
     headers: defaultHeaders,
-    credentials: "include", // Include cookies in requests
+    credentials: "include",
   });
 
-  const data = await response.json();
+  const contentType = response.headers.get("content-type");
 
+  // ✅ Fix — check ok status FIRST, then handle content type
   if (!response.ok) {
-    throw new Error(data.message || `API Error: ${response.status}`);
+    const data = await response.json().catch(() => ({}));
+    throw new Error((data as any).message || `API Error: ${response.status}`);
   }
 
-  return data;
-}
+  if (
+    contentType?.includes("application/octet-stream") ||
+    contentType?.includes("image")
+  ) {
+    return (await response.blob()) as unknown as T;
+  }
 
+  return await response.json();
+}
 export async function login(email: string, password: string) {
   return apiCall("/auth/login", {
     method: "POST",
@@ -239,32 +249,32 @@ export async function applyVolunteer(data: {
   cloudClub?: string;
   skills: string;
 }) {
-  return apiCall('/volunteers/apply', {
-    method: 'POST',
+  return apiCall("/volunteers/apply", {
+    method: "POST",
     body: JSON.stringify(data),
   });
 }
 
 export async function getAllVolunteers() {
-  return apiCall('/volunteers/all', { method: 'GET' });
+  return apiCall("/volunteers/all", { method: "GET" });
 }
 
 export async function approveVolunteer(id: string, whatsappLink: string) {
   return apiCall(`/volunteers/${id}/approve`, {
-    method: 'PATCH',
+    method: "PATCH",
     body: JSON.stringify({ whatsappLink }),
   });
 }
 
 export async function rejectVolunteer(id: string, reviewNote: string) {
   return apiCall(`/volunteers/${id}/reject`, {
-    method: 'PATCH',
+    method: "PATCH",
     body: JSON.stringify({ reviewNote }),
   });
 }
 
 export async function deleteVolunteer(id: string) {
-  return apiCall(`/volunteers/${id}`, { method: 'DELETE' });
+  return apiCall(`/volunteers/${id}`, { method: "DELETE" });
 }
 
 // Agenda API
@@ -454,6 +464,34 @@ export async function createPayment(data: {
   });
 }
 
+//////////////////////////////////////////////////
+// POSTER API
+//////////////////////////////////////////////////
+
+export async function generatePoster(email: string, image: File) {
+  const formData = new FormData();
+  formData.append("email", email);
+  formData.append("image", image);
+
+  const blob = await apiCall<Blob>("/poster/generate", {
+    method: "POST",
+    body: formData,
+  });
+
+  const url = window.URL.createObjectURL(blob);
+
+  //////////////////////////////////////////////////
+  // AUTO DOWNLOAD
+  //////////////////////////////////////////////////
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "my-poster.png";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  return url; // ← used for preview
+}
 // UPLOADS API
 export async function uploadPublicLogo(file: string) {
   return apiCall("/uploads/public", {
