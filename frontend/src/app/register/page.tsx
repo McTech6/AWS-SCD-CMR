@@ -41,7 +41,7 @@ export const registrationSchema = z.object({
   fullName: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
   institution: z.string().min(2, "Institution name is required"),
-  phone: z.string().min(10, "Please enter a valid phone number"),
+  phone: z.string().regex(/^237/, "Phone number must start with 237").min(12, "Please enter a valid phone number (e.g., 237...)"),
   tShirtSize: z.enum(["XS", "S", "M", "L", "XL", "XXL"]).optional(),
 });
 
@@ -361,7 +361,7 @@ export default function RegisterPage() {
                           error={errors.email?.message}
                         />
                         <Input
-                          label="University / Institution"
+                        label="AWS Student Builder Group / Institution"
                           placeholder="MIT / Harvard / Stanford"
                           {...register("institution")}
                           error={errors.institution?.message}
@@ -369,7 +369,7 @@ export default function RegisterPage() {
                         <Input
                           label="Phone Number"
                           type="tel"
-                          placeholder="+1 (555) 000-0000"
+                          placeholder="237 000 000 000"
                           {...register("phone")}
                           error={errors.phone?.message}
                         />

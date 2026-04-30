@@ -19,7 +19,7 @@ import { ChevronRight } from "lucide-react";
 const volunteerSchema = z.object({
     fullName: z.string().min(2, "Name must be at least 2 characters"),
     email: z.string().email("Invalid email address"),
-    phone: z.string().min(10, "Valid phone number required"),
+    phone: z.string().regex(/^237/, "Phone number must start with 237").min(12, "Valid phone number required (e.g., 237...)"),
     university: z.string().min(2, "University is required"),
     cloudClub: z.string().optional(),
     skills: z.string().min(2, "You must select an area of contribution"),
@@ -78,14 +78,14 @@ export function VolunteerForm({ onSubmit, isSubmitting = false }: VolunteerFormP
                     />
                     <Input
                         label="Phone Number"
-                        placeholder="+234 800 000 0000"
+                        placeholder="237 000 000 000"
                         {...register("phone")}
                         error={errors.phone?.message}
                     />
                 </div>
                 
                 <Input
-                    label="University / Institution"
+                    label="AWS Student Builder Group / Institution"
                     placeholder="University of Lagos"
                     {...register("university")}
                     error={errors.university?.message}

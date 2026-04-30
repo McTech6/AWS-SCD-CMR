@@ -345,7 +345,7 @@ model AgendaItem {
 
 model EventConfig {
   id               String    @id @default(cuid())
-  eventName        String    @default("AWS Cloud Club Student Community Day")
+  eventName        String    @default("AWS Student Builder Group Student Community Day")
   eventDate        DateTime
   eventEndDate     DateTime?
   venue            String
@@ -365,7 +365,7 @@ model EventConfig {
 model Organizer {
   id          String   @id @default(cuid())
   name        String
-  role        String   @default("Cloud Club Captain")
+  role        String   @default("AWS Student Builder Group Leader")
   club        String?
   bio         String?
   imageUrl    String?

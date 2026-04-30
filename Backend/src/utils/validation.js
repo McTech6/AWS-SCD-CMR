@@ -4,7 +4,7 @@ export const registerSchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
     email: z.string().email('Invalid email address'),
     university: z.string().min(2, 'University must be at least 2 characters'),
-    phone: z.string().optional(),
+    phone: z.string().regex(/^237/, "Phone number must start with 237").optional(),
     tshirtSize: z.enum(['XS', 'S', 'M', 'L', 'XL', 'XXL']).default('M'),
 });
 
@@ -28,7 +28,7 @@ export const swagUpdateSchema = z.object({
 
 export const attendeeUpdateSchema = z.object({
     university: z.string().optional(),
-    phone: z.string().optional(),
+    phone: z.string().regex(/^237/, "Phone number must start with 237").optional(),
     tshirtSize: z.enum(['XS', 'S', 'M', 'L', 'XL', 'XXL']).optional(),
     checkedIn: z.boolean().optional(),
 });
@@ -67,7 +67,7 @@ export const speakerUpdateSchema = z.object({
 export const volunteerApplySchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
     email: z.string().email('Invalid email address'),
-    phone: z.string().optional(),
+    phone: z.string().regex(/^237/, "Phone number must start with 237").optional(),
     university: z.string().min(2, 'University must be at least 2 characters'),
     cloudClub: z.string().optional(),
     skills: z.string().min(2, 'Area of contribution is required'), // Now a single selected string

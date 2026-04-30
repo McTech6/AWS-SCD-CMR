@@ -39,7 +39,7 @@ async function main() {
         update: {},
         create: {
             id: 'default',
-            eventName: 'AWS Cloud Club Student Community Day',
+            eventName: 'AWS Student Builder Group Student Community Day',
             eventDate: new Date('2026-05-15T09:00:00Z'),
             venue: 'Main Auditorium',
             contactEmail: 'awsstudentcommunitydaycmr@gmail.com',
