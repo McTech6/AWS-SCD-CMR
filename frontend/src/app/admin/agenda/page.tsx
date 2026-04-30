@@ -44,6 +44,7 @@ type AgendaItem = {
     endTime?: string;
     track?: string;
     speakerId?: string;
+    speakerName?: string;
     sortOrder?: number;
 };
 
@@ -85,6 +86,7 @@ export default function AgendaAdminPage() {
         const data: any = {
             title: formData.get("title") as string,
             track: formData.get("track") as string,
+            speakerName: formData.get("speakerName") as string || "TBA",
             sortOrder: parseInt(formData.get("sortOrder") as string) || 0
         };
         
@@ -135,6 +137,15 @@ export default function AgendaAdminPage() {
         if (!dateStr) return "TBD";
         const date = new Date(dateStr);
         return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+    };
+
+    const toLocalISOString = (dateStr?: string) => {
+        if (!dateStr) return "";
+        const date = new Date(dateStr);
+        // Correctly handle the local timezone offset for the input value
+        const tzOffset = date.getTimezoneOffset() * 60000;
+        const localISOTime = new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
+        return localISOTime;
     };
 
     return (
@@ -196,6 +207,10 @@ export default function AgendaAdminPage() {
                                             {item.description && (
                                                 <span className="text-xs text-[var(--text-3)] line-clamp-1">{item.description}</span>
                                             )}
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <Mic2 size={10} className="text-[var(--electric-light)]" />
+                                                <span className="text-[10px] font-medium text-[var(--text-2)]">{item.speakerName || "TBA"}</span>
+                                            </div>
                                         </div>
 
                                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -257,7 +272,11 @@ export default function AgendaAdminPage() {
                         </ModalDescription>
                     </ModalHeader>
 
-                    <form onSubmit={handleAddOrUpdate} className="space-y-6 mt-6">
+                    <form 
+                        key={editingItem?.id || "new"}
+                        onSubmit={handleAddOrUpdate} 
+                        className="space-y-6 mt-6"
+                    >
                         <div className="space-y-2">
                             <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-3)]">Session Title</label>
                             <Input name="title" defaultValue={editingItem?.title} placeholder="Enter the session title..." required />
@@ -268,13 +287,18 @@ export default function AgendaAdminPage() {
                             <Textarea name="description" defaultValue={editingItem?.description} placeholder="Brief description..." rows={3} />
                         </div>
 
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-3)]">Speaker / Host Name</label>
+                            <Input name="speakerName" defaultValue={editingItem?.speakerName} placeholder="e.g. John Doe (or leave empty for TBA)" />
+                        </div>
+
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
                                 <label className="text-[10px] font-mono font-bold uppercase tracking-wider text-[var(--text-3)]">Start Time</label>
                                 <Input 
                                     name="startTime" 
                                     type="datetime-local" 
-                                    defaultValue={editingItem?.startTime ? new Date(editingItem.startTime).toISOString().slice(0, 16) : ''} 
+                                    defaultValue={toLocalISOString(editingItem?.startTime)} 
                                 />
                             </div>
                             <div className="space-y-2">
@@ -282,7 +306,7 @@ export default function AgendaAdminPage() {
                                 <Input 
                                     name="endTime" 
                                     type="datetime-local" 
-                                    defaultValue={editingItem?.endTime ? new Date(editingItem.endTime).toISOString().slice(0, 16) : ''} 
+                                    defaultValue={toLocalISOString(editingItem?.endTime)} 
                                 />
                             </div>
                         </div>

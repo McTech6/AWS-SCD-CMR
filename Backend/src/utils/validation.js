@@ -86,6 +86,7 @@ export const agendaSchema = z.object({
     endTime: z.string().datetime().optional().or(z.literal('')),
     track: z.enum(['MAIN_STAGE', 'WORKSHOP', 'PANEL', 'NETWORKING', 'OPENING', 'CLOSING']).optional(),
     speakerId: z.string().optional(),
+    speakerName: z.string().optional(),
     sortOrder: z.number().default(0),
 });
 

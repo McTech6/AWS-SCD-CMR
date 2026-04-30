@@ -16,7 +16,7 @@ type AgendaItem = {
     startTime?: string;
     endTime?: string;
     track?: string;
-    speaker?: string;
+    speakerName?: string;
     sortOrder?: number;
 };
 
@@ -159,7 +159,7 @@ export const AgendaPreview = () => {
     const filteredAgenda = agendaItems.map(item => ({
         time: formatTime(item.startTime),
         title: item.title,
-        speaker: item.speaker || "TBA",
+        speaker: item.speakerName || "TBA",
         track: item.track?.replace(/_/g, ' ') || "General"
     }));
 

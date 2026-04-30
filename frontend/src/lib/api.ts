@@ -291,6 +291,7 @@ export async function createAgendaItem(data: {
   endTime?: string;
   track?: string;
   speakerId?: string;
+  speakerName?: string;
   sortOrder?: number;
 }) {
   return apiCall("/agenda", {
