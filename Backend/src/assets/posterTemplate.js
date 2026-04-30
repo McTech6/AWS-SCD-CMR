@@ -193,7 +193,7 @@ export function buildPosterHTML({ name, imageDataUri, eventDate, eventVenue }) {
         <span class="text-slate-900 font-bold tracking-wider uppercase"
               style="font-size:19px; line-height:1.2;">AWS COMMUNITY</span>
         <span class="text-slate-500 font-normal tracking-wide uppercase"
-              style="font-size:16px; line-height:1.2;">AWS STUDENT CLUBS</span>
+              style="font-size:16px; line-height:1.2;">AWS STUDENT BUILDER GROUPS</span>
       </div>
     </div>
 

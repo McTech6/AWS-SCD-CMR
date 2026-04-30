@@ -210,7 +210,7 @@ export default function OrganizersAdminPage() {
         resolver: zodResolver(organizerFormSchema),
         defaultValues: {
             name: "",
-            role: "Cloud Club Captain",
+            role: "AWS Student Builder Group Leader",
             club: "",
             bio: "",
             imageUrl: "",
@@ -248,7 +248,7 @@ export default function OrganizersAdminPage() {
             if (editingOrganizer) {
                 reset({
                     name: editingOrganizer.name,
-                    role: editingOrganizer.role || "Cloud Club Captain",
+                    role: editingOrganizer.role || "AWS Student Builder Group Leader",
                     club: editingOrganizer.club || "",
                     bio: editingOrganizer.bio || "",
                     imageUrl: editingOrganizer.imageUrl || "",
@@ -261,7 +261,7 @@ export default function OrganizersAdminPage() {
             } else {
                 reset({
                     name: "",
-                    role: "Cloud Club Captain",
+                    role: "AWS Student Builder Group Leader",
                     club: "",
                     bio: "",
                     imageUrl: "",
@@ -339,7 +339,7 @@ export default function OrganizersAdminPage() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h2 className="font-display text-4xl font-extrabold text-[var(--text-1)] tracking-tight">Leadership Hub</h2>
-                        <p className="text-[var(--text-3)] font-mono text-xs uppercase tracking-[0.2em] mt-2">Cloud Club Captains &amp; Organizers</p>
+                        <p className="text-[var(--text-3)] font-mono text-xs uppercase tracking-[0.2em] mt-2">AWS Student Builder Group Leaders &amp; Organizers</p>
                     </div>
 
                     <Button variant="primary" size="sm" className="shadow-glow text-xs font-bold gap-2" onClick={() => { setEditingOrganizer(null); setIsAddModalOpen(true); }}>
@@ -467,13 +467,13 @@ export default function OrganizersAdminPage() {
                             </div>
                             <div className="space-y-2">
                                 <label className="text-[10px] font-bold uppercase text-[var(--text-3)] ml-1">Role Title</label>
-                                <Input {...register("role")} placeholder="e.g. Cloud Club Captain" error={errors.role?.message} />
+                                <Input {...register("role")} placeholder="e.g. AWS Student Builder Group Leader" error={errors.role?.message} />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[10px] font-bold uppercase text-[var(--text-3)] ml-1">Cloud Club / Institution</label>
-                            <Input {...register("club")} placeholder="e.g. AWS Cloud Club University of Cape Coast" />
+                            <label className="text-[10px] font-bold uppercase text-[var(--text-3)] ml-1">AWS Student Builder Group / Institution</label>
+                            <Input {...register("club")} placeholder="e.g. AWS Student Builder Group University of Cape Coast" />
                         </div>
 
                         <div className="space-y-2">

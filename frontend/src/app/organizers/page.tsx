@@ -61,7 +61,7 @@ export default function OrganizersPage() {
                                 Meet the <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--electric)] via-[var(--electric-light)] to-[var(--ember)]">Captains.</span>
                             </h1>
                             <p className="text-xl text-[var(--text-2)] leading-relaxed max-w-2xl mx-auto font-medium">
-                                Driven by a shared mission to democratize cloud education, our leadership team of AWS Cloud Club Captains is bridging the gap across the region.
+                                Driven by a shared mission to democratize cloud education, our leadership team of AWS Student Builder Group Leaders is bridging the gap across the region.
                             </p>
                         </motion.div>
                     </div>
@@ -168,11 +168,11 @@ export default function OrganizersPage() {
                         <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-[var(--electric)]/5 blur-[100px] pointer-events-none" />
                         <h2 className="text-4xl font-black text-[var(--text-1)] mb-6">Build the Community with Us.</h2>
                         <p className="text-[var(--text-2)] max-w-xl mx-auto mb-10 text-lg">
-                            Our clubs are always looking for passionate students to lead sessions, 
+                            Our AWS Student Builder Groups are always looking for passionate students to lead sessions, 
                             mentor peers, and architect the future of cloud.
                         </p>
                         <Button variant="primary" size="lg" className="rounded-full px-12 h-14 uppercase tracking-widest font-black text-xs shadow-glow">
-                            Join your local club
+                            Join your local AWS Student Builder Group
                         </Button>
                     </div>
                 </Section>

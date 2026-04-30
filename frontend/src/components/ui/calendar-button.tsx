@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
  */
 const EVENT_DETAILS = {
     title: "AWS Student Community Day Cameroon",
-    description: "The first AWS Student Community Day in Cameroon! Join student builders, Cloud Club captains, and AWS experts for a day of learning and networking.",
+    description: "The first AWS Student Community Day in Cameroon! Join student builders, AWS Student Builder Group Leaders, and AWS experts for a day of learning and networking.",
     location: "Douala, Cameroon",
     startTime: "2026-05-23T09:00:00Z",
     endTime: "2026-05-23T17:00:00Z",
@@ -41,7 +41,7 @@ const downloadIcs = () => {
     const icsContent = [
         "BEGIN:VCALENDAR",
         "VERSION:2.0",
-        "PRODID:-//AWS Cloud Club//SCD Cameroon//EN",
+        "PRODID:-//AWS Student Builder Groups//SCD Cameroon//EN",
         "BEGIN:VEVENT",
         `SUMMARY:${EVENT_DETAILS.title}`,
         `DESCRIPTION:${EVENT_DETAILS.description}`,

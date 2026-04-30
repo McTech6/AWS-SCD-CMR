@@ -92,8 +92,8 @@ export function VolunteerForm({ onSubmit, isSubmitting = false }: VolunteerFormP
                 />
                 
                 <Input
-                    label="Which AWS Cloud Club do you belong to (if any)?"
-                    placeholder="AWS Cloud Club UNILAG"
+                    label="Which AWS Student Builder Group do you belong to (if any)?"
+                    placeholder="AWS Student Builder Group UNILAG"
                     {...register("cloudClub")}
                     error={errors.cloudClub?.message}
                 />

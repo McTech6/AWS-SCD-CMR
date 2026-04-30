@@ -264,7 +264,7 @@ export default function CertificatesAdminPage() {
                                     <div className="text-right">
                                         <div className="h-px w-40 bg-slate-900 mb-2 ml-auto" />
                                         <p className="text-[10px] font-black uppercase tracking-widest text-slate-900">Dr. Sarah Cloud</p>
-                                        <p className="text-[8px] uppercase tracking-widest text-slate-400">Cloud Club Lead</p>
+                                        <p className="text-[8px] uppercase tracking-widest text-slate-400">Student Builder Group Leader</p>
                                     </div>
                                 </div>
 

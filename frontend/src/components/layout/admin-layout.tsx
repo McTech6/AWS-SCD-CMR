@@ -57,7 +57,7 @@ export const AdminSidebar = ({
             <div className="p-6 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--border)] bg-white p-1">
-                        <img src="/images (1).png" alt="Logo" className="h-full w-full object-contain rounded-full" />
+                        <img src="/aws.png" alt="Logo" className="h-full w-full object-contain rounded-full bg-black p-1" />
                     </div>
                     {!isCollapsed && (
                         <span className="font-display font-bold text-[var(--text-1)] tracking-tight">

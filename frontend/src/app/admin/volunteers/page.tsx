@@ -169,7 +169,7 @@ export default function VolunteersAdminPage() {
                                 <thead>
                                     <tr className="bg-[var(--surface)] text-[10px] font-mono font-bold uppercase tracking-[0.2em] text-[var(--text-3)] border-b border-[var(--border)]/50">
                                         <th className="px-6 py-4">Volunteer</th>
-                                        <th className="px-6 py-4">University / Club</th>
+                                        <th className="px-6 py-4">University / Builder Group</th>
                                         <th className="px-6 py-4">Top Skills</th>
                                         <th className="px-6 py-4">Submitted</th>
                                         <th className="px-6 py-4">Status</th>

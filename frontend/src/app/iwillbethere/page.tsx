@@ -76,7 +76,7 @@ function buildPosterHTML({
       </div>
       <div>
         <div style="color:rgba(255,255,255,0.95);font-size:13px;font-weight:700;letter-spacing:3px;text-transform:uppercase;">Student Community</div>
-        <div style="color:rgba(255,153,0,0.9);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">Cloud Club · Cameroon</div>
+        <div style="color:rgba(255,153,0,0.9);font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">Student Builder Group · Cameroon</div>
       </div>
     </div>
     <!-- Year pill -->

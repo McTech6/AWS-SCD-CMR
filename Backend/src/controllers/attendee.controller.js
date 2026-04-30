@@ -538,7 +538,6 @@ export const deleteAttendee = async (req, res, next) => {
 export const getAttendeeStats = async (req, res, next) => {
     try {
         let totalRegistered = await prisma.attendee.count();
-        totalRegistered += 45; // Adding 45 as requested by user
         
         const checkedInCount = await prisma.attendee.count({ where: { checkedIn: true } });
 

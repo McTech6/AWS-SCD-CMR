@@ -74,7 +74,7 @@ export default function AdminLoginPage() {
             >
                 <header className="mb-10 text-center">
                     <div className="inline-flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-[var(--border)] bg-white p-2 mb-6 shadow-glow">
-                        <img src="/images (1).png" alt="Logo" className="h-full w-full object-contain rounded-full" />
+                        <img src="/aws.png" alt="Logo" className="h-full w-full object-contain rounded-full bg-black p-1" />
                     </div>
                     <Badge variant="outline" className="mb-4 uppercase tracking-[0.2em] text-[var(--electric-light)] underline decoration-[var(--electric)]/20 underline-offset-4">Internal Access Only</Badge>
                     <h1 className="font-display text-4xl font-extrabold text-[var(--text-1)]">Admin Portal</h1>

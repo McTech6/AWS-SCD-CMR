@@ -16,7 +16,6 @@ export const getDashboardStats = async (req, res, next) => {
     try {
         // 1. Core Counts
         let totalRegistered = await prisma.attendee.count();
-        totalRegistered += 45; // Adding 45 as requested by user
         
         const checkedInCount = await prisma.attendee.count({ where: { checkedIn: true } });
         const approvedSpeakers = await prisma.speaker.count({ where: { status: 'APPROVED' } });
@@ -168,7 +167,7 @@ export const updateEventConfig = async (req, res, next) => {
             update: data,
             create: {
                 id: 'default',
-                eventName: 'AWS Cloud Club Student Community Day',
+                eventName: 'AWS Student Builder Groups Student Community Day',
                 eventDate: new Date(),
                 venue: 'TBD',
                 contactEmail: 'awsstudentcommunitydaycmr@gmail.com',
@@ -187,7 +186,6 @@ export const updateEventConfig = async (req, res, next) => {
 export const getPublicStats = async (req, res, next) => {
     try {
         let totalRegistered = await prisma.attendee.count();
-        totalRegistered += 45; // Adding 45 as requested by user
         
         const approvedSpeakers = await prisma.speaker.count({ where: { status: 'APPROVED' } });
         const workshopCount = await prisma.agendaItem.count({ where: { track: 'WORKSHOP' } });

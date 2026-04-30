@@ -64,10 +64,10 @@ export function Navbar() {
             className="flex items-center gap-2 pl-4"
           >
             <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-[var(--border)] bg-white p-1">
-              <img src="/images (1).png" alt="AWS Cloud Club Logo" className="h-full w-full object-contain rounded-full" />
+              <img src="/aws.png" alt="AWS Student Builder Group Logo" className="h-full w-full object-contain rounded-full bg-black p-1" />
             </div>
             <span className="font-display text-lg font-black tracking-tight text-[var(--text-1)] hidden sm:block">
-              AWS Cloud Club
+              AWS Student Builder Group
             </span>
           </Link>
 

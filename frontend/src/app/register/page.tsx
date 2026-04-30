@@ -264,7 +264,7 @@ export default function RegisterPage() {
                         Alex Rivera
                       </span>
                       <span className="block text-xs text-[var(--text-3)] text-mono">
-                        Cloud Engineer @ AWS Cloud Club
+                        Cloud Engineer @ AWS Student Builder Group
                       </span>
                     </div>
                   </div>

@@ -37,11 +37,11 @@ export function Footer() {
               href="/"
               className="flex items-center gap-2 font-display text-xl font-extrabold text-[var(--text-1)]"
             >
-              <img src="/images (1).png" alt="Logo" className="h-8 w-8 object-contain rounded-full bg-white p-0.5" />
-              AWS Cloud Club
+              <img src="/aws.png" alt="Logo" className="h-8 w-8 object-contain rounded-full bg-black p-1" />
+              AWS Student Builder Group
             </Link>
             <p className="mt-2 text-sm text-[var(--text-2)]">
-              Student Community Day — Powered by AWS Cloud Club
+              Student Community Day — Powered by AWS Student Builder Groups
             </p>
           </div>
 
@@ -111,11 +111,11 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[var(--border)] pt-8 sm:flex-row">
           <p className="text-sm text-[var(--text-3)]">
-            © {new Date().getFullYear()} AWS Cloud Club. All rights reserved.
+            © {new Date().getFullYear()} AWS Student Builder Groups. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             <p className="text-sm text-[var(--text-3)]">
-              Built with ❤️ by the Cloud Club
+              Built with ❤️ by the Student Builder Group
             </p>
             <Link
               href="/login"

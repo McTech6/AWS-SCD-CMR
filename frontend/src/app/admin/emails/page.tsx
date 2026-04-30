@@ -319,7 +319,7 @@ export default function EmailsAdminPage() {
                                 </div>
                             </div>
                             <div className="p-6 bg-slate-50 text-center border-t border-slate-100">
-                                <p className="text-[9px] uppercase font-bold tracking-widest text-slate-400">Powered by AWS Cloud Clubs</p>
+                                <p className="text-[9px] uppercase font-bold tracking-widest text-slate-400">Powered by AWS Student Builder Groups</p>
                             </div>
                         </div>
                     </div>

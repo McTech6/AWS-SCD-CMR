@@ -146,7 +146,7 @@ export const uploadConfirmSchema = z.object({
 
 export const organizerSchema = z.object({
     name: z.string().min(2, 'Name is required'),
-    role: z.string().default('Cloud Club Captain'),
+    role: z.string().default('AWS Student Builder Group Leader'),
     club: z.string().optional(),
     bio: z.string().optional(),
     imageUrl: z.string().url('Invalid Image URL').optional().or(z.literal('')),
