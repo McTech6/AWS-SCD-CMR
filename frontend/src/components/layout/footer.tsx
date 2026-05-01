@@ -38,9 +38,10 @@ export function Footer() {
               className="flex items-center gap-2 font-display text-xl font-extrabold text-[var(--text-1)]"
             >
               <img src="/aws.png" alt="Logo" className="h-8 w-8 object-contain rounded-full bg-black p-1" />
-              AWS Student Builder Group
+              <span className="sm:hidden">AWS SBG</span>
+              <span className="hidden sm:block">AWS Student Builder Groups</span>
             </Link>
-            <p className="mt-2 text-sm text-[var(--text-2)]">
+            <p className="mt-2 text-sm text-[var(--text-2)] max-w-xs">
               Student Community Day — Powered by AWS Student Builder Groups
             </p>
           </div>
@@ -110,12 +111,12 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-[var(--border)] pt-8 sm:flex-row">
-          <p className="text-sm text-[var(--text-3)]">
+          <p className="text-sm text-[var(--text-3)] text-center sm:text-left">
             © {new Date().getFullYear()} AWS Student Builder Groups. All rights reserved.
           </p>
-          <div className="flex items-center gap-4">
-            <p className="text-sm text-[var(--text-3)]">
-              Built with ❤️ by the Student Builder Group
+          <div className="flex items-center gap-4 justify-center sm:justify-end">
+            <p className="text-sm text-[var(--text-3)] text-center sm:text-right">
+              Built with ❤️ by the Student Builder Groups
             </p>
             <Link
               href="/login"

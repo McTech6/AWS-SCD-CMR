@@ -61,18 +61,24 @@ export function Navbar() {
           <Link
             href="/"
             onClick={() => setActiveTab("/")}
-            className="flex items-center gap-2 pl-4"
+            className="flex items-center gap-2 pl-4 flex-shrink-0"
           >
             <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-[var(--border)] bg-white p-1">
               <img src="/aws.png" alt="AWS Student Builder Group Logo" className="h-full w-full object-contain rounded-full bg-black p-1" />
             </div>
-            <span className="font-display text-lg font-black tracking-tight text-[var(--text-1)] hidden sm:block">
-              AWS Student Builder Group
+            <span className="font-display text-lg font-black tracking-tight text-[var(--text-1)] lg:hidden">
+              AWS SBG
+            </span>
+            <span className="font-display text-lg font-black tracking-tight text-[var(--text-1)] hidden lg:block xl:hidden">
+              AWS Student Builders
+            </span>
+            <span className="font-display text-lg font-black tracking-tight text-[var(--text-1)] hidden xl:block whitespace-nowrap">
+              AWS Student Builder Groups
             </span>
           </Link>
 
           {/* Desktop Links with Framer Motion Active Pill */}
-          <div className="hidden md:flex items-center gap-1 rounded-full bg-[var(--void)]/50 p-1 backdrop-blur-md border border-[var(--border)] relative">
+          <div className="hidden lg:flex items-center gap-1 rounded-full bg-[var(--void)]/50 p-1 backdrop-blur-md border border-[var(--border)] relative">
             {navLinks.map((link) => {
               const isActive = activeTab === link.href;
               return (
@@ -81,7 +87,7 @@ export function Navbar() {
                   href={link.href}
                   onClick={() => setActiveTab(link.href)}
                   className={cn(
-                    "relative px-5 py-2 text-sm font-semibold transition-colors z-10",
+                    "relative px-3 xl:px-5 py-2 text-sm font-semibold transition-colors z-10",
                     isActive ? "text-white" : "text-[var(--text-2)] hover:text-[var(--text-1)]"
                   )}
                 >
@@ -99,7 +105,7 @@ export function Navbar() {
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-3 pr-2">
+          <div className="hidden lg:flex items-center gap-3 pr-2">
             <Button variant="ghost" size="sm" asChild className="rounded-full font-bold">
               <Link href="/speak">Speak</Link>
             </Button>
@@ -113,7 +119,7 @@ export function Navbar() {
           {/* Mobile Menu Toggle */}
           <button
             type="button"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--void)]/50 border border-[var(--border)] backdrop-blur-md text-[var(--text-1)] md:hidden mr-2"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--void)]/50 border border-[var(--border)] backdrop-blur-md text-[var(--text-1)] lg:hidden mr-2"
             onClick={() => setIsMobileOpen(!isMobileOpen)}
           >
             {isMobileOpen ? <X size={20} /> : <Menu size={20} />}
@@ -131,14 +137,14 @@ export function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsMobileOpen(false)}
-              className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm md:hidden"
+              className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm lg:hidden"
             />
             
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              className="fixed inset-x-4 top-24 z-50 flex max-h-[calc(100vh-120px)] flex-col gap-2 overflow-y-auto rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-elevated backdrop-blur-xl md:hidden scrollbar-none"
+              className="fixed inset-x-4 top-24 z-50 flex max-h-[calc(100vh-120px)] flex-col gap-2 overflow-y-auto rounded-[var(--radius-xl)] border border-[var(--border)] bg-[var(--surface)] p-6 shadow-elevated backdrop-blur-xl lg:hidden scrollbar-none"
             >
               {navLinks.map((link) => {
                 const isActive = activeTab === link.href;
