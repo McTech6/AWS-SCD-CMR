@@ -40,9 +40,9 @@ export const VenueSection = () => {
                                 </div>
                                 <div>
                                     <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--text-3)] mb-1">Venue</p>
-                                    <h3 className="font-display text-xl font-extrabold text-[var(--text-1)]">IUC Logbessou</h3>
+                                    <h3 className="font-display text-xl font-extrabold text-[var(--text-1)]">IUC Denver</h3>
                                     <p className="mt-1 text-sm text-[var(--text-2)]">Institut Universitaire de la Côte</p>
-                                    <p className="mt-1 text-sm text-[var(--text-3)]">Logbessou, Douala, Cameroon</p>
+                                    <p className="mt-1 text-sm text-[var(--text-3)]">Denver, Douala, Cameroon</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -89,7 +89,7 @@ export const VenueSection = () => {
 
                         {/* Directions Button */}
                         <motion.a
-                            href="https://maps.app.goo.gl/FhZErNUY4HiL72PE8"
+                            href="https://www.google.com/maps/dir/?api=1&destination=4.0830962,9.7803254&destination_place_id=0x10610c257517af81:0x6b6e16b5b4d74e50"
                             target="_blank"
                             rel="noopener noreferrer"
                             initial={{ opacity: 0, x: -20 }}
@@ -116,14 +116,14 @@ export const VenueSection = () => {
                     >
                         <div className="relative w-full" style={{ minHeight: "450px" }}>
                             <iframe
-                                src="https://maps.google.com/maps?q=IUC+Logbessou+Douala+Cameroon&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127.5!2d9.7803254!3d4.0830962!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x10610c257517af81%3A0x6b6e16b5b4d74e50!2sInstitut%20Universitaire%20de%20la%20C%C3%B4te%20(IUC)!5e0!3m2!1sen!2scm!4v1700000000000!5m2!1sen!2scm"
                                 width="100%"
                                 height="100%"
                                 style={{ border: 0, minHeight: "450px", filter: "invert(90%) hue-rotate(180deg)" }}
                                 allowFullScreen
                                 loading="lazy"
                                 referrerPolicy="no-referrer-when-downgrade"
-                                title="IUC Logbessou Douala - Event Venue"
+                                title="IUC Denver Douala - Event Venue"
                             />
                             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                                 <div className="relative -mt-8">

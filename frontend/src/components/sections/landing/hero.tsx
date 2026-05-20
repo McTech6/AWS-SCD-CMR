@@ -176,7 +176,7 @@ export const Hero = () => {
                     <div className="mt-6 flex items-center justify-center">
                         <CalendarButton>
                             <span className="font-extrabold text-[var(--electric)] uppercase tracking-[0.25em] text-xs sm:text-sm bg-[var(--surface)]/60 px-6 py-3 rounded-full border border-[var(--border)] shadow-sm backdrop-blur-md mix-blend-luminosity hover:mix-blend-normal transition-all duration-300 hover:scale-105 cursor-pointer">
-                                May 23, 2026 · IUC Logbessou, Douala
+                                May 23, 2026 · IUC Denver, Douala
                             </span>
                         </CalendarButton>
                     </div>

@@ -58,7 +58,7 @@ export default function OrganizersPage() {
                                 The Hub Architects
                             </Badge>
                             <h1 className="font-display text-6xl md:text-8xl font-black text-[var(--text-1)] tracking-tighter mb-8 leading-[0.9]">
-                                Meet the <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--electric)] via-[var(--electric-light)] to-[var(--ember)]">Captains.</span>
+                                Meet the <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--electric)] via-[var(--electric-light)] to-[var(--ember)]">Leaders.</span>
                             </h1>
                             <p className="text-xl text-[var(--text-2)] leading-relaxed max-w-2xl mx-auto font-medium">
                                 Driven by a shared mission to democratize cloud education, our leadership team of AWS Student Builder Group Leaders is bridging the gap across the region.
