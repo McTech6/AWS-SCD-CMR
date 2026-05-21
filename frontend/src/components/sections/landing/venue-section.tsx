@@ -40,9 +40,9 @@ export const VenueSection = () => {
                                 </div>
                                 <div>
                                     <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--text-3)] mb-1">Venue</p>
-                                    <h3 className="font-display text-xl font-extrabold text-[var(--text-1)]">IUC Denver</h3>
-                                    <p className="mt-1 text-sm text-[var(--text-2)]">Institut Universitaire de la Côte</p>
-                                    <p className="mt-1 text-sm text-[var(--text-3)]">Denver, Douala, Cameroon</p>
+                                    <h3 className="font-display text-xl font-extrabold text-[var(--text-1)]">ISMA Douala</h3>
+                                    <p className="mt-1 text-sm text-[var(--text-2)]">Institut Supérieur de Management</p>
+                                    <p className="mt-1 text-sm text-[var(--text-3)]">Douala, Cameroon</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -89,7 +89,7 @@ export const VenueSection = () => {
 
                         {/* Directions Button */}
                         <motion.a
-                            href="https://www.google.com/maps/dir/?api=1&destination=4.0830962,9.7803254&destination_place_id=0x10610c257517af81:0x6b6e16b5b4d74e50"
+                            href="https://www.google.com/maps/place/ISMA-INSTITUT+SUPERIEUR+DE+MANAGEMENT/@4.0937785,9.7359692,20z"
                             target="_blank"
                             rel="noopener noreferrer"
                             initial={{ opacity: 0, x: -20 }}
@@ -116,14 +116,14 @@ export const VenueSection = () => {
                     >
                         <div className="relative w-full" style={{ minHeight: "450px" }}>
                             <iframe
-                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127.5!2d9.7803254!3d4.0830962!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x10610c257517af81%3A0x6b6e16b5b4d74e50!2sInstitut%20Universitaire%20de%20la%20C%C3%B4te%20(IUC)!5e0!3m2!1sen!2scm!4v1700000000000!5m2!1sen!2scm"
+                                src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d159.0!2d9.7359692!3d4.0937785!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x10610e0842bf9ab3%3A0x126ffff28db52c06!2sISMA-INSTITUT%20SUPERIEUR%20DE%20MANAGEMENT!5e0!3m2!1sen!2scm!4v1700000000000!5m2!1sen!2scm"
                                 width="100%"
                                 height="100%"
                                 style={{ border: 0, minHeight: "450px", filter: "invert(90%) hue-rotate(180deg)" }}
                                 allowFullScreen
                                 loading="lazy"
                                 referrerPolicy="no-referrer-when-downgrade"
-                                title="IUC Denver Douala - Event Venue"
+                                title="ISMA Douala - Event Venue"
                             />
                             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                                 <div className="relative -mt-8">
